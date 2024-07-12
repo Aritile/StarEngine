@@ -86,10 +86,10 @@ public:
 	std::string GetNowDirPath();
 
 public:
-	void SaveMaterialFile(std::string path, const MaterialBuffer& buffer);
-	void OpenMaterialFile(std::string path, MaterialBuffer& buffer);
+	void SaveMaterialFile(std::string path, const Material& buffer);
+	void OpenMaterialFile(std::string path, Material& buffer);
 
-private:
+public:
 	ID3D11ShaderResourceView* folderTexture = nullptr;
 	ID3D11ShaderResourceView* imageTexture = nullptr;
 	ID3D11ShaderResourceView* fileTexture = nullptr;
@@ -114,6 +114,7 @@ private:
 	dir_list dirs;
 	void RenderDirList(dir_list dir);
 	void FillDirList(dir_list* dir);
-};
 
-AssetsWindow& AssetsClass();
+public:
+	static AssetsWindow* GetSingleton();
+};

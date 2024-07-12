@@ -1,7 +1,7 @@
 #include "GeneralComponent.h"
 #include "../../ENTITY/COMPONENT/MeshComponent.h"
 
-static Entity* ecs = &EntityClass();
+static Entity* ecs = Entity::GetSingleton();
 
 void GeneralComponent::Render()
 {
@@ -58,19 +58,19 @@ void GeneralComponent::Render()
 	}
 }
 
-void GeneralComponent::SetName(std::string name)
+void GeneralComponent::SetName(std::string _Name)
 {
-	if (!name.compare(""))
+	if (!_Name.compare(""))
 		return;
 
-	nameEntity = name;
+	nameEntity = _Name;
 }
-void GeneralComponent::SetTag(std::string tag)
+void GeneralComponent::SetTag(std::string _Tag)
 {
-	if (!tag.compare(""))
+	if (!_Tag.compare(""))
 		return;
 
-	tagEntity = tag;
+	tagEntity = _Tag;
 }
 std::vector<entt::entity> GeneralComponent::GetChildren()
 {
@@ -101,75 +101,72 @@ bool GeneralComponent::HasChildren()
 	if (childrenEntity.empty()) return true; else return false;
 }
 
-void GeneralComponent::SetActiveAll(entt::entity entity, bool arg)
+void GeneralComponent::SetActiveAll(entt::entity _Entity, bool _Active)
 {
-	auto& generalComp = ecs->registry.get<GeneralComponent>(entity);
-	generalComp.activeEntity = arg;
+	auto& generalComp = ecs->registry.get<GeneralComponent>(_Entity);
+	generalComp.activeEntity = _Active;
 
 	for (int i = 0; i < generalComp.GetChildren().size(); i++)
-		SetActiveAll(generalComp.GetChildren()[i], arg);
+		SetActiveAll(generalComp.GetChildren()[i], _Active);
 }
-
-void GeneralComponent::SetActive(bool arg)
+void GeneralComponent::SetActive(bool _Active)
 {
 	entt::entity entity = entt::to_entity(ecs->registry, *this);
-	SetActiveAll(entity, arg);
+	SetActiveAll(entity, _Active);
 }
-
-void GeneralComponent::SetStaticAll(entt::entity entity, bool arg)
+void GeneralComponent::SetStaticAll(entt::entity _Entity, bool _Static)
 {
-	auto& generalComp = ecs->registry.get<GeneralComponent>(entity);
-	generalComp.staticEntity = arg;
+	auto& generalComp = ecs->registry.get<GeneralComponent>(_Entity);
+	generalComp.staticEntity = _Static;
 
 	for (int i = 0; i < generalComp.GetChildren().size(); i++)
-		SetStaticAll(generalComp.GetChildren()[i], arg);
+		SetStaticAll(generalComp.GetChildren()[i], _Static);
 }
-
-void GeneralComponent::SetStatic(bool arg)
+void GeneralComponent::SetStatic(bool _Static)
 {
 	entt::entity entity = entt::to_entity(ecs->registry, *this);
-	SetStaticAll(entity, arg);
+	SetStaticAll(entity, _Static);
 }
 
-void GeneralComponent::EntitySkip(entt::entity entity, int& size)
+void GeneralComponent::EntitySkip(entt::entity _Entity, int& _Skip)
 {
-	auto& generalComp = ecs->registry.get<GeneralComponent>(entity);
+	auto& generalComp = ecs->registry.get<GeneralComponent>(_Entity);
 	entt::entity thisEntity = entt::to_entity(ecs->registry, *this);
 
 	std::vector<entt::entity>::iterator find = std::find(generalComp.childrenEntity.begin(), generalComp.childrenEntity.end(), thisEntity);
 	if (find != generalComp.childrenEntity.end())
-		size++;
+		_Skip++;
 
 	for (int i = 0; i < generalComp.childrenEntity.size(); i++)
-		EntitySkip(generalComp.childrenEntity[i], size);
+		EntitySkip(generalComp.childrenEntity[i], _Skip);
 }
 
-void GeneralComponent::AddChild(entt::entity entity)
+void GeneralComponent::AddChild(entt::entity _Entity)
 {
-	auto& genComp = ecs->registry.get<GeneralComponent>(entity);
+	auto& genComp = ecs->registry.get<GeneralComponent>(_Entity);
 
 	//// if move root so return code ////
-	if (entity == ecs->root)
+	if (_Entity == ecs->root)
 		return;
 
 	//// 2. issue fix ////
 	if (genComp.parentEntity == entt::null)
 	{
 		genComp.parentEntity = entt::to_entity(ecs->registry, *this);
-		childrenEntity.push_back(entity);
+		childrenEntity.push_back(_Entity);
 	}
 	else
 	{
 		//// 3. issue fix ////
 		int size = 0;
-		EntitySkip(entity, size);
+		EntitySkip(_Entity, size);
 		if (size != 0)
 			return;
 
 		auto& parent = ecs->registry.get<GeneralComponent>(genComp.parentEntity);
 
 		//// 4. issue fix ////
-		std::vector<entt::entity>::iterator old = std::find(parent.childrenEntity.begin(), parent.childrenEntity.end(), entity);
+		std::vector<entt::entity>::iterator old = std::find(parent.childrenEntity.begin(), parent.childrenEntity.end(), _Entity);
 		if (old != parent.childrenEntity.end())
 		{
 			auto index = std::distance(parent.childrenEntity.begin(), old);
@@ -177,16 +174,14 @@ void GeneralComponent::AddChild(entt::entity entity)
 		}
 
 		//// 5. issue fix ////
-		std::vector<entt::entity>::iterator back = std::find(childrenEntity.begin(), childrenEntity.end(), entity);
+		std::vector<entt::entity>::iterator back = std::find(childrenEntity.begin(), childrenEntity.end(), _Entity);
 		if (back == childrenEntity.end())
 		{
 			genComp.parentEntity = entt::to_entity(ecs->registry, *this);
-			childrenEntity.push_back(entity);
+			childrenEntity.push_back(_Entity);
 		}
 	}
 }
-
-static std::vector<entt::entity> toDestroy;
 
 void GeneralComponent::Destroy()
 {
@@ -216,11 +211,11 @@ void GeneralComponent::Destroy()
 	}
 }
 
-void GeneralComponent::DestroyAll(entt::entity entity)
+void GeneralComponent::DestroyAll(entt::entity _Entity)
 {
-	auto& generalComp = ecs->registry.get<GeneralComponent>(entity);
+	auto& generalComp = ecs->registry.get<GeneralComponent>(_Entity);
 
-	toDestroy.push_back(entity);
+	toDestroy.push_back(_Entity);
 
 	for (size_t i = 0; i < generalComp.childrenEntity.size(); i++)
 		DestroyAll(generalComp.childrenEntity[i]);
@@ -254,7 +249,6 @@ void GeneralComponent::MoveUp()
 		std::swap(parent.childrenEntity[index], parent.childrenEntity[index - 1]);
 	}
 }
-
 void GeneralComponent::MoveDown()
 {
 	entt::entity entity = entt::to_entity(ecs->registry, *this); /* get entity from component */
@@ -270,24 +264,26 @@ void GeneralComponent::MoveDown()
 	}
 }
 
-void GeneralComponent::SerializeComponent(YAML::Emitter& out)
+void GeneralComponent::SerializeComponent(YAML::Emitter& _Out)
 {
-	out << YAML::Key << "GeneralComponent";
-	out << YAML::BeginMap;
+	_Out << YAML::Key << "GeneralComponent";
+	_Out << YAML::BeginMap;
 	{
-		out << YAML::Key << "Name" << YAML::Value << nameEntity;
-		out << YAML::Key << "Tag" << YAML::Value << tagEntity;
-		out << YAML::Key << "Active" << YAML::Value << activeEntity;
-		out << YAML::Key << "Static" << YAML::Value << staticEntity;
-		out << YAML::Key << "Children" << YAML::Value << childrenEntity.size();
+		_Out << YAML::Key << "Name" << YAML::Value << GetName();
+		_Out << YAML::Key << "Tag" << YAML::Value << GetTag();
+		_Out << YAML::Key << "Active" << YAML::Value << IsActive();
+		_Out << YAML::Key << "Static" << YAML::Value << IsStatic();
 	}
-	out << YAML::EndMap;
+	_Out << YAML::EndMap;
 }
-
-void GeneralComponent::DeserializeComponent(YAML::Node& in)
+void GeneralComponent::DeserializeComponent(YAML::Node& _In)
 {
-	nameEntity = in["Name"].as<std::string>();
-	tagEntity = in["Tag"].as<std::string>();
-	activeEntity = in["Active"].as<bool>();
-	staticEntity = in["Static"].as<bool>();
+	YAML::Node generalComponent = _In["GeneralComponent"];
+	if (generalComponent)
+	{
+		SetName(generalComponent["Name"].as<std::string>());
+		SetTag(generalComponent["Tag"].as<std::string>());
+		SetActive(generalComponent["Active"].as<bool>());
+		SetStatic(generalComponent["Static"].as<bool>());
+	}
 }

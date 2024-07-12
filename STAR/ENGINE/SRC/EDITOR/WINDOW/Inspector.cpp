@@ -10,17 +10,16 @@
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../SYSTEM/PhysicsSystem.h"
 
-static InspectorWindow inspectorWindow;
-
-InspectorWindow& InspectorClass()
+InspectorWindow* InspectorWindow::GetSingleton()
 {
-	return inspectorWindow;
+	static InspectorWindow inspectorWindow;
+	return &inspectorWindow;
 }
 
 ///////////////////////////////////////////////////////////////
 
-static Entity* ecs = &EntityClass();
-static AssetsWindow* assetsWindow = &AssetsClass();
+static Entity* ecs = Entity::GetSingleton();
+static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 
 void InspectorWindow::Render()
 {

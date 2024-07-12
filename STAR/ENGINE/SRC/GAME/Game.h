@@ -22,8 +22,8 @@ class Game
 {
 private:
 	std::wstring name = L"StarGame";
-	int width = 1920; /* 1920 */
-	int height = 1050; /* 800 */
+	int width = 1280; /* 1920 */
+	int height = 720; /* 800 */
 	//UINT antialiasing = 8;
 
 private:
@@ -107,6 +107,7 @@ public:
 public:
 	bool hide_window = false;
 	void SetWindowState(unsigned int state);
-};
 
-Game& GameClass();
+public:
+	static Game* GetSingleton();
+};

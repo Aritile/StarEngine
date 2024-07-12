@@ -5,16 +5,15 @@
 #include "../../XTK/TEX/DirectXTex.h"
 #include "../../XTK/WICTextureLoader11.h"
 
-static AboutWindow about;
-
-AboutWindow& AboutClass()
+AboutWindow* AboutWindow::GetSingleton()
 {
-	return about;
+	static AboutWindow aboutWindow;
+	return &aboutWindow;
 }
 
 ///////////////////////////////////////////////////////////////
 
-static DX* dx = &DXClass();
+static DX* dx = DX::GetSingleton();
 
 void AboutWindow::Render()
 {
@@ -22,7 +21,7 @@ void AboutWindow::Render()
 	ImGuiStyle* style = &ImGui::GetStyle();
 	ImVec2 windowPadding = style->WindowPadding;
 
-	ImGui::SetNextWindowSize(ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(400, 290));
 	ImGui::Begin("About", 0, ImGuiWindowFlags_NoResize 
 		| ImGuiWindowFlags_NoDocking
 		| ImGuiWindowFlags_NoScrollbar
@@ -34,9 +33,7 @@ void AboutWindow::Render()
 			"Star Engine\n"
 			"%s\n"
 			"Copyright(c) 2023 Hodak.\n"
-			"All rights reserved.\n"
-			"https://github.com/HODAKdev/StarEngine\n"
-			"StarEngine is licensed under the MIT License.",
+			"All rights reserved.",
 			_VersionText.c_str());
 		ImGui::Text("Used third party software:");
 		ImGui::BeginChild("AboutChild", ImVec2(0, 128));
@@ -50,8 +47,9 @@ void AboutWindow::Render()
 			ImGui::Text("yaml-cpp https://github.com/jbeder/yaml-cpp");
 			ImGui::Text("ttf2mesh https://github.com/fetisov/ttf2mesh");
 			ImGui::Text("ImGuizmo https://github.com/CedricGuillemet/ImGuizmo");
-			ImGui::Text("ImGuiWidgets https://github.com/HODAKdev/ImGuiWidgets");
 			ImGui::Text("DirectXTex https://github.com/microsoft/DirectXTex");
+			ImGui::Text("STRDX https://github.com/HODAKdev/STRDX");
+			ImGui::Text("zlib https://zlib.net/");
 		}
 		ImGui::EndChild();
 		float _X = windowPadding.x + ImGui::CalcTextSize("Made in Slovakia").x;

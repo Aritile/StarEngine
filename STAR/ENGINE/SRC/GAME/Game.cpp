@@ -3,21 +3,24 @@
 #include "../DX/DX.h"
 #include "../ENTITY/Entity.h"
 #include "../SYSTEM/ScriptingSystem.h"
+#include "../SYSTEM/ProjectSceneSystem.h"
 
-static Game game;
-
-Game& GameClass()
+Game* Game::GetSingleton()
 {
-	return game;
+    static Game game;
+    return &game;
 }
 
 ///////////////////////////////////////////////////////////////
 
-static DX* dx = &DXClass();
-static Entity* ecs = &EntityClass();
+static DX* dx = DX::GetSingleton();
+static Entity* ecs = Entity::GetSingleton();
+static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
 
 bool Game::StartGame(HWND parent)
 {
+    projectSceneSystem->SaveScene();
+
     if (!GameCreateWindow())
         return false;
 
@@ -41,13 +44,15 @@ bool Game::StartGame(HWND parent)
 
 LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    Game* game = Game::GetSingleton();
+
     switch (uMsg)
     {
     case WM_CLOSE:
-        game.StopGame();
+        game->StopGame();
         break;
     case WM_SIZE:
-        game.GameResizeBuffer();
+        game->GameResizeBuffer();
         break;
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -110,6 +115,8 @@ bool Game::GameCreateWindow()
 
 void Game::StopGame()
 {
+    projectSceneSystem->OpenScene();
+
     gameState = GameState::GameNone;
 
     /* stop frameTime, deltaTime, elapsedTime and frameCount */

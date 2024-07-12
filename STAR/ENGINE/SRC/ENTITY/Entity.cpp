@@ -18,20 +18,13 @@
 #define CAPSULE_MODEL "DATA\\Models\\Capsule.obj"
 #define PLANE_MODEL "DATA\\Models\\Plane.obj"
 
-Entity entity;
-
-Entity& EntityClass()
+Entity* Entity::GetSingleton()
 {
-	return entity;
+    static Entity entity;
+    return &entity;
 }
 
-static AssimpLoader* assimpLoader = &AssimpLoaderClass();
-static ProjectSceneSystem* projectSceneSystem = &ProjectSceneSystemClass();
-
-static std::vector<Mesh> cube;
-static std::vector<Mesh> sphere;
-static std::vector<Mesh> capsule;
-static std::vector<Mesh> plane;
+static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
 
 bool Entity::Init()
 {
@@ -50,26 +43,19 @@ void Entity::CreateCubeEntity(entt::entity entity)
 {
     GetComponent<GeneralComponent>(entity).SetName("Cube");
 	AddComponent<MeshComponent>(entity);
-	auto& meshComponent = GetComponent<MeshComponent>(entity);
-
-    for (size_t i = 0; i < cube[0].vertices.size(); i++)
+    auto& meshComponent = GetComponent<MeshComponent>(entity);
+    Assimp::Importer importer;
+    const aiScene* scene = StarHelpers::OpenModel(&importer, CUBE_MODEL);
+    if (scene)
     {
-        Vertex vertex;
-        vertex.position.x = cube[0].vertices[i].position.x;
-        vertex.position.y = cube[0].vertices[i].position.y;
-        vertex.position.z = cube[0].vertices[i].position.z;
-        vertex.normal.x = cube[0].vertices[i].normal.x;
-        vertex.normal.y = cube[0].vertices[i].normal.y;
-        vertex.normal.z = cube[0].vertices[i].normal.z;
-        vertex.texCoords.x = cube[0].vertices[i].texCoords.x;
-        vertex.texCoords.y = cube[0].vertices[i].texCoords.y;
-        meshComponent.AddVertices(vertex);
+        // bugtest
+        //printf("bugtest: %s\n", CUBE_MODEL);
+        meshComponent.SetModelPath(CUBE_MODEL);
+        meshComponent.SetMeshIndex(0);
+        meshComponent.LoadMesh(scene);
+        meshComponent.SetupMesh();
     }
 
-    for (size_t i = 0; i < cube[0].indices.size(); i++)
-        meshComponent.AddIndices(cube[0].indices[i]);
-
-    meshComponent.SetupMesh();
     meshComponent.SetFileName(CUBE_MODEL);
     meshComponent.SetMeshName("Cube");
     GetComponent<GeneralComponent>(root).AddChild(entity);
@@ -79,25 +65,16 @@ void Entity::CreateSphereEntity(entt::entity entity)
     GetComponent<GeneralComponent>(entity).SetName("Sphere");
     AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
-
-    for (size_t i = 0; i < sphere[0].vertices.size(); i++)
+    Assimp::Importer importer;
+    const aiScene* scene = StarHelpers::OpenModel(&importer, SPHERE_MODEL);
+    if (scene)
     {
-        Vertex vertex;
-        vertex.position.x = sphere[0].vertices[i].position.x;
-        vertex.position.y = sphere[0].vertices[i].position.y;
-        vertex.position.z = sphere[0].vertices[i].position.z;
-        vertex.normal.x = sphere[0].vertices[i].normal.x;
-        vertex.normal.y = sphere[0].vertices[i].normal.y;
-        vertex.normal.z = sphere[0].vertices[i].normal.z;
-        vertex.texCoords.x = sphere[0].vertices[i].texCoords.x;
-        vertex.texCoords.y = sphere[0].vertices[i].texCoords.y;
-        meshComponent.AddVertices(vertex);
+        meshComponent.SetModelPath(SPHERE_MODEL);
+        meshComponent.SetMeshIndex(0);
+        meshComponent.LoadMesh(scene);
+        meshComponent.SetupMesh();
     }
 
-    for (size_t i = 0; i < sphere[0].indices.size(); i++)
-        meshComponent.AddIndices(sphere[0].indices[i]);
-
-    meshComponent.SetupMesh();
     meshComponent.SetFileName(SPHERE_MODEL);
     meshComponent.SetMeshName("Sphere");
     GetComponent<GeneralComponent>(root).AddChild(entity);
@@ -107,25 +84,16 @@ void Entity::CreateCapsuleEntity(entt::entity entity)
     GetComponent<GeneralComponent>(entity).SetName("Capsule");
     AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
-
-    for (size_t i = 0; i < capsule[0].vertices.size(); i++)
+    Assimp::Importer importer;
+    const aiScene* scene = StarHelpers::OpenModel(&importer, CAPSULE_MODEL);
+    if (scene)
     {
-        Vertex vertex;
-        vertex.position.x = capsule[0].vertices[i].position.x;
-        vertex.position.y = capsule[0].vertices[i].position.y;
-        vertex.position.z = capsule[0].vertices[i].position.z;
-        vertex.normal.x = capsule[0].vertices[i].normal.x;
-        vertex.normal.y = capsule[0].vertices[i].normal.y;
-        vertex.normal.z = capsule[0].vertices[i].normal.z;
-        vertex.texCoords.x = capsule[0].vertices[i].texCoords.x;
-        vertex.texCoords.y = capsule[0].vertices[i].texCoords.y;
-        meshComponent.AddVertices(vertex);
+        meshComponent.SetModelPath(CAPSULE_MODEL);
+        meshComponent.SetMeshIndex(0);
+        meshComponent.LoadMesh(scene);
+        meshComponent.SetupMesh();
     }
 
-    for (size_t i = 0; i < capsule[0].indices.size(); i++)
-        meshComponent.AddIndices(capsule[0].indices[i]);
-
-    meshComponent.SetupMesh();
     meshComponent.SetFileName(CAPSULE_MODEL);
     meshComponent.SetMeshName("Capsule");
     GetComponent<GeneralComponent>(root).AddChild(entity);
@@ -135,25 +103,16 @@ void Entity::CreatePlaneEntity(entt::entity entity)
     GetComponent<GeneralComponent>(entity).SetName("Plane");
     AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
-
-    for (size_t i = 0; i < plane[0].vertices.size(); i++)
+    Assimp::Importer importer;
+    const aiScene* scene = StarHelpers::OpenModel(&importer, PLANE_MODEL);
+    if (scene)
     {
-        Vertex vertex;
-        vertex.position.x = plane[0].vertices[i].position.x;
-        vertex.position.y = plane[0].vertices[i].position.y;
-        vertex.position.z = plane[0].vertices[i].position.z;
-        vertex.normal.x = plane[0].vertices[i].normal.x;
-        vertex.normal.y = plane[0].vertices[i].normal.y;
-        vertex.normal.z = plane[0].vertices[i].normal.z;
-        vertex.texCoords.x = plane[0].vertices[i].texCoords.x;
-        vertex.texCoords.y = plane[0].vertices[i].texCoords.y;
-        meshComponent.AddVertices(vertex);
+        meshComponent.SetModelPath(PLANE_MODEL);
+        meshComponent.SetMeshIndex(0);
+        meshComponent.LoadMesh(scene);
+        meshComponent.SetupMesh();
     }
 
-    for (size_t i = 0; i < plane[0].indices.size(); i++)
-        meshComponent.AddIndices(plane[0].indices[i]);
-
-    meshComponent.SetupMesh();
     meshComponent.SetFileName(PLANE_MODEL);
     meshComponent.SetMeshName("Plane");
     GetComponent<GeneralComponent>(root).AddChild(entity);
@@ -170,14 +129,6 @@ void Entity::CreateTextMeshEntity(entt::entity entity)
     AddComponent<TextMeshComponent>(entity);
     GetComponent<TextMeshComponent>(entity).SetText("hello");
     GetComponent<GeneralComponent>(root).AddChild(entity);
-}
-
-void Entity::LoadCoreModels()
-{
-    cube    = assimpLoader->LoadRawModel(CUBE_MODEL);
-    sphere  = assimpLoader->LoadRawModel(SPHERE_MODEL);
-    capsule = assimpLoader->LoadRawModel(CAPSULE_MODEL);
-    plane   = assimpLoader->LoadRawModel(PLANE_MODEL);
 }
 
 entt::entity Entity::CreateEntity()

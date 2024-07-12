@@ -64,6 +64,9 @@ private:
 	void TimedFunction();
 	std::chrono::steady_clock::time_point start_time;
 	std::chrono::steady_clock::time_point end_time;
+
+private:
+	bool startScreen = true;
 };
 
 Editor& EditorClass();

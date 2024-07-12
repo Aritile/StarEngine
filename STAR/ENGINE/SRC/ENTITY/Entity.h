@@ -35,9 +35,6 @@ public:
 	void CreateTextMeshEntity(entt::entity entity);
 
 public:
-	void LoadCoreModels();
-
-public:
 	template <typename T>
 	void AddComponent(entt::entity entity)
 	{
@@ -58,6 +55,12 @@ public:
 	{
 		registry.remove<T>(entity);
 	}
-};
 
-Entity& EntityClass();
+	bool IsValid(entt::entity entity)
+	{
+		return registry.valid(entity);
+	}
+
+public:
+	static Entity* GetSingleton();
+};

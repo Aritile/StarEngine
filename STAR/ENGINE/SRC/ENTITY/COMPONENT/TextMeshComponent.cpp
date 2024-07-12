@@ -10,10 +10,10 @@
 #include "../../EDITOR/WINDOW/Console.h"
 #include "../../MAIN/Main.h"
 
-static Entity* ecs = &EntityClass();
+static Entity* ecs = Entity::GetSingleton();
 static Editor* editor = &EditorClass();
-static AssetsWindow* assetsWindow = &AssetsClass();
-static ConsoleWindow* consoleWindow = &ConsoleClass();
+static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
+static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
 
 void TextMeshComponent::Render()
 {

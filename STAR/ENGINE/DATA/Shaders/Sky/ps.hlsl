@@ -1,5 +1,4 @@
 #include "../ToneMappers/ACES.hlsl"
-#include "../ToneMappers/sRGB.hlsl"
 
 cbuffer ConstantBuffer : register(b0)
 {
@@ -19,6 +18,6 @@ float4 main(float3 world : POSITION, float2 texcoord : TEXCOORD) : SV_TARGET
         // gamma correction
     //mapped = pow(mapped, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
     //return float4(mapped, 1.0);
-    return float4(To_sRGB(hdrColor), 1.0);
+    return float4(To_ACES(hdrColor), 1.0);
 
 }

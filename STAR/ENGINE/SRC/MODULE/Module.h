@@ -12,6 +12,7 @@ public:
 
 public:
 	MYFUNC myFunc = nullptr;
-};
 
-Module& ModuleClass();
+public:
+	static Module* GetSingleton();
+};

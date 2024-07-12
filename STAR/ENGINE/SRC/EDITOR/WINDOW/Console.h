@@ -57,6 +57,7 @@ private:
 	unsigned int error_count = 0;
 	unsigned int warning_count = 0;
 	unsigned int info_count = 0;
-};
 
-ConsoleWindow& ConsoleClass();
+public:
+	static ConsoleWindow* GetSingleton();
+};

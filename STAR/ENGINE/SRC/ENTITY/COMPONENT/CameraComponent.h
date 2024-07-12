@@ -6,10 +6,10 @@
 #define MIN_FOV 1.0f
 #define MAX_FOV 128.0f
 
-enum CameraType : unsigned char
+enum CameraType
 {
-	Perspective = 0x10,
-	Orthographic = 0x20,
+	Perspective,
+	Orthographic
 };
 
 struct CameraComponent
@@ -19,7 +19,7 @@ public:
 
 private:
 	bool          activeComponent = true;
-	unsigned char cameraType = CameraType::Perspective;
+	CameraType    cameraType = CameraType::Perspective;
 	const char*   items[2] = { "Perspective", "Orthographic" };
 	int           item_current = 0;
 	float         scale = 5.0f;
@@ -43,8 +43,8 @@ public:
 	float         GetNear();
 	void          SetFar(float _Far);
 	float         GetFar();
-	void          SetCameraType(unsigned char _Type);
-	unsigned char GetCameraType();
+	void          SetCameraType(CameraType _CameraType);
+	CameraType GetCameraType();
 	void          SetActive(bool _Active);
 	bool          IsActive();
 	void          SetScale(float _Scale);
@@ -53,5 +53,9 @@ public:
 	Vector2       GetAspect();
 	Matrix        GetViewMatrix();
 	Matrix        GetProjectionMatrix();
-	Vector2       GetFixedProjectionValue(unsigned char _Type);
+	Vector2       GetFixedProjectionValue(CameraType _CameraType);
+
+public:
+	void SerializeComponent(YAML::Emitter& out);
+	void DeserializeComponent(YAML::Node& in);
 };

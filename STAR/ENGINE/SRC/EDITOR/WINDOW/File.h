@@ -7,6 +7,7 @@ class FileWindow
 public:
 	void Render();
 	bool renderFile = true;
-};
 
-FileWindow& FileClass();
+public:
+	static FileWindow* GetSingleton();
+};

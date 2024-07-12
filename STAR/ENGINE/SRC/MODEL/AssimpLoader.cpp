@@ -30,7 +30,6 @@ std::vector<Mesh> AssimpLoader::LoadRawModel(std::string path)
 	ProcessRawNode(pScene->mRootNode, pScene, buffer);
 	return buffer;
 }
-
 void AssimpLoader::ProcessRawNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& arg)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
@@ -42,7 +41,6 @@ void AssimpLoader::ProcessRawNode(aiNode* node, const aiScene* scene, std::vecto
 	for (UINT i = 0; i < node->mNumChildren; i++)
 		ProcessRawNode(node->mChildren[i], scene, arg);
 }
-
 Mesh AssimpLoader::ProcessRawMesh(aiNode* node, aiMesh* mesh, const aiScene* scene)
 {
 	Mesh buffer;
@@ -90,10 +88,11 @@ Mesh AssimpLoader::ProcessRawMesh(aiNode* node, aiMesh* mesh, const aiScene* sce
 
 /* ------------------------------------ */
 
-static Entity* ecs = &EntityClass();
-static AssetsWindow* assetsWindow = &AssetsClass();
-static ConsoleWindow* consoleWindow = &ConsoleClass();
+static Entity* ecs = Entity::GetSingleton();
+static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
+static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
 
+/*
 bool AssimpLoader::LoadModel(std::string path, entt::entity entity)
 {
 	Assimp::Importer importer;
@@ -113,9 +112,9 @@ bool AssimpLoader::LoadModel(std::string path, entt::entity entity)
 			std::string    full_path = buffer + "\\" + mat_name.C_Str();
 			aiString       diff_name;
 			material->GetTexture(aiTextureType_DIFFUSE, NULL, &diff_name);
-			MaterialBuffer mat_buff;
+			Material mat_buff;
 			if (!std::string(diff_name.C_Str()).empty())
-				mat_buff.DiffusePath = std::string("../") + diff_name.C_Str();
+				mat_buff.diffuse = std::string("../") + diff_name.C_Str();
 			consoleWindow->AddDebugMessage("Creating material... %s%s", full_path.c_str(), MAT);
 			assetsWindow->SaveMaterialFile(full_path, mat_buff);
 		}
@@ -146,16 +145,16 @@ void AssimpLoader::ProcessNode(aiNode* node, const aiScene* scene, entt::entity 
 
 void AssimpLoader::ProcessMesh(aiNode* node, aiMesh* mesh, const aiScene* scene, entt::entity entity, std::string path)
 {
-	entt::entity child = ecs->registry.create();                 /* create entity */
-	ecs->registry.emplace<GeneralComponent>(child);              /* add component */
-	ecs->registry.emplace<TransformComponent>(child);            /* add component */
-	ecs->registry.emplace<MeshComponent>(child);                 /* add component */
-	auto& gen_comp = ecs->registry.get<GeneralComponent>(child); /* get component */
-	auto& mesh_comp = ecs->registry.get<MeshComponent>(child);   /* get component */
-	gen_comp.SetName(mesh->mName.C_Str());                       /* set name */
+	entt::entity child = ecs->registry.create();
+	ecs->registry.emplace<GeneralComponent>(child);
+	ecs->registry.emplace<TransformComponent>(child);
+	ecs->registry.emplace<MeshComponent>(child);
+	auto& gen_comp = ecs->registry.get<GeneralComponent>(child);
+	auto& mesh_comp = ecs->registry.get<MeshComponent>(child);
+	gen_comp.SetName(mesh->mName.C_Str());
 	mesh_comp.SetFileName(path);
 	mesh_comp.SetMeshName(mesh->mName.C_Str());
-	ecs->registry.get<GeneralComponent>(entity).AddChild(child); /* add child to parent */
+	ecs->registry.get<GeneralComponent>(entity).AddChild(child);
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -195,10 +194,60 @@ void AssimpLoader::ProcessMesh(aiNode* node, aiMesh* mesh, const aiScene* scene,
 			mesh_comp.AddIndices(face.mIndices[j]);
 	}
 
-	if (!mesh_comp.SetupMesh()) /* create mesh */
-		StarHelpers::AddLog("ASSIMP << SETUP << MESH << FAILED");
+	if (!mesh_comp.SetupMesh())
+		StarHelpers::AddLog("Assimp << Setup << Mesh << Failed");
 
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 	std::string buffer = std::filesystem::path(path).parent_path().string() + "\\" + std::filesystem::path(path).stem().string() + "\\" + material->GetName().C_Str() + MAT;
 	mesh_comp.AddMeshMaterial(buffer);
+}
+*/
+
+void AssimpLoader::LoadModel(const char* path, entt::entity entity)
+{
+	if (!path)
+		return;
+
+	if (!ecs->IsValid(entity))
+		return;
+
+	entt::entity parent = ecs->CreateEntity();
+	std::string name = StarHelpers::GetFileNameFromPath(path);
+	ecs->GetComponent<GeneralComponent>(parent).SetName(name);
+	ecs->GetComponent<GeneralComponent>(entity).AddChild(parent);
+	{
+		Assimp::Importer importer;
+		const aiScene* scene = StarHelpers::OpenModel(&importer, path);
+		if (scene)
+		{
+			for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+			{
+				entt::entity child = ecs->CreateEntity();
+				ecs->AddComponent<MeshComponent>(child);
+				auto& meshComponent = ecs->GetComponent<MeshComponent>(child);
+
+				meshComponent.SetModelPath(path);
+				meshComponent.SetMeshIndex(i);
+
+				meshComponent.LoadMesh(scene);
+				meshComponent.SetupMesh();
+
+				meshComponent.LoadMaterial(scene);
+				meshComponent.SetupMaterial(path);
+
+				std::string folder = StarHelpers::GetParent(path) + "\\" + StarHelpers::GetFileNameFromPath(path);
+				StarHelpers::CreateFolder(folder);
+
+				std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
+				std::string model = StarHelpers::GetParent(path);
+				std::string dir = StarHelpers::GetRelativePath(model, exe);
+				std::string full = dir + "\\" + StarHelpers::GetFileNameFromPath(path) + "\\" + meshComponent.meshMaterial.name + ".mat";
+				meshComponent.SerializeMaterial(full.c_str());
+				meshComponent.SetMaterialPath(full.c_str());
+
+				ecs->GetComponent<GeneralComponent>(child).SetName(meshComponent.GetName(scene));
+				ecs->GetComponent<GeneralComponent>(parent).AddChild(child);
+			}
+		}
+	}
 }

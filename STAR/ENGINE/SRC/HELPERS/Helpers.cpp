@@ -7,14 +7,14 @@
 #include "../IMGUI/imgui_stdlib.h"
 #include <shobjidl.h>
 #include <comdef.h>
+#include "../MAIN/Main.h"
 
-static DX* dx = &DXClass();
+static DX* dx = DX::GetSingleton();
 
 UINT StarHelpers::GetDisplayWidth()
 {
 	return GetSystemMetrics(SM_CXSCREEN);
 }
-
 UINT StarHelpers::GetDisplayHeight()
 {
 	return GetSystemMetrics(SM_CYSCREEN);
@@ -27,7 +27,6 @@ UINT StarHelpers::GetContextWidth()
 	UINT width = rc.right - rc.left;
 	return width;
 }
-
 UINT StarHelpers::GetContextHeight()
 {
 	RECT rc;
@@ -94,22 +93,6 @@ HRESULT StarHelpers::CompileShaderFromFile(std::wstring srcFile, std::string ent
 
 	return hr;
 }
-
-RECT StarHelpers::GetClientRect()
-{
-	RECT mainWindow;
-	GetClientRect(dx->hwnd, &mainWindow);
-
-	POINT left_top = { mainWindow.left, mainWindow.top };
-	POINT right_bottom = { mainWindow.right, mainWindow.bottom };
-	ClientToScreen(dx->hwnd, &left_top);
-	ClientToScreen(dx->hwnd, &right_bottom);
-
-	RECT clip;
-	SetRect(&clip, left_top.x, left_top.y, right_bottom.x, right_bottom.y);
-	return clip;
-}
-
 HRESULT StarHelpers::CompileShaderFromSource(const char* data, std::string entryPoint, std::string profile, ID3DBlob** blob)
 {
 	assert(data);
@@ -156,6 +139,21 @@ HRESULT StarHelpers::CompileShaderFromSource(const char* data, std::string entry
 	return hr;
 }
 
+RECT StarHelpers::GetClientRect()
+{
+	RECT mainWindow;
+	GetClientRect(dx->hwnd, &mainWindow);
+
+	POINT left_top = { mainWindow.left, mainWindow.top };
+	POINT right_bottom = { mainWindow.right, mainWindow.bottom };
+	ClientToScreen(dx->hwnd, &left_top);
+	ClientToScreen(dx->hwnd, &right_bottom);
+
+	RECT clip;
+	SetRect(&clip, left_top.x, left_top.y, right_bottom.x, right_bottom.y);
+	return clip;
+}
+
 std::wstring StarHelpers::ConvertString(std::string buffer)
 {
 	return std::wstring(buffer.begin(), buffer.end());
@@ -198,7 +196,6 @@ bool StarHelpers::InitInput()
 
 	return true;
 }
-
 bool StarHelpers::InputGetKey(unsigned char key)
 {
 	if (DIKeyboard)
@@ -215,7 +212,6 @@ bool StarHelpers::InputGetKey(unsigned char key)
 
 	return false;
 }
-
 Vector2 StarHelpers::InputGetMouse()
 {
 	if (DIMouse)
@@ -229,7 +225,6 @@ Vector2 StarHelpers::InputGetMouse()
 
 	return Vector2::Zero;
 }
-
 bool StarHelpers::InputAcquire()
 {
 	if (DIKeyboard) if (FAILED(DIKeyboard->Acquire())) return false;
@@ -246,7 +241,6 @@ Vector3 StarHelpers::ToRadians(Vector3 rotation)
 		XMConvertToRadians(rotation.y),
 		XMConvertToRadians(rotation.z));
 }
-
 Vector3 StarHelpers::ToDegrees(Vector3 rotation)
 {
 	using namespace DirectX;
@@ -256,27 +250,23 @@ Vector3 StarHelpers::ToDegrees(Vector3 rotation)
 		XMConvertToDegrees(rotation.z));
 }
 
-physx::PxVec3 StarHelpers::vector3_to_physics(Vector3 value)
+physx::PxVec3 StarHelpers::Vector3ToPhysics(Vector3 value)
 {
 	return physx::PxVec3(value.x, value.y, value.z);
 }
-
-physx::PxQuat StarHelpers::quat_to_physics(Quaternion value)
+physx::PxQuat StarHelpers::QuatToPhysics(Quaternion value)
 {
 	return physx::PxQuat(value.x, value.y, value.z, value.w);
 }
-
-Vector3 StarHelpers::physics_to_vector3(physx::PxVec3 value)
+Vector3 StarHelpers::PhysicsToVector3(physx::PxVec3 value)
 {
 	return Vector3(value.x, value.y, value.z);
 }
-
-Quaternion StarHelpers::physics_to_quat(physx::PxQuat value)
+Quaternion StarHelpers::PhysicsToQuat(physx::PxQuat value)
 {
 	return Quaternion(value.x, value.y, value.z, value.w);
 }
-
-physx::PxMat44 StarHelpers::matrix_to_physics(Matrix value)
+physx::PxMat44 StarHelpers::MatrixToPhysics(Matrix value)
 {
 	physx::PxMat44 matrix;
 
@@ -302,8 +292,7 @@ physx::PxMat44 StarHelpers::matrix_to_physics(Matrix value)
 
 	return matrix;
 }
-
-Matrix StarHelpers::physics_to_matrix(physx::PxMat44 value)
+Matrix StarHelpers::PhysicsToMatrix(physx::PxMat44 value)
 {
 	Matrix matrix;
 
@@ -329,8 +318,13 @@ Matrix StarHelpers::physics_to_matrix(physx::PxMat44 value)
 
 	return matrix;
 }
+physx::PxTransform StarHelpers::PositionRotationToPhysics(Vector3 position, Quaternion rotation)
+{
+	return physx::PxTransform(
+		position.x, position.y, position.z,
+		physx::PxQuat(rotation.x, rotation.y, rotation.z, rotation.w));
+}
 
-/* 12/11/2022 */
 const char* StarHelpers::OpenFileDialog(LPCWSTR dir, LPCWSTR filter, LPCWSTR title)
 {
 	wchar_t wtext[MAX_PATH];
@@ -355,12 +349,29 @@ const char* StarHelpers::OpenFileDialog(LPCWSTR dir, LPCWSTR filter, LPCWSTR tit
 	_bstr_t b(wtext);
 	return b;
 }
-
-physx::PxTransform StarHelpers::position_rotation_to_physics(Vector3 position, Quaternion rotation)
+const char* StarHelpers::SaveFileDialog(LPCWSTR dir, LPCWSTR filter, LPCWSTR title)
 {
-	return physx::PxTransform(
-		position.x, position.y, position.z,
-		physx::PxQuat(rotation.x, rotation.y, rotation.z, rotation.w));
+	wchar_t wtext[MAX_PATH];
+	ZeroMemory(&wtext, sizeof(wtext));
+
+	OPENFILENAME ofn;
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = dx->hwnd;
+	ofn.lpstrFile = wtext;
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = MAX_PATH;
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = dir;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	ofn.lpstrTitle = title;
+	GetSaveFileName(&ofn);
+
+	_bstr_t b(wtext);
+	return b;
 }
 
 void StarHelpers::SerializeVector2(YAML::Emitter& out, Vector2 value)
@@ -368,23 +379,25 @@ void StarHelpers::SerializeVector2(YAML::Emitter& out, Vector2 value)
 	out << YAML::Flow;
 	out << YAML::BeginSeq << value.x << value.y << YAML::EndSeq;
 }
-
 void StarHelpers::SerializeVector3(YAML::Emitter& out, Vector3 value)
 {
 	out << YAML::Flow;
 	out << YAML::BeginSeq << value.x << value.y << value.z << YAML::EndSeq;
 }
-
 void StarHelpers::SerializeVector4(YAML::Emitter& out, Vector4 value)
 {
 	out << YAML::Flow;
 	out << YAML::BeginSeq << value.x << value.y << value.z << value.w << YAML::EndSeq;
 }
-
 void StarHelpers::SerializeQuaternion(YAML::Emitter& out, Quaternion value)
 {
 	out << YAML::Flow;
 	out << YAML::BeginSeq << value.x << value.y << value.z << value.w << YAML::EndSeq;
+}
+void StarHelpers::SerializeMatrix(YAML::Emitter& out, Matrix matrix)
+{
+	out << YAML::Flow;
+	out << YAML::BeginSeq << matrix.m[0][0] << matrix.m[0][1] << matrix.m[0][2] << matrix.m[0][3] << matrix.m[1][0] << matrix.m[1][1] << matrix.m[1][2] << matrix.m[1][3] << matrix.m[2][0] << matrix.m[2][1] << matrix.m[2][2] << matrix.m[2][3] << matrix.m[3][0] << matrix.m[3][1] << matrix.m[3][2] << matrix.m[3][3] << YAML::EndSeq;
 }
 
 Vector2 StarHelpers::DeserializeVector2(YAML::Node& in)
@@ -397,7 +410,6 @@ Vector2 StarHelpers::DeserializeVector2(YAML::Node& in)
 	}
 	return value;
 }
-
 Vector3 StarHelpers::DeserializeVector3(YAML::Node& in)
 {
 	Vector3 value;
@@ -409,7 +421,6 @@ Vector3 StarHelpers::DeserializeVector3(YAML::Node& in)
 	}
 	return value;
 }
-
 Vector4 StarHelpers::DeserializeVector4(YAML::Node& in)
 {
 	Vector4 value;
@@ -422,7 +433,6 @@ Vector4 StarHelpers::DeserializeVector4(YAML::Node& in)
 	}
 	return value;
 }
-
 Quaternion StarHelpers::DeserializeQuaternion(YAML::Node& in)
 {
 	Quaternion value;
@@ -435,13 +445,153 @@ Quaternion StarHelpers::DeserializeQuaternion(YAML::Node& in)
 	}
 	return value;
 }
+Matrix StarHelpers::DeserializeMatrix(YAML::Node& in)
+{
+	Matrix matrix;
+
+	if (in.IsSequence())
+	{
+		matrix.m[0][0] = in[0].as<float>();
+		matrix.m[0][1] = in[1].as<float>();
+		matrix.m[0][2] = in[2].as<float>();
+		matrix.m[0][3] = in[3].as<float>();
+
+		matrix.m[1][0] = in[4].as<float>();
+		matrix.m[1][1] = in[5].as<float>();
+		matrix.m[1][2] = in[6].as<float>();
+		matrix.m[1][3] = in[7].as<float>();
+
+		matrix.m[2][0] = in[8].as<float>();
+		matrix.m[2][1] = in[9].as<float>();
+		matrix.m[2][2] = in[10].as<float>();
+		matrix.m[2][3] = in[11].as<float>();
+
+		matrix.m[3][0] = in[12].as<float>();
+		matrix.m[3][1] = in[13].as<float>();
+		matrix.m[3][2] = in[14].as<float>();
+		matrix.m[3][3] = in[15].as<float>();
+	}
+
+	return matrix;
+}
 
 float StarHelpers::RadToDeg(float value)
 {
 	return DirectX::XMConvertToDegrees(value);
 }
-
 float StarHelpers::DegToRad(float value)
 {
 	return DirectX::XMConvertToRadians(value);
+}
+
+uLong StarHelpers::GetChecksum(const char* filename)
+{
+	std::FILE* file = std::fopen(filename, "rb");
+	std::vector<unsigned char> data;
+	if (file)
+	{
+		std::fseek(file, 0, SEEK_END);
+		data.resize(std::ftell(file));
+		std::rewind(file);
+		std::fread(&data[0], 1, data.size(), file);
+		std::fclose(file);
+
+		return crc32(0, data.data(), (uInt)data.size());
+	}
+
+	return 0;
+}
+
+void StarHelpers::BeginFormat(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	{
+		std::string dateTime = __DATE__ + std::string(" ") + std::string(__TIME__);
+		out << YAML::Comment("do not edit\n" + dateTime);
+		out << YAML::Key << "Star" << YAML::Value << YAML::BeginMap;
+		{
+			out << YAML::Key << "Version" << YAML::Value << YAML::BeginMap;
+			{
+				out << YAML::Key << "Major" << YAML::Value << MAJOR;
+				out << YAML::Key << "Minor" << YAML::Value << MINOR;
+				out << YAML::Key << "Patch" << YAML::Value << PATCH;
+			}
+			out << YAML::EndMap;
+			out << YAML::Key << "Data" << YAML::Value << YAML::BeginMap;
+			{
+
+			}
+			//out << YAML::EndMap;
+		}
+		//out << YAML::EndMap;
+	}
+	//out << YAML::EndMap;
+}
+void StarHelpers::EndFormat(YAML::Emitter& out)
+{
+	out << YAML::EndMap;
+	out << YAML::EndMap;
+	out << YAML::EndMap;
+}
+
+bool StarHelpers::CheckSignature(YAML::Node& in)
+{
+	if (in["Star"])
+		return true;
+	else
+		return false;
+}
+
+std::string StarHelpers::GetFileNameFromPath(std::string path)
+{
+	return std::filesystem::path(path).stem().string();
+}
+std::string StarHelpers::GetFileExtensionFromPath(std::string path)
+{
+	return std::filesystem::path(path).extension().string();
+}
+std::string StarHelpers::GetExecutablePath()
+{
+	char buffer[MAX_PATH];
+	GetModuleFileNameA(NULL, buffer, MAX_PATH);
+	return buffer;
+}
+std::string StarHelpers::GetRelativePath(std::string _Path, std::string _Base)
+{
+	std::filesystem::path path(_Path);
+	std::filesystem::path base(_Base);
+	return std::filesystem::relative(path, base).string();
+}
+std::string StarHelpers::GetParent(std::string path)
+{
+	return std::filesystem::path(path).parent_path().string();
+}
+std::string StarHelpers::NormalizePath(std::string path)
+{
+	return std::filesystem::weakly_canonical(path).string();
+}
+void StarHelpers::CreateFolder(std::string path)
+{
+	if (!std::filesystem::exists(path))
+	{
+		std::filesystem::create_directory(path);
+	}
+}
+
+const aiScene* StarHelpers::OpenModel(Assimp::Importer* importer, const char* path)
+{
+	if (!path)
+	{
+		printf("path is null\n");
+		return NULL;
+	}
+
+	const aiScene* scene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
+	if (!scene)
+	{
+		printf("scene is null\n");
+		return NULL;
+	}
+
+	return scene;
 }

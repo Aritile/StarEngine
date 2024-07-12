@@ -4,11 +4,10 @@
 #include <iomanip>
 #include <chrono>
 
-static ConsoleWindow console;
-
-ConsoleWindow& ConsoleClass()
+ConsoleWindow* ConsoleWindow::GetSingleton()
 {
-	return console;
+	static ConsoleWindow consoleWindow;
+	return &consoleWindow;
 }
 
 ///////////////////////////////////////////////////////////////
@@ -17,7 +16,7 @@ static Editor* editor = &EditorClass();
 
 void ConsoleWindow::Init()
 {
-	AddInfoMessage("Welcome to Star Engine!");
+	//AddInfoMessage("Welcome to Star Engine!");
 }
 
 void ConsoleWindow::Render()

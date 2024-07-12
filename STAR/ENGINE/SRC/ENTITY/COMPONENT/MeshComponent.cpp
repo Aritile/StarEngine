@@ -4,21 +4,13 @@
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../SYSTEM/ModelSystem.h"
+#include <fstream>
 
-static DX* dx = &DXClass();
-static Entity* ecs = &EntityClass();
-static ViewportWindow* viewportWindow = &ViewportClass();
-static AssetsWindow* assetsWindow = &AssetsClass();
+static DX* dx = DX::GetSingleton();
+static Entity* ecs = Entity::GetSingleton();
+static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
+static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 static ModelSystem* modelSystem = &ModelSystemClass();
-
-struct ConstantBuffer
-{
-	DirectX::XMMATRIX sProjection;
-	DirectX::XMMATRIX sView;
-	DirectX::XMMATRIX sModel;
-};
-
-static ConstantBuffer cb;
 
 void MeshComponent::Render()
 {
@@ -49,9 +41,13 @@ void MeshComponent::Render()
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 				ImGui::Text("Vertices");
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
+				ImGui::Text("Indices");
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
 				ImGui::Text("Faces");
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
 				ImGui::Text("Material");
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
+				ImGui::Text("Diffuse");
 			}
 			ImGui::TableNextColumn();
 			{
@@ -59,10 +55,17 @@ void MeshComponent::Render()
 				ImGui::Text("%u", GetNumVertices());
 
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
+				ImGui::Text("%u", indices.size());
+
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
 				ImGui::Text("%u", GetNumFaces());
 
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
-				ImGui::Button(material_name.c_str());
+				if (meshMaterial.name.empty())
+					ImGui::Button("None");
+				else
+					ImGui::Button(meshMaterial.name.c_str());
+				/*
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
@@ -76,6 +79,28 @@ void MeshComponent::Render()
 					}
 					ImGui::EndDragDropTarget();
 				}
+				*/
+
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
+				if (diffuse_texture)
+					ImGui::Image((void*)diffuse_texture, ImVec2(100, 100));
+				else
+					ImGui::ImageButton((void*)assetsWindow->imageTexture, ImVec2(50, 50));
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
+					{
+						FILEs payload_n = *(FILEs*)payload->Data;
+						if (payload_n.file_type == PNG || payload_n.file_type == JPEG || payload_n.file_type == DDS)
+						{
+							std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
+							LoadTexture(buffer.c_str(), &diffuse_texture);
+						}
+					}
+					ImGui::EndDragDropTarget();
+				}
+				if (!meshMaterial.diffuse.empty())
+					ImGui::Text(StarHelpers::GetFileNameFromPath(meshMaterial.diffuse).c_str());
 			}
 			ImGui::EndTable();
 		}
@@ -151,8 +176,16 @@ bool MeshComponent::SetupMesh()
 
 void MeshComponent::DrawMesh(DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 {
-	if (!modelSystem->pVS) return;
-	if (!modelSystem->pPS) return;
+	if (!modelSystem->pVS)
+	{
+		printf("pVS is null\n");
+		return;
+	}
+	if (!modelSystem->pPS)
+	{
+		printf("pPS is null\n");
+		return;
+	}
 
 	entt::entity entity = entt::to_entity(ecs->registry, *this);
 	if (ecs->registry.any_of<TransformComponent>(entity))
@@ -163,10 +196,14 @@ void MeshComponent::DrawMesh(DirectX::XMMATRIX view, DirectX::XMMATRIX projectio
 		cb.sView = DirectX::XMMatrixTranspose(view);
 		cb.sModel = DirectX::XMMatrixTranspose(transComp.GetTransform());
 
+		if (diffuse_texture) cb.hasTexture = true;
+		else cb.hasTexture = false;
+
 		dx->dxDeviceContext->UpdateSubresource(modelSystem->pConstantBuffer, 0, nullptr, &cb, 0, 0);
 		dx->dxDeviceContext->VSSetShader(modelSystem->pVS, 0, 0);
 		dx->dxDeviceContext->VSSetConstantBuffers(0, 1, &modelSystem->pConstantBuffer);
 		dx->dxDeviceContext->PSSetShader(modelSystem->pPS, 0, 0);
+		dx->dxDeviceContext->PSSetConstantBuffers(0, 1, &modelSystem->pConstantBuffer);
 		dx->dxDeviceContext->PSSetSamplers(0, 1, &modelSystem->pSamplerState);
 
 		UINT stride = sizeof(Vertex);
@@ -252,31 +289,33 @@ bool MeshComponent::GetState()
 	if (vertexBuffer.Get() && indexBuffer.Get()) return true; return false;
 }
 
+/*
 void MeshComponent::AddMeshMaterial(std::string path)
 {
-	MaterialBuffer mat_buff;
+	// how this works? i forgot
+	Material mat_buff;
 	assetsWindow->OpenMaterialFile(path, mat_buff);
 	material_name = std::filesystem::path(path).stem().string();
-	path = std::filesystem::path(path).parent_path().string(); /* remove filename */
+	path = std::filesystem::path(path).parent_path().string();
 
 	while (true)
 	{
-		std::size_t found = mat_buff.DiffusePath.find("..\\");
+		std::size_t found = mat_buff.diffuse.find("..\\");
 		if (found != std::string::npos)
 		{
-			mat_buff.DiffusePath.erase(0, 3);
+			mat_buff.diffuse.erase(0, 3);
 			path = std::filesystem::path(path).parent_path().string();
 		}
 		else
 		{
-			std::size_t found = mat_buff.DiffusePath.find("\\"); /* dir? */
+			std::size_t found = mat_buff.diffuse.find("\\");
 			if (found != std::string::npos)
 			{
-				std::string dir = mat_buff.DiffusePath;
+				std::string dir = mat_buff.diffuse;
 				dir.resize(found);
 				path.append("\\");
 				path.append(dir);
-				mat_buff.DiffusePath.erase(0, (found + 1));
+				mat_buff.diffuse.erase(0, (found + 1));
 			}
 			else
 			{
@@ -286,7 +325,7 @@ void MeshComponent::AddMeshMaterial(std::string path)
 	}
 
 	path.append("\\");
-	path.append(mat_buff.DiffusePath);
+	path.append(mat_buff.diffuse);
 
 	size_t pos = path.find_last_of(".");
 	if (pos != -1)
@@ -320,16 +359,33 @@ void MeshComponent::AddMeshMaterial(std::string path)
 		StarHelpers::AddLog("Error!");
 	}
 }
+*/
 
 void MeshComponent::SerializeComponent(YAML::Emitter& out)
 {
 	out << YAML::Key << "MeshComponent";
 	out << YAML::BeginMap;
 	{
-		out << YAML::Key << "FileName" << YAML::Value << fileName;
-		out << YAML::Key << "MeshName" << YAML::Value << meshName;
+		out << YAML::Key << "ModelPath" << YAML::Value << modelPath;
+		out << YAML::Key << "MaterialPath" << YAML::Value << materialPath;
+		out << YAML::Key << "MeshIndex" << YAML::Value << meshIndex;
+		out << YAML::Key << "VerticesSize" << YAML::Value << vertices.size();
+		out << YAML::Key << "IndicesSize" << YAML::Value << indices.size();
+		out << YAML::Key << "FacesSize" << YAML::Value << GetNumFaces();
 	}
 	out << YAML::EndMap;
+}
+void MeshComponent::DeserializeComponent(YAML::Node& in)
+{
+	YAML::Node meshComponent = in["MeshComponent"];
+	if (meshComponent)
+	{
+		modelPath = meshComponent["ModelPath"].as<std::string>();
+		materialPath = meshComponent["MaterialPath"].as<std::string>();
+		meshIndex = meshComponent["MeshIndex"].as<unsigned int>();
+		//vertices.resize(meshComponent["VerticesSize"].as<size_t>());
+		//indices.resize(meshComponent["IndicesSize"].as<size_t>());
+	}
 }
 
 void MeshComponent::SetFileName(std::string name)
@@ -347,4 +403,237 @@ void MeshComponent::SetMeshName(std::string name)
 std::string MeshComponent::GetMeshName()
 {
 	return meshName;
+}
+
+bool MeshComponent::LoadMesh(const aiScene* scene)
+{
+	if (scene->mNumMeshes <= meshIndex)
+	{
+		printf("out of range\n");
+		return false;
+	}
+
+	aiMesh* mesh = scene->mMeshes[meshIndex];
+
+	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+	{
+		Vertex vertex;
+
+		// positions
+		vertex.position.x = mesh->mVertices[i].x;
+		vertex.position.y = mesh->mVertices[i].y;
+		vertex.position.z = mesh->mVertices[i].z;
+
+		// normals
+		if (mesh->HasNormals())
+		{
+			vertex.normal.x = mesh->mNormals[i].x;
+			vertex.normal.y = mesh->mNormals[i].y;
+			vertex.normal.z = mesh->mNormals[i].z;
+		}
+
+		// texture coordinates
+		if (mesh->mTextureCoords[0])
+		{
+			vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
+			vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
+		}
+		else
+		{
+			vertex.texCoords = Vector2(0.0f, 0.0f);
+		}
+		
+		AddVertices(vertex);
+	}
+
+	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+	{
+		aiFace face = mesh->mFaces[i];
+		for (unsigned int j = 0; j < face.mNumIndices; j++)
+			AddIndices(face.mIndices[j]);
+	}
+
+	return true;
+}
+bool MeshComponent::LoadMaterial(const aiScene* scene)
+{
+	if (scene->mNumMeshes <= meshIndex)
+	{
+		printf("out of range\n");
+		return false;
+	}
+
+	aiMesh* mesh = scene->mMeshes[meshIndex];
+	unsigned int materialIndex = mesh->mMaterialIndex;
+
+	if (materialIndex >= scene->mNumMaterials)
+	{
+		printf("out of range\n");
+		return false;
+	}
+
+	aiMaterial* material = scene->mMaterials[materialIndex];
+	if (material)
+	{
+		aiString name;
+		aiString diffuse;
+		material->Get(AI_MATKEY_NAME, name);
+		material->GetTexture(aiTextureType_DIFFUSE, NULL, &diffuse);
+
+		meshMaterial.name = name.C_Str();
+		meshMaterial.diffuse = diffuse.C_Str();
+	}
+
+	return true;
+}
+std::string MeshComponent::GetName(const aiScene* scene)
+{
+	if (!scene)
+	{
+		printf("scene is null\n");
+		return "";
+	}
+	if (scene->mNumMeshes <= meshIndex)
+	{
+		printf("is out of range\n");
+		return "";
+	}
+
+	aiMesh* mesh = scene->mMeshes[meshIndex];
+	if (mesh)
+		return mesh->mName.C_Str();
+	else
+		return "";
+}
+void MeshComponent::SerializeMaterial(const char* path)
+{
+	YAML::Emitter out;
+
+	StarHelpers::BeginFormat(out);
+	{
+		out << YAML::Key << "Material" << YAML::Value << YAML::BeginMap;
+		{
+			out << YAML::Key << "Name" << YAML::Value << meshMaterial.name;
+			out << YAML::Key << "Diffuse" << YAML::Value << YAML::BeginMap;
+			{
+				out << YAML::Key << "Path" << YAML::Value << meshMaterial.diffuse;
+			}
+			out << YAML::EndMap;
+		}
+		out << YAML::EndMap;
+	}
+	StarHelpers::EndFormat(out);
+
+	if (!out.good())
+		StarHelpers::AddLog("%s", out.GetLastError().c_str());
+
+	std::ofstream stream(path);
+	stream << out.c_str();
+	stream.close();
+}
+void MeshComponent::DeserializeMaterial(const char* path)
+{
+	//printf("DeserializeMaterial() %s\n", path);
+	YAML::Node in = YAML::LoadFile(path);
+	if (!StarHelpers::CheckSignature(in))
+		return;
+
+	YAML::Node _Material = in["Star"]["Data"]["Material"];
+	meshMaterial.name = _Material["Name"].as<std::string>();
+	YAML::Node _Diffuse = _Material["Diffuse"];
+	meshMaterial.diffuse = _Diffuse["Path"].as<std::string>();
+}
+bool MeshComponent::SetupMaterial(const char* path)
+{
+	std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
+	std::string model = StarHelpers::GetParent(path);
+	std::string dir = StarHelpers::GetRelativePath(model, exe);
+	std::string full = dir + "\\" + meshMaterial.diffuse;
+	meshMaterial.diffuse = full;
+	
+	LoadTexture(meshMaterial.diffuse.c_str(), &diffuse_texture);
+
+	return true;
+}
+bool MeshComponent::LoadTexture(const char* path, ID3D11ShaderResourceView** shaderResourceView)
+{
+	std::string extension = StarHelpers::GetFileExtensionFromPath(path);
+
+	if (extension.compare(PNG) == 0 || extension.compare(JPEG) == 0)
+	{
+		if (*shaderResourceView)
+			(*shaderResourceView)->Release();
+
+		if (FAILED(DirectX::CreateWICTextureFromFile(
+			dx->dxDevice,
+			dx->dxDeviceContext,
+			StarHelpers::ConvertString(path).c_str(),
+			nullptr,
+			shaderResourceView)))
+		{
+			printf("failed to load texture\n");
+			return false;
+		}
+		else
+		{
+			meshMaterial.diffuse = path;
+			return true;
+		}
+	}
+	else if (extension.compare(DDS))
+	{
+		if (*shaderResourceView)
+			(*shaderResourceView)->Release();
+
+		if (FAILED(DirectX::CreateDDSTextureFromFile(
+			dx->dxDevice,
+			dx->dxDeviceContext,
+			StarHelpers::ConvertString(path).c_str(),
+			nullptr,
+			shaderResourceView)))
+		{
+			printf("failed to load texture\n");
+			return false;
+		}
+		else
+		{
+			meshMaterial.diffuse = path;
+			return true;
+		}
+	}
+
+	printf("wrong texture format\n");
+	return false;
+}
+void MeshComponent::SetMeshIndex(unsigned int index)
+{
+	meshIndex = index;
+}
+void MeshComponent::SetModelPath(const char* path)
+{
+	std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
+	std::string model = path;
+	modelPath = StarHelpers::GetRelativePath(model, exe);
+}
+void MeshComponent::SetupDiffuseTexture()
+{
+	std::string path = meshMaterial.diffuse;
+	if (!path.empty())
+		LoadTexture(meshMaterial.diffuse.c_str(), &diffuse_texture);
+}
+void MeshComponent::SetMaterialPath(const char* path)
+{
+	materialPath = path;
+}
+void MeshComponent::LoadDiffuseTexture(const char* path)
+{
+	if (!path)
+		return;
+
+	std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
+	std::string model = StarHelpers::GetParent(path);
+	std::string dir = StarHelpers::GetRelativePath(model, exe);
+	std::string full = dir + "\\" + StarHelpers::GetFileNameFromPath(path) + StarHelpers::GetFileExtensionFromPath(path);
+
+	LoadTexture(full.c_str(), &diffuse_texture);
 }

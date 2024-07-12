@@ -1,5 +1,6 @@
 #pragma once
 
+// input
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
@@ -9,6 +10,12 @@
 #include "../XTK/MATH/SimpleMath.h"
 #include <physx/PxPhysicsAPI.h>
 #include <yaml-cpp/yaml.h>
+#include <zlib/zlib.h>
+
+// assimp
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -30,33 +37,56 @@ namespace StarHelpers
 	void AddLog(const char* text, ...);
 	HRESULT CompileShaderFromFile(std::wstring srcFile, std::string entryPoint, std::string profile, ID3DBlob** blob);
 	HRESULT CompileShaderFromSource(const char* data, std::string entryPoint, std::string profile, ID3DBlob** blob);
-    std::wstring ConvertString(std::string buffer);
-    /* --- GameInput API --- */
-    bool InitInput();
+	std::wstring ConvertString(std::string buffer);
+	/* --- GameInput API --- */
+	bool InitInput();
 	bool InputAcquire();
-    bool InputGetKey(unsigned char key);
+	bool InputGetKey(unsigned char key);
 	Vector2 InputGetMouse();
-    /* --------------------- */
+	/* --------------------- */
 	Vector3 ToRadians(Vector3 rotation);
 	Vector3 ToDegrees(Vector3 rotation);
+
 	float RadToDeg(float value);
 	float DegToRad(float value);
-	physx::PxVec3 vector3_to_physics(Vector3 value);
-	physx::PxQuat quat_to_physics(Quaternion value);
-	Vector3 physics_to_vector3(physx::PxVec3 value);
-	Quaternion physics_to_quat(physx::PxQuat value);
-	physx::PxMat44 matrix_to_physics(Matrix value);
-	Matrix physics_to_matrix(physx::PxMat44 value);
-	physx::PxTransform position_rotation_to_physics(Vector3 position, Quaternion rotation);
-	/* --------------------- */
+
+	physx::PxVec3 Vector3ToPhysics(Vector3 value);
+	physx::PxQuat QuatToPhysics(Quaternion value);
+	Vector3 PhysicsToVector3(physx::PxVec3 value);
+	Quaternion PhysicsToQuat(physx::PxQuat value);
+	physx::PxMat44 MatrixToPhysics(Matrix value);
+	Matrix PhysicsToMatrix(physx::PxMat44 value);
+	physx::PxTransform PositionRotationToPhysics(Vector3 position, Quaternion rotation);
+
 	const char* OpenFileDialog(LPCWSTR dir, LPCWSTR filter, LPCWSTR title);
-	/* --------------------- */
+	const char* SaveFileDialog(LPCWSTR dir, LPCWSTR filter, LPCWSTR title);
+
 	void SerializeVector2(YAML::Emitter& out, Vector2 value);
 	void SerializeVector3(YAML::Emitter& out, Vector3 value);
 	void SerializeVector4(YAML::Emitter& out, Vector4 value);
 	void SerializeQuaternion(YAML::Emitter& out, Quaternion value);
+	void SerializeMatrix(YAML::Emitter& out, Matrix matrix);
+
+	Matrix DeserializeMatrix(YAML::Node& in);
 	Vector2 DeserializeVector2(YAML::Node& in);
 	Vector3 DeserializeVector3(YAML::Node& in);
 	Vector4 DeserializeVector4(YAML::Node& in);
 	Quaternion DeserializeQuaternion(YAML::Node& in);
+
+	uLong GetChecksum(const char* filename);
+
+	void BeginFormat(YAML::Emitter& out);
+	void EndFormat(YAML::Emitter& out);
+
+	bool CheckSignature(YAML::Node& in);
+
+	std::string GetFileNameFromPath(std::string path);
+	std::string GetFileExtensionFromPath(std::string path);
+	std::string GetExecutablePath();
+	std::string GetRelativePath(std::string _Path, std::string _Base);
+	std::string GetParent(std::string path);
+	std::string NormalizePath(std::string path);
+	void CreateFolder(std::string path);
+
+	const aiScene* OpenModel(Assimp::Importer* importer, const char* path);
 }

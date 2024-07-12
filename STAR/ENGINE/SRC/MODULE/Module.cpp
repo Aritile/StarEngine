@@ -1,13 +1,6 @@
 #include "Module.h"
 #include "../HELPERS/Helpers.h"
 
-static Module module;
-
-Module& ModuleClass()
-{
-	return module;
-}
-
 /**/
 
 bool Module::Init()
@@ -27,4 +20,10 @@ bool Module::Init()
 	}
 
 	return true;
+}
+
+Module* Module::GetSingleton()
+{
+	static Module module;
+	return &module;
 }

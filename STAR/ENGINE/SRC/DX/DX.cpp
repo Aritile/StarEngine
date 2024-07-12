@@ -1,8 +1,7 @@
 #include "DX.h"
 
-static DX dx;
-
-DX& DXClass()
+DX* DX::GetSingleton()
 {
-	return dx;
+	static DX dx;
+	return &dx;
 }

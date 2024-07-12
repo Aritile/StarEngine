@@ -4,8 +4,8 @@
 #include <entt/entt.hpp>
 #include "../Entity.h"
 
-static Game* game = &GameClass();
-static Entity* ecs = &EntityClass();
+static Game* game = Game::GetSingleton();
+static Entity* ecs = Entity::GetSingleton();
 
 void CameraComponent::Render()
 {
@@ -33,8 +33,10 @@ void CameraComponent::Render()
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 				ImGui::Text("Type");
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
-				if (cameraType == CameraType::Perspective) ImGui::Text("Fov");
-				if (cameraType == CameraType::Orthographic) ImGui::Text("Scale");
+				if (cameraType == CameraType::Perspective)
+					ImGui::Text("Fov");
+				if (cameraType == CameraType::Orthographic)
+					ImGui::Text("Scale");
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
 				ImGui::Text("Near");
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
@@ -123,11 +125,16 @@ float CameraComponent::GetFar()
 {
 	return farView;
 }
-void CameraComponent::SetCameraType(unsigned char _Type)
+void CameraComponent::SetCameraType(CameraType _CameraType)
 {
-	cameraType = _Type;
+	cameraType = _CameraType;
+
+	if (_CameraType == CameraType::Perspective)
+		item_current = 0;
+	else if (_CameraType == CameraType::Orthographic)
+		item_current = 1;
 }
-unsigned char CameraComponent::GetCameraType()
+CameraType CameraComponent::GetCameraType()
 {
 	return cameraType;
 }
@@ -196,17 +203,16 @@ void CameraComponent::CreateNewProjectionMatrix()
 		projectionMatrix = DirectX::XMMatrixOrthographicLH(xy.x, xy.y, nearView, farView);
 	}
 }
-Vector2 CameraComponent::GetFixedProjectionValue(unsigned char _Type)
+Vector2 CameraComponent::GetFixedProjectionValue(CameraType _CameraType)
 {
-	if (_Type == CameraType::Perspective)
+	if (_CameraType == CameraType::Perspective)
 	{
 		if (automaticAspect)
 			return Vector2((float)game->GameGetContextWidth(),
 				(float)game->GameGetContextHeight());
 		else return aspectView;
 	}
-
-	if (_Type == CameraType::Orthographic)
+	else if (_CameraType == CameraType::Orthographic)
 	{
 		if (automaticAspect)
 			return Vector2((float)game->GameGetContextWidth() * (scale * smoothOrthographic),
@@ -215,4 +221,59 @@ Vector2 CameraComponent::GetFixedProjectionValue(unsigned char _Type)
 	}
 
 	return Vector2(0.0f, 0.0f);
+}
+
+void CameraComponent::SerializeComponent(YAML::Emitter& out)
+{
+	out << YAML::Key << "CameraComponent";
+	out << YAML::BeginMap;
+	{
+		out << YAML::Key << "Active" << YAML::Value << IsActive();
+		if (GetCameraType() == CameraType::Perspective)
+		{
+			out << YAML::Key << "Perspective" << YAML::Value << YAML::BeginMap;
+			{
+				out << YAML::Key << "Fov" << YAML::Value << GetFov();
+			}
+			out << YAML::EndMap;
+		}
+		else if (GetCameraType() == CameraType::Orthographic)
+		{
+			out << YAML::Key << "Orthographic" << YAML::Value << YAML::BeginMap;
+			{
+				out << YAML::Key << "Scale" << YAML::Value << GetScale();
+			}
+			out << YAML::EndMap;
+		}
+		out << YAML::Key << "Near" << YAML::Value << GetNear();
+		out << YAML::Key << "Far" << YAML::Value << GetFar();
+		out << YAML::Key << "AutomaticAspect" << YAML::Value << automaticAspect;
+		out << YAML::Key << "Aspect"; StarHelpers::SerializeVector2(out, GetAspect());
+	}
+	out << YAML::EndMap;
+}
+void CameraComponent::DeserializeComponent(YAML::Node& in)
+{
+	YAML::Node cameraComponent = in["CameraComponent"];
+	if (cameraComponent)
+	{
+		SetActive(cameraComponent["Active"].as<bool>());
+		if (cameraComponent["Perspective"])
+		{
+			YAML::Node perspective = cameraComponent["Perspective"];
+			SetCameraType(CameraType::Perspective);
+			SetFov(perspective["Fov"].as<float>());
+		}
+		else if (cameraComponent["Orthographic"])
+		{
+			YAML::Node orthographic = cameraComponent["Orthographic"];
+			SetCameraType(CameraType::Orthographic);
+			SetScale(orthographic["Scale"].as<float>());
+		}
+		SetNear(cameraComponent["Near"].as<float>());
+		SetFar(cameraComponent["Far"].as<float>());
+		automaticAspect = cameraComponent["AutomaticAspect"].as<bool>();
+		auto aspect = cameraComponent["Aspect"];
+		SetAspect(StarHelpers::DeserializeVector2(aspect));
+	}
 }

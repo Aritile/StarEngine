@@ -4,20 +4,21 @@
 #include "../../ENTITY/COMPONENT/GeneralComponent.h"
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../EDITOR/WINDOW/Console.h"
+#include "../../ENTITY/COMPONENT/TransformComponent.h"
 
-static HierarchyWindow hierarchy;
-static AssetsWindow* assetsWindow = &AssetsClass();
-static ConsoleWindow* consoleWindow = &ConsoleClass();
+static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
+static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
 static AssimpLoader* assimpLoader = &AssimpLoaderClass();
 
-HierarchyWindow& HierarchyClass()
+HierarchyWindow* HierarchyWindow::GetSingleton()
 {
-	return hierarchy;
+	static HierarchyWindow hierarchyWindow;
+	return &hierarchyWindow;
 }
 
 ///////////////////////////////////////////////////////////////
 
-static Entity* ecs = &EntityClass();
+static Entity* ecs = Entity::GetSingleton();
 
 void HierarchyWindow::Render()
 {
@@ -102,8 +103,12 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 			std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
 			if (payload_n.file_type == OBJ || payload_n.file_type == FBX)
 			{
-				consoleWindow->AddDebugMessage("Loading mesh... %s", buffer.c_str());
-				assimpLoader->LoadModel(buffer, entity);
+				// old
+				//consoleWindow->AddDebugMessage("Loading mesh... %s", buffer.c_str());
+				//assimpLoader->LoadModel(buffer, entity);
+
+				// new
+				assimpLoader->LoadModel(buffer.c_str(), entity);
 			}
 		}
 		ImGui::EndDragDropTarget();

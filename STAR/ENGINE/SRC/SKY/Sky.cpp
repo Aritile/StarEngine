@@ -16,7 +16,7 @@ Sky& SkyClass()
 
 ///////////////////////////////////////////////////////////////
 
-static DX* dx = &DXClass();
+static DX* dx = DX::GetSingleton();
 static AssimpLoader* assimpLoader = &AssimpLoaderClass();
 
 struct ConstantBuffer

@@ -11,7 +11,7 @@ SplashScreen& SplashScreenClass()
 
 ///////////////////////////////////////////////////////////////
 
-static DX* dx = &DXClass();
+static DX* dx = DX::GetSingleton();
 
 bool SplashScreen::ShowSplashScreen()
 {

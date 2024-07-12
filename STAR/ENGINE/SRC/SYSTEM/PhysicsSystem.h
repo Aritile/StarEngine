@@ -3,6 +3,8 @@
 #include <entt/entt.hpp>
 #include <physx/PxPhysicsAPI.h>
 #include "../XTK/MATH/SimpleMath.h"
+#include <yaml-cpp/yaml.h>
+
 #define PVD_HOST "127.0.0.1"
 #define PVD_PORT 5425
 
@@ -12,6 +14,7 @@ using namespace DirectX::SimpleMath;
 #define EARTH_GRAVITY physx::PxVec3(0.0f, -9.81f, 0.0f)
 #define MOON_GRAVITY physx::PxVec3(0.0f, -1.62f, 0.0f)
 #define NONE_GRAVITY physx::PxVec3(0.0f, 0.0f, 0.0f)
+
 /* DEFAULT MATERIAL */
 #define STATIC_FRICTION 0.5f
 #define DYNAMIC_FRICTION 0.5f
@@ -60,8 +63,6 @@ public:
 	void CreateShape(entt::entity entity);
 	void CreateMaterial();
 
-	Vector3 size = Vector3(1.0f, 1.0f, 1.0f);
-
 private:
 	physx::PxShape* pxShape = NULL;
 	physx::PxMaterial* pxMaterial = NULL;
@@ -79,6 +80,10 @@ public:
 	Vector3 GetCenter() const;
 	void SetSize(Vector3 value);
 	Vector3 GetSize() const;
+
+public:
+	void SerializeComponent(YAML::Emitter& out);
+	void DeserializeComponent(YAML::Node& in);
 };
 
 struct PhysicsComponent
@@ -86,6 +91,10 @@ struct PhysicsComponent
 public:
 	void Render();
 	void AddBoxCollider();
+
+public:
+	void SerializeComponent(YAML::Emitter& out);
+	void DeserializeComponent(YAML::Node& in);
 
 public:
 	const std::vector<BoxColliderBuffer>& GetBoxColliders();

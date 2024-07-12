@@ -3,6 +3,7 @@ cbuffer ConstantBuffer : register(b0)
 	matrix sProjection;
 	matrix sView;
 	matrix sModel;
+    bool hasTexture;
 }
 
 struct VOut

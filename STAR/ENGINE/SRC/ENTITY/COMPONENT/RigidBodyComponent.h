@@ -2,6 +2,8 @@
 
 #include <physx/PxPhysicsAPI.h>
 #include "../../XTK/MATH/SimpleMath.h"
+#include <yaml-cpp/yaml.h>
+
 using namespace DirectX::SimpleMath;
 
 struct RigidBodyComponent
@@ -31,7 +33,7 @@ public:
 	void UseGravity(bool value);
 	bool HasUseGravity();
 	void SetKinematic(bool value);
-	bool IsKinematic();
+	bool GetKinematic();
 	void AddForce(Vector3 value);
 	void AddTorque(Vector3 value);
 	void ClearForce();
@@ -48,8 +50,6 @@ public:
 	bool GetAngularLockY();
 	void SetAngularLockZ(bool value);
 	bool GetAngularLockZ();
-	void SetPosition(Vector3 xyz);
-	void SetRotation(Quaternion quat);
 
 public:
 	void SetLock(physx::PxRigidDynamicLockFlag::Enum flag, bool value);
@@ -61,4 +61,8 @@ public:
 
 private:
 	physx::PxRigidBody* pxRigidBody = NULL;
+
+public:
+	void SerializeComponent(YAML::Emitter& out);
+	void DeserializeComponent(YAML::Node& in);
 };

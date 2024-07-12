@@ -1,16 +1,15 @@
 #include "File.h"
 #include "Assets.h"
 
-static FileWindow file;
-
-FileWindow& FileClass()
+FileWindow* FileWindow::GetSingleton()
 {
-	return file;
+	static FileWindow fileWindow;
+	return &fileWindow;
 }
 
 ///////////////////////////////////////////////////////////////
 
-static AssetsWindow* assetsWindow = &AssetsClass();
+static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 static Sky* sky = &SkyClass();
 
 void FileWindow::Render()

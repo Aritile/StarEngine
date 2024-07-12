@@ -14,6 +14,7 @@
 #include "../SYSTEM/ScriptingSystem.h"
 #include <wincodec.h>
 #include "../MODULE/Module.h"
+#include "WINDOW/Project.h"
 
 static Editor editor;
 
@@ -24,19 +25,20 @@ Editor& EditorClass()
 
 ///////////////////////////////////////////////////////////////
 
-static DX* dx = &DXClass();
-static Entity* ecs = &EntityClass();
-static AssetsWindow* assetsWindow = &AssetsClass();
-static ViewportWindow* viewportWindow = &ViewportClass();
-static HierarchyWindow* hierarchyWindow = &HierarchyClass();
-static InspectorWindow* inspectorWindow = &InspectorClass();
-static FileWindow* fileWindow = &FileClass();
-static Game* game = &GameClass();
-static ConsoleWindow* consoleWindow = &ConsoleClass();
-static AboutWindow* aboutWindow = &AboutClass();
-static ProjectSceneSystem* projectSceneSystem = &ProjectSceneSystemClass();
-static ScriptingSystem* scriptingSystem = &ScriptingSystemClass();
-static Module* module = &ModuleClass();
+static DX*                 dx = DX::GetSingleton();
+static Entity*             ecs = Entity::GetSingleton();
+static AssetsWindow*       assetsWindow = AssetsWindow::GetSingleton();
+static ViewportWindow*     viewportWindow = ViewportWindow::GetSingleton();
+static HierarchyWindow*    hierarchyWindow = HierarchyWindow::GetSingleton();
+static InspectorWindow*    inspectorWindow = InspectorWindow::GetSingleton();
+static FileWindow*         fileWindow = FileWindow::GetSingleton();
+static Game*               game = Game::GetSingleton();
+static ConsoleWindow*      consoleWindow = ConsoleWindow::GetSingleton();
+static AboutWindow*        aboutWindow = AboutWindow::GetSingleton();
+static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
+static ScriptingSystem*    scriptingSystem = ScriptingSystem::GetSingleton();
+static Module*             module = Module::GetSingleton();
+static ProjectWindow*      projectWindow = ProjectWindow::GetSingleton();
 
 static ImVec2 mainMenuBarSize = ImVec2(NULL, NULL);
 
@@ -80,6 +82,7 @@ void Editor::Render()
 		RenderBar();
 		RenderDownBar();
 		RenderUpBar();
+
 		assetsWindow->Render();
 		viewportWindow->Render();
 		hierarchyWindow->Render();
@@ -87,6 +90,7 @@ void Editor::Render()
 		fileWindow->Render();
 		consoleWindow->Render();
 		aboutWindow->Render();
+
 		//if (module) module->myFunc(ImGui::GetCurrentContext());
 		//ImGui::ShowDemoWindow();
 	}
@@ -100,8 +104,8 @@ void Editor::Shutdown()
 	assetsWindow->Shutdown();
 	viewportWindow->ReleaseBuffer();
 
-	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
+	ImGui_ImplDX11_Shutdown();
 	ImGui::DestroyContext();
 }
 
@@ -239,7 +243,20 @@ void Editor::RenderUpBar()
 	ImGui::Begin("UpBar", NULL, window_flags);
 	{
 		ImGui::PushFont(icons);
-		ImGui::Button(ICON_FA_SAVE, size);
+
+		if (game->GetGameState() == GameState::GamePlay)
+		{
+			ImGui::BeginDisabled();
+			if (ImGui::Button(ICON_FA_SAVE, size))
+				projectSceneSystem->SaveScene();
+			ImGui::EndDisabled();
+		}
+		else
+		{
+			if (ImGui::Button(ICON_FA_SAVE, size))
+				projectSceneSystem->SaveScene();
+		}
+
 		ImGui::SameLine();
 		ImGui::Button(ICON_FA_ARROW_CIRCLE_LEFT, size);
 		ImGui::SameLine();
@@ -616,13 +633,24 @@ void Editor::RenderFileMenuBar()
 			ImGui::MenuItem("Project");
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Save"))
+
+		if (game->GetGameState() == GameState::GamePlay)
 		{
-			if (ImGui::MenuItem("Scene"))
+			ImGui::BeginDisabled();
+			if (ImGui::MenuItem("Save"))
 				projectSceneSystem->SaveScene();
-			ImGui::MenuItem("Project");
-			ImGui::EndMenu();
+			if (ImGui::MenuItem("Save As"))
+				projectSceneSystem->SaveAsScene();
+			ImGui::EndDisabled();
 		}
+		else
+		{
+			if (ImGui::MenuItem("Save"))
+				projectSceneSystem->SaveScene();
+			if (ImGui::MenuItem("Save As"))
+				projectSceneSystem->SaveAsScene();
+		}
+
 		ImGui::Separator();
 		if (ImGui::MenuItem("Exit"))
 			PostQuitMessage(0);

@@ -15,6 +15,7 @@ private:
 private:
 	template <typename T>
 	void RenderComponent(entt::entity entity);
-};
 
-InspectorWindow& InspectorClass();
+public:
+	static InspectorWindow* GetSingleton();
+};

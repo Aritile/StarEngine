@@ -13,21 +13,23 @@
 
 #define COMPONENT_ERROR "Failed to get %s because it was not found!"
 
-static ScriptingSystem scriptingSystem;
 
-ScriptingSystem& ScriptingSystemClass()
+ScriptingSystem* ScriptingSystem::GetSingleton()
 {
-	return scriptingSystem;
+	static ScriptingSystem scriptingSystem;
+	return &scriptingSystem;
 }
 
 /* ----------------------------------- */
 
-static ConsoleWindow* consoleWindow = &ConsoleClass();
-static Game* game = &GameClass();
-static Entity* ecs = &EntityClass();
+static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
+static Game* game = Game::GetSingleton();
+static Entity* ecs = Entity::GetSingleton();
+static ScriptingSystem* scriptingSystem = ScriptingSystem::GetSingleton();
 
 bool ScriptingSystem::Init()
 {
+	/* libs */
 	lua.open_libraries(sol::lib::base);
 	lua.open_libraries(sol::lib::package);
 	lua.open_libraries(sol::lib::coroutine);
@@ -38,8 +40,6 @@ bool ScriptingSystem::Init()
 	lua.open_libraries(sol::lib::debug);
 	lua.open_libraries(sol::lib::bit32);
 	lua.open_libraries(sol::lib::io);
-
-	//luaopen_socket_core(lua.lua_state());
 
 	/* system */
 	lua_add_vector2();
@@ -72,23 +72,24 @@ void ScriptingSystem::lua_add_vector2()
 	sol::usertype<VECTORX> vector = lua.new_usertype<VECTORX>(
 		"Vector2",
 		sol::constructors<VECTORX(), VECTORX(float, float)>(),
-		sol::meta_function::addition,       [](VECTORX x, VECTORX y)          { return x + y;                     },
-		sol::meta_function::subtraction,    [](VECTORX x, VECTORX y)          { return x - y;                     },
-		sol::meta_function::multiplication, [](VECTORX x, VECTORX y)          { return x * y;                     },
-		sol::meta_function::division,       [](VECTORX x, VECTORX y)          { return x / y;                     },
-		sol::meta_function::addition,       [](VECTORX x, float y)            { return VECTORX(x.x + y, x.y + y); },
-		sol::meta_function::subtraction,    [](VECTORX x, float y)            { return VECTORX(x.x - y, x.y - y); },
-		sol::meta_function::multiplication, [](VECTORX x, float y)            { return VECTORX(x.x * y, x.y * y); },
-		sol::meta_function::division,       [](VECTORX x, float y)            { return VECTORX(x.x / y, x.y / y); });
-	vector["Length"]     =                  [](VECTORX x)                     { return x.Length();                };
-	vector["Dot"]        =                  [](VECTORX x, VECTORX y)          { return x.Dot(y);                  };
-	vector["Cross"]      =                  [](VECTORX x, VECTORX y)          { return x.Cross(y);                };
-	vector["Normalize"]  =                  [](VECTORX x)                     { x.Normalize();    return x;       };
-	vector["Clamp"]      =                  [](VECTORX x, VECTORX y)          { x.Clamp(x, y);    return x;       };
-	vector["Distance"]   =                  [](VECTORX x, VECTORX y)          { x.Distance(x, y); return x;       };
-	vector["Min"]        =                  [](VECTORX x, VECTORX y)          { x.Min(x, y);      return x;       };
-	vector["Max"]        =                  [](VECTORX x, VECTORX y)          { x.Max(x, y);      return x;       };
-	vector["Lerp"]       =                  [](VECTORX x, VECTORX y, float z) { x.Lerp(x, y, z);  return x;       };
+		sol::meta_function::addition,       [](const VECTORX& x, const VECTORX& y)          { return x + y;                     },
+		sol::meta_function::subtraction,    [](const VECTORX& x, const VECTORX& y)          { return x - y;                     },
+		sol::meta_function::multiplication, [](const VECTORX& x, const VECTORX& y)          { return x * y;                     },
+		sol::meta_function::division,       [](const VECTORX& x, const VECTORX& y)          { return x / y;                     },
+		sol::meta_function::addition,       [](const VECTORX& x, const float y)             { return VECTORX(x.x + y, x.y + y); },
+		sol::meta_function::subtraction,    [](const VECTORX& x, const float y)             { return VECTORX(x.x - y, x.y - y); },
+		sol::meta_function::multiplication, [](const VECTORX& x, const float y)             { return VECTORX(x.x * y, x.y * y); },
+		sol::meta_function::division,       [](const VECTORX& x, const float y)             { return VECTORX(x.x / y, x.y / y); },
+		sol::meta_function::unary_minus,    [](const VECTORX& x)                            { return -x;                        });
+	vector["Length"]     =                  [](const VECTORX& x)                            { return x.Length();                };
+	vector["Dot"]        =                  [](const VECTORX& x, const VECTORX& y)          { return x.Dot(y);                  };
+	vector["Cross"]      =                  [](const VECTORX& x, const VECTORX& y)          { return x.Cross(y);                };
+	vector["Normalize"]  =                  [](VECTORX& x)                                  { x.Normalize();    return x;       };
+	vector["Clamp"]      =                  [](VECTORX& x, const VECTORX& y)                { x.Clamp(x, y);    return x;       };
+	vector["Distance"]   =                  [](const VECTORX& x, const VECTORX& y)          { x.Distance(x, y); return x;       };
+	vector["Min"]        =                  [](const VECTORX& x, const VECTORX& y)          { x.Min(x, y);      return x;       };
+	vector["Max"]        =                  [](const VECTORX& x, const VECTORX& y)          { x.Max(x, y);      return x;       };
+	vector["Lerp"]       =                  [](const VECTORX& x, const VECTORX& y, float z) { x.Lerp(x, y, z);  return x;       };
 	vector["Zero"]       = sol::var(VECTORX::Zero);
 	vector["One"]        = sol::var(VECTORX::One);
 	vector["x"]          = &VECTORX::x;
@@ -101,23 +102,24 @@ void ScriptingSystem::lua_add_vector3()
 	sol::usertype<VECTORX> vector = lua.new_usertype<VECTORX>(
 		"Vector3",
 		sol::constructors<VECTORX(), VECTORX(float, float, float)>(),
-		sol::meta_function::addition,       [](VECTORX x, VECTORX y)          { return x + y;                              },
-		sol::meta_function::subtraction,    [](VECTORX x, VECTORX y)          { return x - y;                              },
-		sol::meta_function::multiplication, [](VECTORX x, VECTORX y)          { return x * y;                              },
-		sol::meta_function::division,       [](VECTORX x, VECTORX y)          { return x / y;                              },
-		sol::meta_function::addition,       [](VECTORX x, float y)            { return VECTORX(x.x + y, x.y + y, x.z + y); },
-		sol::meta_function::subtraction,    [](VECTORX x, float y)            { return VECTORX(x.x - y, x.y - y, x.z - y); },
-		sol::meta_function::multiplication, [](VECTORX x, float y)            { return VECTORX(x.x * y, x.y * y, x.z * y); },
-		sol::meta_function::division,       [](VECTORX x, float y)            { return VECTORX(x.x / y, x.y / y, x.z / y); });
-	vector["Length"]    =                   [](VECTORX x)                     { return x.Length();                         };
-	vector["Dot"]       =                   [](VECTORX x, VECTORX y)          { return x.Dot(y);                           };
-	vector["Cross"]     =                   [](VECTORX x, VECTORX y)          { return x.Cross(y);                         };
-	vector["Normalize"] =                   [](VECTORX x)                     { x.Normalize();    return x;                };
-	vector["Clamp"]     =                   [](VECTORX x, VECTORX y)          { x.Clamp(x, y);    return x;                };
-	vector["Distance"]  =                   [](VECTORX x, VECTORX y)          { x.Distance(x, y); return x;                };
-	vector["Min"]       =                   [](VECTORX x, VECTORX y)          { x.Min(x, y);      return x;                };
-	vector["Max"]       =                   [](VECTORX x, VECTORX y)          { x.Max(x, y);      return x;                };
-	vector["Lerp"]      =                   [](VECTORX x, VECTORX y, float z) { x.Lerp(x, y, z);  return x;                };
+		sol::meta_function::addition,       [](const VECTORX& x, const VECTORX& y)          { return x + y;                              },
+		sol::meta_function::subtraction,    [](const VECTORX& x, const VECTORX& y)          { return x - y;                              },
+		sol::meta_function::multiplication, [](const VECTORX& x, const VECTORX& y)          { return x * y;                              },
+		sol::meta_function::division,       [](const VECTORX& x, const VECTORX& y)          { return x / y;                              },
+		sol::meta_function::addition,       [](const VECTORX& x, const float y)             { return VECTORX(x.x + y, x.y + y, x.z + y); },
+		sol::meta_function::subtraction,    [](const VECTORX& x, const float y)             { return VECTORX(x.x - y, x.y - y, x.z - y); },
+		sol::meta_function::multiplication, [](const VECTORX& x, const float y)             { return VECTORX(x.x * y, x.y * y, x.z * y); },
+		sol::meta_function::division,       [](const VECTORX& x, const float y)             { return VECTORX(x.x / y, x.y / y, x.z / y); },
+		sol::meta_function::unary_minus,    [](const VECTORX& x)                            { return -x;                                 });
+	vector["Length"]    =                   [](const VECTORX& x)                            { return x.Length();                         };
+	vector["Dot"]       =                   [](const VECTORX& x, const VECTORX& y)          { return x.Dot(y);                           };
+	vector["Cross"]     =                   [](const VECTORX& x, const VECTORX& y)          { return x.Cross(y);                         };
+	vector["Normalize"] =                   [](VECTORX& x)                                  { x.Normalize();    return x;                };
+	vector["Clamp"]     =                   [](VECTORX& x, const VECTORX& y)                { x.Clamp(x, y);    return x;                };
+	vector["Distance"]  =                   [](const VECTORX& x, const VECTORX& y)          { x.Distance(x, y); return x;                };
+	vector["Min"]       =                   [](const VECTORX& x, const VECTORX& y)          { x.Min(x, y);      return x;                };
+	vector["Max"]       =                   [](const VECTORX& x, const VECTORX& y)          { x.Max(x, y);      return x;                };
+	vector["Lerp"]      =                   [](const VECTORX& x, const VECTORX& y, float z) { x.Lerp(x, y, z);  return x;                };
 	vector["Zero"]      = sol::var(VECTORX::Zero);
 	vector["One"]       = sol::var(VECTORX::One);
 	vector["Up"]        = sol::var(VECTORX::Up);
@@ -137,23 +139,24 @@ void ScriptingSystem::lua_add_vector4()
 	sol::usertype<VECTORX> vector = lua.new_usertype<VECTORX>(
 		"Vector4",
 		sol::constructors<VECTORX(), VECTORX(float, float, float, float)>(),
-		sol::meta_function::addition,       [](VECTORX x, VECTORX y) { return x + y;                                       },
-		sol::meta_function::subtraction,    [](VECTORX x, VECTORX y) { return x - y;                                       },
-		sol::meta_function::multiplication, [](VECTORX x, VECTORX y) { return x * y;                                       },
-		sol::meta_function::division,       [](VECTORX x, VECTORX y) { return x / y;                                       },
-		sol::meta_function::addition,       [](VECTORX x, float y)   { return VECTORX(x.x + y, x.y + y, x.z + y, x.w + y); },
-		sol::meta_function::subtraction,    [](VECTORX x, float y)   { return VECTORX(x.x - y, x.y - y, x.z - y, x.w - y); },
-		sol::meta_function::multiplication, [](VECTORX x, float y)   { return VECTORX(x.x * y, x.y * y, x.z * y, x.w * y); },
-		sol::meta_function::division,       [](VECTORX x, float y)   { return VECTORX(x.x / y, x.y / y, x.z / y, x.w / y); });
-	vector["Length"]    = [](VECTORX x)                              { return x.Length();                                  };
-	vector["Dot"]       = [](VECTORX x, VECTORX y)                   { return x.Dot(y);                                    };
-	vector["Cross"]     = [](VECTORX x, VECTORX y)                   { return x.Cross(x, y);                               };
-	vector["Normalize"] = [](VECTORX x)                              { x.Normalize();    return x;                         };
-	vector["Clamp"]     = [](VECTORX x, VECTORX y)                   { x.Clamp(x, y);    return x;                         };
-	vector["Distance"]  = [](VECTORX x, VECTORX y)                   { x.Distance(x, y); return x;                         };
-	vector["Min"]       = [](VECTORX x, VECTORX y)                   { x.Min(x, y);      return x;                         };
-	vector["Max"]       = [](VECTORX x, VECTORX y)                   { x.Max(x, y);      return x;                         };
-	vector["Lerp"]      = [](VECTORX x, VECTORX y, float z)          { x.Lerp(x, y, z);  return x;                         };
+		sol::meta_function::addition,       [](const VECTORX& x, const VECTORX& y)                { return x + y;                                       },
+		sol::meta_function::subtraction,    [](const VECTORX& x, const VECTORX& y)                { return x - y;                                       },
+		sol::meta_function::multiplication, [](const VECTORX& x, const VECTORX& y)                { return x * y;                                       },
+		sol::meta_function::division,       [](const VECTORX& x, const VECTORX& y)                { return x / y;                                       },
+		sol::meta_function::addition,       [](const VECTORX& x, const float y)                   { return VECTORX(x.x + y, x.y + y, x.z + y, x.w + y); },
+		sol::meta_function::subtraction,    [](const VECTORX& x, const float y)                   { return VECTORX(x.x - y, x.y - y, x.z - y, x.w - y); },
+		sol::meta_function::multiplication, [](const VECTORX& x, const float y)                   { return VECTORX(x.x * y, x.y * y, x.z * y, x.w * y); },
+		sol::meta_function::division,       [](const VECTORX& x, const float y)                   { return VECTORX(x.x / y, x.y / y, x.z / y, x.w / y); },
+		sol::meta_function::unary_minus,    [](const VECTORX& x)                                  { return -x;                                          });
+	vector["Length"]    =                   [](const VECTORX& x)                                  { return x.Length();                                  };
+	vector["Dot"]       =                   [](const VECTORX& x, const VECTORX& y)                { return x.Dot(y);                                    };
+	vector["Cross"]     =                   [](const VECTORX& x, const VECTORX& y)                { return x.Cross(x, y);                               };
+	vector["Normalize"] =                   [](VECTORX& x)                                        { x.Normalize();    return x;                         };
+	vector["Clamp"]     =                   [](VECTORX& x, const VECTORX& y)                      { x.Clamp(x, y);    return x;                         };
+	vector["Distance"]  =                   [](const VECTORX& x, const VECTORX& y)                { x.Distance(x, y); return x;                         };
+	vector["Min"]       =                   [](const VECTORX& x, const VECTORX& y)                { x.Min(x, y);      return x;                         };
+	vector["Max"]       =                   [](const VECTORX& x, const VECTORX& y)                { x.Max(x, y);      return x;                         };
+	vector["Lerp"]      =                   [](const VECTORX& x, const VECTORX& y, const float z) { x.Lerp(x, y, z);  return x;                         };
 	vector["Zero"]      = sol::var(VECTORX::Zero);
 	vector["One"]       = sol::var(VECTORX::One);
 	vector["x"]         = &VECTORX::x;
@@ -166,10 +169,11 @@ void ScriptingSystem::lua_add_quaternion()
 	sol::usertype<Quaternion> quaternion = lua.new_usertype<Quaternion>(
 		"Quaternion",
 		sol::constructors<Quaternion(), Quaternion(float, float, float, float)>(),
-		sol::meta_function::addition,       [](Quaternion x, Quaternion y) { return x + y; },
-		sol::meta_function::subtraction,    [](Quaternion x, Quaternion y) { return x - y; },
-		sol::meta_function::multiplication, [](Quaternion x, Quaternion y) { return x * y; },
-		sol::meta_function::division,       [](Quaternion x, Quaternion y) { return x / y; });
+		sol::meta_function::addition,       [](const Quaternion& x, const Quaternion& y) { return x + y; },
+		sol::meta_function::subtraction,    [](const Quaternion& x, const Quaternion& y) { return x - y; },
+		sol::meta_function::multiplication, [](const Quaternion& x, const Quaternion& y) { return x * y; },
+		sol::meta_function::division,       [](const Quaternion& x, const Quaternion& y) { return x / y; },
+		sol::meta_function::unary_minus,    [](const Quaternion& x) { return -x;                         }); // why not
 	quaternion["Identity"] = sol::var(Quaternion::Identity);
 	quaternion["x"]        = &Quaternion::x;
 	quaternion["y"]        = &Quaternion::y;
@@ -185,18 +189,19 @@ void ScriptingSystem::lua_add_matrix()
 			float, float, float, float,
 			float, float, float, float,
 			float, float, float, float)>(),
-		sol::meta_function::addition,       [](Matrix x, Matrix y)              { return x + y;                         },
-		sol::meta_function::subtraction,    [](Matrix x, Matrix y)              { return x - y;                         },
-		sol::meta_function::multiplication, [](Matrix x, Matrix y)              { return x * y;                         },
-		sol::meta_function::division,       [](Matrix x, Matrix y)              { return x / y;                         });
-	matrix["Up"]       =                    [](Matrix x)                        { return x.Up();                        };
-	matrix["Down"]     =                    [](Matrix x)                        { return x.Down();                      };
-	matrix["Right"]    =                    [](Matrix x)                        { return x.Right();                     };
-	matrix["Left"]     =                    [](Matrix x)                        { return x.Left();                      };
-	matrix["Forward"]  =                    [](Matrix x)                        { return x.Forward();                   };
-	matrix["Backward"] =                    [](Matrix x)                        { return x.Backward();                  };
-	matrix["Lerp"]     =                    [](Matrix x, Matrix y, float z)     { return x.Lerp(x, y, z);               };
-	//matrix["createLookAt"] =              [](Vector3 x, Vector3 y, Vector3 z) { return Matrix::CreateLookAt(x, y, z); };
+		sol::meta_function::addition,       [](const Matrix& x, const Matrix& y)                     { return x + y;                         },
+		sol::meta_function::subtraction,    [](const Matrix& x, const Matrix& y)                     { return x - y;                         },
+		sol::meta_function::multiplication, [](const Matrix& x, const Matrix& y)                     { return x * y;                         },
+		sol::meta_function::division,       [](const Matrix& x, const Matrix& y)                     { return x / y;                         },
+		sol::meta_function::unary_minus,    [](const Matrix& x)                                      { return -x;                            });
+	matrix["Up"]       =                    [](const Matrix& x)                                      { return x.Up();                        };
+	matrix["Down"]     =                    [](const Matrix& x)                                      { return x.Down();                      };
+	matrix["Right"]    =                    [](const Matrix& x)                                      { return x.Right();                     };
+	matrix["Left"]     =                    [](const Matrix& x)                                      { return x.Left();                      };
+	matrix["Forward"]  =                    [](const Matrix& x)                                      { return x.Forward();                   };
+	matrix["Backward"] =                    [](const Matrix& x)                                      { return x.Backward();                  };
+	matrix["Lerp"]     =                    [](const Matrix& x, const Matrix& y, const float z)      { return x.Lerp(x, y, z);               };
+	matrix["CreateLookAt"] =                [](const Vector3& x, const Vector3& y, const Vector3& z) { return Matrix::CreateLookAt(x, y, z); };
 	matrix["Identity"] = sol::var(Matrix::Identity);
 	matrix["_11"]      = &Matrix::_11;
 	matrix["_12"]      = &Matrix::_12;
@@ -336,6 +341,13 @@ void ScriptingSystem::lua_add_entity()
 	entity["HasComponent"] = &EntityX::HasComponent;
 	entity["RemoveComponent"] = &EntityX::RemoveComponent;
 }
+void ScriptingSystem::lua_add_engine()
+{
+	// maybe use just &
+	lua["Engine"] = sol::new_table();
+	lua["Engine"]["FindByName"] = [](const char* name) { return GetSingleton()->FindByName(name); };
+	lua["Engine"]["FindByTag"]  = [](const char* tag)  { return GetSingleton()->FindByTag(tag);   };
+}
 void ScriptingSystem::lua_add_general_component()
 {
 	sol::usertype<GeneralComponent> component = lua.new_usertype<GeneralComponent>(
@@ -413,7 +425,7 @@ void ScriptingSystem::lua_add_rigidbody_component()
 	component["SetGravity"] = &RigidBodyComponent::UseGravity;
 	component["GetGravity"] = &RigidBodyComponent::HasUseGravity;
 	component["SetKinematic"] = &RigidBodyComponent::SetKinematic;
-	component["IsKinematic"] = &RigidBodyComponent::IsKinematic;
+	component["GetKinematic"] = &RigidBodyComponent::GetKinematic;
 	component["AddForce"] = &RigidBodyComponent::AddForce;
 	component["AddTorque"] = &RigidBodyComponent::AddTorque;
 	component["ClearForce"] = &RigidBodyComponent::ClearForce;
@@ -426,10 +438,8 @@ void ScriptingSystem::lua_add_mesh_component()
 
 	component["GetNumVertices"] = &MeshComponent::GetNumVertices;
 	component["GetNumFaces"] = &MeshComponent::GetNumFaces;
-
 	component["AddVertices"] = &MeshComponent::AddVertices;
 	component["AddIndices"] = &MeshComponent::AddIndices;
-
 	component["SetupMesh"] = &MeshComponent::SetupMesh;
 
 	/* --- */
@@ -474,19 +484,22 @@ void ScriptingComponent::AddScript(const char* path)
 		if (scripts[i].fileName == file.stem().string())
 			return;
 
+	scriptingSystem->CompileScript(path);
 	ScriptBuffer scriptBuffer;
 
-	sol::load_result result = scriptingSystem.GetState().load_file(path);
-	if (!result.valid())
 	{
-		sol::error error = result;
-		consoleWindow->AddErrorMessage("%s", error.what());
-		scriptBuffer.error = true;
-	}
-	else scriptBuffer.error = false;
+		scriptBuffer.checksum = StarHelpers::GetChecksum(path);
 
-	{
-		scriptBuffer.filePath = path;
+		// old
+		//scriptBuffer.filePath = path;
+
+		// new
+		std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
+		std::string model = StarHelpers::GetParent(path);
+		std::string dir = StarHelpers::GetRelativePath(model, exe);
+		std::string full = dir + "\\" + StarHelpers::GetFileNameFromPath(path) + StarHelpers::GetFileExtensionFromPath(path);
+		scriptBuffer.filePath = full;
+
 		scriptBuffer.fileName = file.stem().string();
 		scriptBuffer.fileNameToUpper = scriptBuffer.fileName;
 		std::transform(
@@ -497,7 +510,6 @@ void ScriptingComponent::AddScript(const char* path)
 	}
 	scripts.push_back(scriptBuffer);
 }
-
 void ScriptingComponent::Render()
 {
 	for (size_t i = 0; i < scripts.size(); i++)
@@ -528,7 +540,6 @@ void ScriptingComponent::Render()
 		ImGui::PopID();
 	}
 }
-
 void ScriptingComponent::lua_call_start()
 {
 	lua_add_entity_from_component();
@@ -536,10 +547,10 @@ void ScriptingComponent::lua_call_start()
 	for (size_t i = 0; i < scripts.size(); i++)
 	{
 		if (!scripts[i].activeComponent) continue;
-		if (scripts[i].error) continue;
+		//if (scripts[i].error) continue;
 
 		std::string buffer = scripts[i].fileName;
-		sol::function function = scriptingSystem.GetState()[buffer.c_str()]["Start"];
+		sol::function function = scriptingSystem->GetState()[buffer.c_str()]["Start"];
 		if (function)
 		{
 			sol::protected_function_result result = function();
@@ -559,10 +570,10 @@ void ScriptingComponent::lua_call_update()
 	for (size_t i = 0; i < scripts.size(); i++)
 	{
 		if (!scripts[i].activeComponent) continue;
-		if (scripts[i].error) continue;
+		//if (scripts[i].error) continue;
 
 		std::string buffer = scripts[i].fileName;
-		sol::function function = scriptingSystem.GetState()[buffer.c_str()]["Update"];
+		sol::function function = scriptingSystem->GetState()[buffer.c_str()]["Update"];
 		if (function)
 		{
 			sol::protected_function_result result = function();
@@ -575,158 +586,31 @@ void ScriptingComponent::lua_call_update()
 		}
 	}
 }
-
-sol::state& ScriptingSystem::GetState()
-{
-	return lua;
-}
-
-void ScriptingComponent::RecompileScripts()
+void ScriptingComponent::RecompileScriptsChecksum()
 {
 	for (size_t i = 0; i < scripts.size(); i++)
 	{
-		sol::load_result result = scriptingSystem.GetState().load_file(scripts[i].filePath.c_str());
-		if (!result.valid())
-		{
-			sol::error error = result;
-			consoleWindow->AddErrorMessage("%s", error.what());
-			scripts[i].error = true;
-		}
-		else scripts[i].error = false;
+		scripts[i].RecompileScriptsChecksum();
 	}
 }
-
-void ScriptingComponent::lua_add_entity_from_component()
+bool ScriptingSystem::CompileScript(const char* filename)
 {
-	entt::entity entity = entt::to_entity(ecs->registry, *this);
-	EntityX entityX; entityX.entity = entity;
-	scriptingSystem.GetState().set("entity", entityX);
-}
-
-/*** --- EntityX --- ***/
-
-void EntityX::CreateEntity()
-{
-	entity = ecs->CreateEntity();
-	ecs->GetComponent<GeneralComponent>(ecs->root).AddChild(entity);
-}
-
-void EntityX::AddComponent(const char* component_name)
-{
-	if (strcmp(component_name, "MeshComponent") == 0)
+	sol::load_result result = scriptingSystem->GetState().load_file(filename);
+	if (!result.valid())
 	{
-		if (!ecs->HasComponent<MeshComponent>(ecs->selected))
-			ecs->AddComponent<MeshComponent>(ecs->selected);
+		sol::error error = result;
+		consoleWindow->AddErrorMessage("%s", error.what());
+		return false;
 	}
-	else if (strcmp(component_name, "TextMeshComponent") == 0)
+	else
 	{
-		if (!ecs->HasComponent<TextMeshComponent>(ecs->selected))
-			ecs->AddComponent<TextMeshComponent>(ecs->selected);
+		//printf("CompileScript()\n");
+		scriptingSystem->GetState().script_file(filename);
+		return true;
 	}
-	else if (strcmp(component_name, "CameraComponent") == 0)
-	{
-		if (!ecs->HasComponent<CameraComponent>(ecs->selected))
-			ecs->AddComponent<CameraComponent>(ecs->selected);
-	}
-	else if (strcmp(component_name, "RigidbodyComponent") == 0)
-	{
-		if (!ecs->HasComponent<RigidBodyComponent>(ecs->selected))
-		{
-			ecs->AddComponent<RigidBodyComponent>(ecs->selected);
-			ecs->GetComponent<RigidBodyComponent>(ecs->selected).CreateActor();
-		}
-	}
-	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
-}
-sol::object EntityX::GetComponent(const char* component_name)
-{
-	sol::object component;
-
-	if (strcmp(component_name, "GeneralComponent") == 0)
-	{
-		if (ecs->HasComponent<GeneralComponent>(entity))
-		{
-			auto& entt_comp = ecs->GetComponent<GeneralComponent>(entity);
-			component = sol::make_object(scriptingSystem.GetState(), &entt_comp);
-		}
-		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
-	}
-	else if (strcmp(component_name, "TransformComponent") == 0)
-	{
-		if (ecs->HasComponent<TransformComponent>(entity))
-		{
-			auto& entt_comp = ecs->GetComponent<TransformComponent>(entity);
-			component = sol::make_object(scriptingSystem.GetState(), &entt_comp);
-		}
-		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
-	}
-	else if (strcmp(component_name, "MeshComponent") == 0)
-	{
-		if (ecs->HasComponent<MeshComponent>(entity))
-		{
-			auto& entt_comp = ecs->GetComponent<MeshComponent>(entity);
-			component = sol::make_object(scriptingSystem.GetState(), &entt_comp);
-		}
-		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
-	}
-	else if (strcmp(component_name, "TextMeshComponent") == 0)
-	{
-		if (ecs->HasComponent<TextMeshComponent>(entity))
-		{
-			auto& entt_comp = ecs->GetComponent<TextMeshComponent>(entity);
-			component = sol::make_object(scriptingSystem.GetState(), &entt_comp);
-		}
-		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
-	}
-	else if (strcmp(component_name, "CameraComponent") == 0)
-	{
-		if (ecs->HasComponent<CameraComponent>(entity))
-		{
-			auto& entt_comp = ecs->GetComponent<CameraComponent>(entity);
-			component = sol::make_object(scriptingSystem.GetState(), &entt_comp);
-		}
-		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
-	}
-	else if (strcmp(component_name, "RigidbodyComponent") == 0)
-	{
-		if (ecs->HasComponent<RigidBodyComponent>(entity))
-		{
-			auto& entt_comp = ecs->GetComponent<RigidBodyComponent>(entity);
-			component = sol::make_object(scriptingSystem.GetState(), &entt_comp);
-		}
-		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
-	}
-	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
-
-	return component;
-}
-bool EntityX::HasComponent(const char* component_name)
-{
-	if (strcmp(component_name, "MeshComponent") == 0)
-		return ecs->HasComponent<MeshComponent>(entity);
-	else if (strcmp(component_name, "TextMeshComponent") == 0)
-		return ecs->HasComponent<TextMeshComponent>(entity);
-	else if (strcmp(component_name, "CameraComponent") == 0)
-		return ecs->HasComponent<CameraComponent>(entity);
-	else if (strcmp(component_name, "RigidbodyComponent") == 0)
-		return ecs->HasComponent<RigidBodyComponent>(entity);
-	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
 
 	return false;
 }
-void EntityX::RemoveComponent(const char* component_name)
-{
-	if (strcmp(component_name, "MeshComponent") == 0)
-		ecs->RemoveComponent<MeshComponent>(entity);
-	else if (strcmp(component_name, "TextMeshComponent") == 0)
-		ecs->RemoveComponent<TextMeshComponent>(entity);
-	else if (strcmp(component_name, "CameraComponent") == 0)
-		ecs->RemoveComponent<CameraComponent>(entity);
-	else if (strcmp(component_name, "RigidbodyComponent") == 0)
-		ecs->RemoveComponent<RigidBodyComponent>(entity);
-	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
-}
-
 void ScriptingSystem::CreateScript(const char* filename, const char* name)
 {
 	std::string buffer = std::string(name) + " = {}\n"
@@ -743,4 +627,257 @@ void ScriptingSystem::CreateScript(const char* filename, const char* name)
 	script.open(filename);
 	script << buffer;
 	script.close();
+}
+void ScriptingComponent::RecompileScripts()
+{
+	for (size_t i = 0; i < scripts.size(); i++)
+	{
+		scripts[i].RecompileScript();
+	}
+}
+void ScriptingComponent::lua_add_entity_from_component()
+{
+	entt::entity entity = entt::to_entity(ecs->registry, *this);
+	EntityX entityX; entityX.entity = entity;
+	scriptingSystem->GetState().set("entity", entityX);
+}
+sol::state& ScriptingSystem::GetState()
+{
+	return lua;
+}
+
+void EntityX::CreateEntity()
+{
+	entity = ecs->CreateEntity();
+	ecs->GetComponent<GeneralComponent>(ecs->root).AddChild(entity);
+}
+void EntityX::AddComponent(const char* component_name)
+{
+	if (!ecs->IsValid(entity))
+	{
+		consoleWindow->AddWarningMessage("Failed to add component because entity is not valid");
+		return;
+	}
+
+	if (strcmp(component_name, "MeshComponent") == 0)
+	{
+		if (!ecs->HasComponent<MeshComponent>(entity))
+			ecs->AddComponent<MeshComponent>(entity);
+	}
+	else if (strcmp(component_name, "TextMeshComponent") == 0)
+	{
+		if (!ecs->HasComponent<TextMeshComponent>(entity))
+			ecs->AddComponent<TextMeshComponent>(entity);
+	}
+	else if (strcmp(component_name, "CameraComponent") == 0)
+	{
+		if (!ecs->HasComponent<CameraComponent>(entity))
+			ecs->AddComponent<CameraComponent>(entity);
+	}
+	else if (strcmp(component_name, "RigidbodyComponent") == 0)
+	{
+		if (!ecs->HasComponent<RigidBodyComponent>(entity))
+		{
+			ecs->AddComponent<RigidBodyComponent>(entity);
+			ecs->GetComponent<RigidBodyComponent>(entity).CreateActor();
+		}
+	}
+	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+}
+sol::object EntityX::GetComponent(const char* component_name)
+{
+	sol::object component;
+
+	if (!ecs->IsValid(entity))
+	{
+		consoleWindow->AddWarningMessage("Failed to get component because entity is not valid");
+		return component;
+	}
+
+	if (strcmp(component_name, "GeneralComponent") == 0)
+	{
+		if (ecs->HasComponent<GeneralComponent>(entity))
+		{
+			auto& entt_comp = ecs->GetComponent<GeneralComponent>(entity);
+			component = sol::make_object(scriptingSystem->GetState(), &entt_comp);
+		}
+		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+	}
+	else if (strcmp(component_name, "TransformComponent") == 0)
+	{
+		if (ecs->HasComponent<TransformComponent>(entity))
+		{
+			auto& entt_comp = ecs->GetComponent<TransformComponent>(entity);
+			component = sol::make_object(scriptingSystem->GetState(), &entt_comp);
+		}
+		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+	}
+	else if (strcmp(component_name, "MeshComponent") == 0)
+	{
+		if (ecs->HasComponent<MeshComponent>(entity))
+		{
+			auto& entt_comp = ecs->GetComponent<MeshComponent>(entity);
+			component = sol::make_object(scriptingSystem->GetState(), &entt_comp);
+		}
+		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+	}
+	else if (strcmp(component_name, "TextMeshComponent") == 0)
+	{
+		if (ecs->HasComponent<TextMeshComponent>(entity))
+		{
+			auto& entt_comp = ecs->GetComponent<TextMeshComponent>(entity);
+			component = sol::make_object(scriptingSystem->GetState(), &entt_comp);
+		}
+		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+	}
+	else if (strcmp(component_name, "CameraComponent") == 0)
+	{
+		if (ecs->HasComponent<CameraComponent>(entity))
+		{
+			auto& entt_comp = ecs->GetComponent<CameraComponent>(entity);
+			component = sol::make_object(scriptingSystem->GetState(), &entt_comp);
+		}
+		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+	}
+	else if (strcmp(component_name, "RigidbodyComponent") == 0)
+	{
+		if (ecs->HasComponent<RigidBodyComponent>(entity))
+		{
+			auto& entt_comp = ecs->GetComponent<RigidBodyComponent>(entity);
+			component = sol::make_object(scriptingSystem->GetState(), &entt_comp);
+		}
+		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+	}
+	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+
+	return component;
+}
+bool EntityX::HasComponent(const char* component_name)
+{
+	if (!ecs->IsValid(entity))
+	{
+		consoleWindow->AddWarningMessage("Failed to check if entity has component because entity is not valid");
+		return false;
+	}
+
+	if (strcmp(component_name, "MeshComponent") == 0)
+		return ecs->HasComponent<MeshComponent>(entity);
+	else if (strcmp(component_name, "TextMeshComponent") == 0)
+		return ecs->HasComponent<TextMeshComponent>(entity);
+	else if (strcmp(component_name, "CameraComponent") == 0)
+		return ecs->HasComponent<CameraComponent>(entity);
+	else if (strcmp(component_name, "RigidbodyComponent") == 0)
+		return ecs->HasComponent<RigidBodyComponent>(entity);
+	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+
+	return false;
+}
+void EntityX::RemoveComponent(const char* component_name)
+{
+	if (!ecs->IsValid(entity))
+	{
+		consoleWindow->AddWarningMessage("Failed to remove component because entity is not valid");
+		return;
+	}
+
+	if (strcmp(component_name, "MeshComponent") == 0)
+		ecs->RemoveComponent<MeshComponent>(entity);
+	else if (strcmp(component_name, "TextMeshComponent") == 0)
+		ecs->RemoveComponent<TextMeshComponent>(entity);
+	else if (strcmp(component_name, "CameraComponent") == 0)
+		ecs->RemoveComponent<CameraComponent>(entity);
+	else if (strcmp(component_name, "RigidbodyComponent") == 0)
+		ecs->RemoveComponent<RigidBodyComponent>(entity);
+	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
+}
+
+void ScriptBuffer::RecompileScript()
+{
+	const char* path = filePath.c_str();
+	if (scriptingSystem->CompileScript(path))
+		checksum = StarHelpers::GetChecksum(path);
+}
+void ScriptBuffer::RecompileScriptsChecksum()
+{
+	//printf("%lu\n", checksum);
+	if (StarHelpers::GetChecksum(filePath.c_str()) != checksum)
+		RecompileScript();
+}
+
+void ScriptingComponent::SerializeComponent(YAML::Emitter& out)
+{
+	if (scripts.empty())
+		return;
+
+	out << YAML::Key << "Scripts" << YAML::Value << YAML::BeginSeq;
+	for (size_t i = 0; i < scripts.size(); i++)
+	{
+		scripts[i].SerializeComponent(out);
+	}
+	out << YAML::EndSeq;
+}
+void ScriptBuffer::SerializeComponent(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << YAML::Key << "Script" << YAML::Value << YAML::BeginMap;
+	out << YAML::Key << "Name" << YAML::Value << fileName.c_str();
+	out << YAML::Key << "Path" << YAML::Value << filePath.c_str();
+	out << YAML::EndMap;
+	out << YAML::EndMap;
+}
+void ScriptingComponent::DeserializeComponent(YAML::Node& in)
+{
+	YAML::Node scripts = in["Scripts"];
+	if (scripts)
+	{
+		for (const auto& script : scripts)
+		{
+			YAML::Node scriptNode = script["Script"];
+			if (scriptNode)
+			{
+				AddScript(scriptNode["Path"].as<std::string>().c_str());
+			}
+		}
+	}
+}
+
+EntityX ScriptingSystem::FindByName(const char* name)
+{
+	EntityX entityX;
+
+	auto view = ecs->registry.view<GeneralComponent>();
+	for (auto entity : view)
+	{
+		if (entity == ecs->root) continue; // skip root entity
+		auto& gc = ecs->GetComponent<GeneralComponent>(entity);
+
+		if (!gc.GetName().compare(name))
+		{
+			entityX.entity = entity;
+			return entityX;
+		}
+	}
+
+	consoleWindow->AddWarningMessage("Failed to find entity by name %s", name);
+	return entityX;
+}
+EntityX ScriptingSystem::FindByTag(const char* tag)
+{
+	EntityX entityX;
+
+	auto view = ecs->registry.view<GeneralComponent>();
+	for (auto entity : view)
+	{
+		if (entity == ecs->root) continue; // skip root entity
+		auto& gc = ecs->GetComponent<GeneralComponent>(entity);
+
+		if (!gc.GetTag().compare(tag))
+		{
+			entityX.entity = entity;
+			return entityX;
+		}
+	}
+
+	consoleWindow->AddWarningMessage("Failed to find entity by tag %s", tag);
+	return entityX;
 }

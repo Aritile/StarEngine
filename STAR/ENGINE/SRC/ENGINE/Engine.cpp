@@ -10,17 +10,19 @@
 #include "../SYSTEM/ModelSystem.h"
 #include "../SYSTEM/ScriptingSystem.h"
 #include "../MODULE/Module.h"
+#include "../STRDX/Widgets.h"
 
-static DX* dx = &DXClass();
+static DX* dx = DX::GetSingleton();
 static Editor* editor = &EditorClass();
-static ViewportWindow* viewportWindow = &ViewportClass();
-static Entity* ecs = &EntityClass();
+static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
+static Entity* ecs = Entity::GetSingleton();
 static ModelSystem* modelSystem = &ModelSystemClass();
 static Sky* sky = &SkyClass();
-static Game* game = &GameClass();
+static Game* game = Game::GetSingleton();
 static PhysicsSystem* physicsSystem = &PhysicsSystemClass();
-static ScriptingSystem* scriptingSystem = &ScriptingSystemClass();
-static Module* module = &ModuleClass();
+static ScriptingSystem* scriptingSystem = ScriptingSystem::GetSingleton();
+static Module* module = Module::GetSingleton();
+static Widgets* widgets = Widgets::GetSingleton();
 
 static Vector4 clearColor = Vector4(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -32,7 +34,7 @@ void DX11SetReference(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCm
     dx->nCmdShow = &nCmdShow;
 }
 
-bool DX11CreateWindow(std::wstring name, int width, int height)
+bool DX11CreateWindow(std::wstring _Name, int _Width, int _Height)
 {
     WNDCLASSEX wcex;
     ZeroMemory(&wcex, sizeof(WNDCLASSEX));
@@ -47,7 +49,7 @@ bool DX11CreateWindow(std::wstring name, int width, int height)
     //wcex.hCursor = LoadCursor(NULL, NULL);
     wcex.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(46, 46, 46));
     wcex.lpszMenuName = NULL;
-    wcex.lpszClassName = name.c_str();
+    wcex.lpszClassName = _Name.c_str();
     wcex.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
     if (!RegisterClassEx(&wcex))
@@ -55,16 +57,16 @@ bool DX11CreateWindow(std::wstring name, int width, int height)
 
     /*---*/
 
-    int x = (StarHelpers::GetDisplayWidth() - width) / 2;
-    int y = (StarHelpers::GetDisplayHeight() - height) / 2;
+    int x = (StarHelpers::GetDisplayWidth() - _Width) / 2;
+    int y = (StarHelpers::GetDisplayHeight() - _Height) / 2;
 
     dx->hwnd = CreateWindowEx(
         NULL,
-        name.c_str(),
-        name.c_str(),
+        _Name.c_str(),
+        _Name.c_str(),
         WS_OVERLAPPEDWINDOW,
         x, y,
-        width, height,
+        _Width, _Height,
         NULL,
         NULL,
         *dx->hInstance,
@@ -73,6 +75,13 @@ bool DX11CreateWindow(std::wstring name, int width, int height)
 
     if (!dx->hwnd)
         return false;
+
+    // dark mode
+    BOOL value = TRUE;
+    DwmSetWindowAttribute(dx->hwnd,
+        DWMWA_USE_IMMERSIVE_DARK_MODE,
+        &value,
+        sizeof(value));
 
     /*---*/
 
@@ -102,6 +111,14 @@ LRESULT CALLBACK DX11WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         ((MINMAXINFO*)lParam)->ptMinTrackSize.x = 256;
         ((MINMAXINFO*)lParam)->ptMinTrackSize.y = 256;
         break;
+
+    case WM_SETFOCUS:
+    {
+        auto view = ecs->registry.view<ScriptingComponent>();
+        for (auto entity : view)
+            ecs->GetComponent<ScriptingComponent>(entity).RecompileScriptsChecksum();
+        break;
+    }
 
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -237,9 +254,9 @@ bool DX11ResizeBuffer()
     return true;
 }
 
-void SetRenderTarget(Vector4 color)
+void SetRenderTarget(Vector4 _Color)
 {
-    dx->dxDeviceContext->ClearRenderTargetView(dx->dxRenderTargetView, (float*)&color);
+    dx->dxDeviceContext->ClearRenderTargetView(dx->dxRenderTargetView, (float*)&_Color);
     dx->dxDeviceContext->ClearDepthStencilView(dx->dxDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
     dx->dxDeviceContext->OMSetRenderTargets(1, &dx->dxRenderTargetView, dx->dxDepthStencilView);
 }
@@ -249,11 +266,10 @@ void EngineStart()
     dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     SkyFile skyFile;
-    skyFile.SetSpherePath("DATA\\HDRIs\\RenderCrate-HDRI_Orbital_14_4K.hdr");
+    skyFile.SetSphereMap("DATA\\HDRIs\\qwantani_puresky_4k.hdr");
     sky->SetSky(skyFile);
 
     game->InitTime();
-    ecs->LoadCoreModels();
 
     /* --------------------------- */
     StarHelpers::AddLog("[Engine] -> Initializing Input System...");
@@ -289,48 +305,12 @@ void EngineStart()
         StarHelpers::AddLog("[Engine] -> Failed to initialize Module System!");
     /* --------------------------- */
 
-    /*
-    unsigned int ii = 16;
-    float xx = 0.0f;
-    float yy = 0.0f;
-    float zz = 0.0f;
-    for (unsigned int aa = 0; aa < ii; aa++)
-    {
-        for (unsigned int bb = 0; bb < ii; bb++)
-        {
-            for (unsigned int cc = 0; cc < ii; cc++)
-            {
-                auto entity = ecs->CreateEntity();
-                ecs->CreateCubeEntity(entity);
-                auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
-                Vector3 cube = transformComponent.GetPosition();
-                transformComponent.SetPosition(Vector3(xx, yy, zz));
-                ecs->AddComponent<RigidBodyComponent>(entity);
-                ecs->GetComponent<RigidBodyComponent>(entity).CreateActor();
-                ecs->GetComponent<PhysicsComponent>(entity).AddBoxCollider();
-
-
-                yy = yy + 2.0f;
-            }
-            xx = xx + 2.0f;
-            yy = 0.0f;
-        }
-        zz = zz + 2.0f;
-        xx = 0.0f;
-    }
-
-    auto entity = ecs->CreateEntity();
-    ecs->CreateCubeEntity(entity);
-    auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
-    Vector3 cube = transformComponent.GetPosition();
-    transformComponent.SetPosition(Vector3(16.0f, 16.0f, -16.0f));
-    transformComponent.SetScale(Vector3(5.0f, 5.0f, 5.0f));
-    ecs->AddComponent<RigidBodyComponent>(entity);
-    ecs->GetComponent<RigidBodyComponent>(entity).CreateActor();
-    ecs->GetComponent<PhysicsComponent>(entity).AddBoxCollider();
-    ecs->GetComponent<RigidBodyComponent>(entity).AddForce(Vector3(0.0f, 0.0f, 1000.0f));
-    ecs->GetComponent<RigidBodyComponent>(entity).SetMass(100.0f);
-    */
+    // strdx
+    widgets->Init();
+    widgets->InitBoundingBoxWidget();
+    widgets->InitGridWidget();
+    widgets->InitPerspectiveFrustumWidget();
+    widgets->InitOrthographicFrustumWidget();
 
     ShowWindow(dx->hwnd, *dx->nCmdShow);
     UpdateWindow(dx->hwnd);
@@ -366,7 +346,8 @@ void EngineProcess()
         viewportWindow->GetRenderTargetView(),
         viewportWindow->GetDepthStencilView(),
         viewportWindow->GetViewport(),
-        dx->dxSwapChain);
+        dx->dxSwapChain,
+        false);
 
     if (game->GetGameState() == GameState::GamePlay)
     {
@@ -384,7 +365,8 @@ void EngineProcess()
                     game->GetRenderTargetView(),
                     game->GetDepthStencilView(),
                     game->GetViewport(),
-                    game->GetSwapChain());
+                    game->GetSwapChain(),
+                    true);
             }
             game->EndTime();
         }
@@ -398,6 +380,7 @@ void EngineShutdown()
     modelSystem->Shutdown();
     sky->Shutdown();
     physicsSystem->Shutdown();
+    widgets->Release();
 
     /*---*/
 
@@ -408,23 +391,23 @@ void EngineShutdown()
     if (dx->dxDepthStencilView) dx->dxDepthStencilView->Release();
 }
 
-void UpdateTransform(entt::entity entity)
+void UpdateTransform(entt::entity _Entity)
 {
     Matrix matrix = Matrix::Identity;
 
-    auto& pGC = ecs->registry.get<GeneralComponent>(entity);
-    if (ecs->registry.any_of<TransformComponent>(entity))
+    auto& pGC = ecs->GetComponent<GeneralComponent>(_Entity);
+    if (ecs->HasComponent<TransformComponent>(_Entity))
     {
-        auto& pTC = ecs->registry.get<TransformComponent>(entity);
+        auto& pTC = ecs->GetComponent<TransformComponent>(_Entity);
         matrix = pTC.GetTransform();
     }
 
     for (size_t i = 0; i < pGC.GetChildren().size(); i++)
     {
         entt::entity child = pGC.GetChildren()[i];
-        if (ecs->registry.any_of<TransformComponent>(child))
+        if (ecs->HasComponent<TransformComponent>(child))
         {
-            auto& chTC = ecs->registry.get<TransformComponent>(child);
+            auto& chTC = ecs->GetComponent<TransformComponent>(child);
             chTC.SetParentTransform(matrix);
         }
 
@@ -440,7 +423,7 @@ void GamePlayUpdate()
 
         auto view = ecs->registry.view<ScriptingComponent>();
         for (auto entity : view)
-            ecs->registry.get<ScriptingComponent>(entity).lua_call_update();
+            ecs->GetComponent<ScriptingComponent>(entity).lua_call_update();
     }
 }
 
@@ -450,48 +433,58 @@ void RenderToMainBuffer()
     editor->Render();
 }
 
-void RenderEnvironment(Matrix projectionMatrix, Matrix viewMatrix, Vector4 color, ID3D11RenderTargetView* renderTargetView, ID3D11DepthStencilView* depthStencilView, D3D11_VIEWPORT viewport, IDXGISwapChain* swapChain)
+void RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vector4 _Color, ID3D11RenderTargetView* _RenderTargetView, ID3D11DepthStencilView* _DepthStencilView, D3D11_VIEWPORT _Viewport, IDXGISwapChain* _SwapChain, bool game)
 {
-    if (!renderTargetView && !depthStencilView) return;
-    dx->dxDeviceContext->ClearRenderTargetView(renderTargetView, (float*)&color);
-    dx->dxDeviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-    dx->dxDeviceContext->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
-    dx->dxDeviceContext->RSSetViewports(1, &viewport);
+    if (!_RenderTargetView && !_DepthStencilView) return;
+    dx->dxDeviceContext->ClearRenderTargetView(_RenderTargetView, (float*)&_Color);
+    dx->dxDeviceContext->ClearDepthStencilView(_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+    dx->dxDeviceContext->OMSetRenderTargets(1, &_RenderTargetView, _DepthStencilView);
+    dx->dxDeviceContext->RSSetViewports(1, &_Viewport);
 
-    sky->Render(viewMatrix, projectionMatrix);
+    sky->Render(_ViewMatrix, _ProjectionMatrix);
 
     auto view = ecs->registry.view<GeneralComponent>();
     for (auto entity : view)
     {
         if (entity == ecs->root) continue;
-        if (!ecs->registry.get<GeneralComponent>(entity).IsActive()) continue;
+        if (!ecs->GetComponent<GeneralComponent>(entity).IsActive()) continue;
 
-        if (ecs->registry.any_of<RigidBodyComponent>(entity))
-            ecs->registry.get<RigidBodyComponent>(entity).UpdateActor();
+        if (ecs->HasComponent<RigidBodyComponent>(entity))
+            ecs->GetComponent<RigidBodyComponent>(entity).UpdateActor();
 
-        if (ecs->registry.any_of<MeshComponent>(entity))
+        if (ecs->HasComponent<MeshComponent>(entity))
         {
-            auto& meshComponent = ecs->registry.get<MeshComponent>(entity);
+            auto& meshComponent = ecs->GetComponent<MeshComponent>(entity);
             if (meshComponent.IsActive())
-                meshComponent.DrawMesh(viewMatrix, projectionMatrix);
+                meshComponent.DrawMesh(_ViewMatrix, _ProjectionMatrix);
         }
     }
 
-    if (swapChain) swapChain->Present(1, 0);
+    if (!game)
+    {
+        //widgets->SetRasterizerState();
+        widgets->RenderBoundingBoxWidget();
+        widgets->RenderGridWidget();
+        widgets->RenderPerspectiveFrustumWidget();
+        widgets->RenderOrthographicFrustumWidget();
+        //widgets->UnsetRasterizerState();
+    }
+
+    if (_SwapChain) _SwapChain->Present(1, 0);
 }
 
-bool FindGoodCamera(Matrix& projectionMatrix, Matrix& viewMatrix)
+bool FindGoodCamera(Matrix& _ProjectionMatrix, Matrix& _ViewMatrix)
 {
     auto view = ecs->registry.view<CameraComponent>();
     for (auto entity : view)
     {
-        if (!ecs->registry.get<GeneralComponent>(entity).IsActive()) continue;
-        if (!ecs->registry.get<CameraComponent>(entity).IsActive()) continue;
-        if (!ecs->registry.any_of<TransformComponent>(entity)) continue;
+        if (!ecs->GetComponent<GeneralComponent>(entity).IsActive()) continue;
+        if (!ecs->GetComponent<CameraComponent>(entity).IsActive()) continue;
+        if (!ecs->HasComponent<TransformComponent>(entity)) continue;
 
-        auto& cameraComponent = ecs->registry.get<CameraComponent>(entity);
-        projectionMatrix = cameraComponent.GetProjectionMatrix();
-        viewMatrix = cameraComponent.GetViewMatrix();
+        auto& cameraComponent = ecs->GetComponent<CameraComponent>(entity);
+        _ProjectionMatrix = cameraComponent.GetProjectionMatrix();
+        _ViewMatrix = cameraComponent.GetViewMatrix();
         return true;
     }
     return false;

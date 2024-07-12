@@ -1,0 +1,102 @@
+# do not edit
+# Jul 13 2024 00:49:12
+Star:
+  Version:
+    Major: 1
+    Minor: 1
+    Patch: 0
+  Data:
+    Hierarchy:
+      - Entity:
+          GeneralComponent:
+            Name: Scene
+            Tag: Empty
+            Active: true
+            Static: false
+          TransformComponent:
+            Position: [0, 0, 0]
+            Rotation: [0, 0, 0, 1]
+            Scale: [1, 1, 1]
+            Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+          Children:
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0.889793515, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.889793515, 0, 0, 1]
+                MeshComponent:
+                  ModelPath: DATA\Models\Cube.obj
+                  MaterialPath: ""
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidBodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Scripts:
+                  - Script:
+                      Name: Magnet
+                      Path: ASSETS\Magnet.lua
+            - Entity:
+                GeneralComponent:
+                  Name: Camera
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, -5]
+                  Rotation: [-0, 0, -0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -5, 1]
+                CameraComponent:
+                  Active: true
+                  Perspective:
+                    Fov: 45
+                  Near: 0.100000001
+                  Far: 100
+                  AutomaticAspect: true
+                  Aspect: [0, 0]
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [-1.47276223, 0, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -1.47276223, 0, 0, 1]
+                MeshComponent:
+                  ModelPath: DATA\Models\Cube.obj
+                  MaterialPath: ""
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidBodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Scripts:
+                  - Script:
+                      Name: Magnet
+                      Path: ASSETS\Magnet.lua

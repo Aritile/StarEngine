@@ -3,19 +3,21 @@
 #include <yaml-cpp/yaml.h>
 #include "../../MAIN/Main.h"
 #include <fstream>
+#include "../../ENTITY/COMPONENT/GeneralComponent.h"
 
-static AssetsWindow assets;
-
-AssetsWindow& AssetsClass()
+AssetsWindow* AssetsWindow::GetSingleton()
 {
-	return assets;
+	static AssetsWindow assetsWindow;
+	return &assetsWindow;
 }
 
 ///////////////////////////////////////////////////////////////
 
-static DX* dx = &DXClass();
+static DX* dx = DX::GetSingleton();
 static Sky* sky = &SkyClass();
 static Editor* editor = &EditorClass();
+static Entity* ecs = Entity::GetSingleton();
+static AssimpLoader* assimpLoader = &AssimpLoaderClass();
 
 #define FOLDER_ICON_PATH   L"DATA\\Icons\\64px\\Folder.dds"   /**/
 #define IMAGE_ICON_PATH    L"DATA\\Icons\\64px\\Image.dds"    /**/
@@ -338,6 +340,24 @@ void AssetsWindow::Render()
 												ImGui::PopID();
 												ImGui::EndGroup();
 												break;
+											}
+
+											std::string type = nowDirPath + "\\" + files[i].file_name;
+											type = StarHelpers::GetFileExtensionFromPath(type);
+											std::string buffer = nowDirPath + "\\" + files[i].file_name;
+
+											if (type.compare(OBJ) == 0 || type.compare(FBX) == 0)
+											{
+												if (ecs->selected != entt::null)
+													assimpLoader->LoadModel(buffer.c_str(), ecs->selected);
+												else
+													assimpLoader->LoadModel(buffer.c_str(), ecs->root);
+											}
+
+											if (type.compare(LUA) == 0)
+											{
+												std::string vs = "start devenv " + buffer + " /Edit";
+												system(vs.c_str());
 											}
 										}
 										else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
@@ -672,8 +692,10 @@ unsigned int AssetsWindow::GetSafeName(std::string path, std::string type)
 	return i;
 }
 
-void AssetsWindow::SaveMaterialFile(std::string path, const MaterialBuffer& buffer)
+void AssetsWindow::SaveMaterialFile(std::string path, const Material& buffer)
 {
+	// yeah this is old, coming soon fix
+
 	YAML::Emitter out;
 
 	out << YAML::BeginMap;
@@ -691,7 +713,7 @@ void AssetsWindow::SaveMaterialFile(std::string path, const MaterialBuffer& buff
 			{
 				out << YAML::Key << "DIFFUSE" << YAML::Value << YAML::BeginMap;
 				{
-					out << YAML::Key << "TEXTURE_PATH" << YAML::Value << buffer.DiffusePath;
+					out << YAML::Key << "TEXTURE_PATH" << YAML::Value << buffer.diffuse;
 				}
 				out << YAML::EndMap;
 			}
@@ -709,7 +731,7 @@ void AssetsWindow::SaveMaterialFile(std::string path, const MaterialBuffer& buff
 	stream.close();
 }
 
-void AssetsWindow::OpenMaterialFile(std::string path, MaterialBuffer& buffer)
+void AssetsWindow::OpenMaterialFile(std::string path, Material& buffer)
 {
 	YAML::Node data = YAML::LoadFile(path.c_str());
 
@@ -717,7 +739,7 @@ void AssetsWindow::OpenMaterialFile(std::string path, MaterialBuffer& buffer)
 		return;
 
 	std::string DiffusePath = data["STAR"]["DATA"]["DIFFUSE"]["TEXTURE_PATH"].as<std::string>();
-	buffer.DiffusePath = DiffusePath;
+	buffer.diffuse = DiffusePath;
 }
 
 void AssetsWindow::GetFileNameFromProjectDir(std::string path, std::string extension, std::vector<std::pair<std::string, std::string>>& data)

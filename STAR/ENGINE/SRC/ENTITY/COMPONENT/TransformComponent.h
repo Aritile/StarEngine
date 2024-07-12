@@ -75,5 +75,5 @@ public:
 	void DeserializeComponent(YAML::Node& in);
 
 public:
-	void LookAt(TransformComponent transform, Vector3 up);
+	void LookAt(Matrix matrix);
 };

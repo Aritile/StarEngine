@@ -19,7 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SRC\EDITOR\WINDOW\Project.h" />
     <ClInclude Include="SRC\MODULE\Module.h" />
+    <ClInclude Include="SRC\STRDX\CB.h" />
+    <ClInclude Include="SRC\STRDX\constant_buffer.h" />
+    <ClInclude Include="SRC\STRDX\context.h" />
+    <ClInclude Include="SRC\STRDX\d3d\d3d11_constant_buffer.h" />
+    <ClInclude Include="SRC\STRDX\d3d\d3d11_context.h" />
+    <ClInclude Include="SRC\STRDX\d3d\d3d11_rasterizer_state.h" />
+    <ClInclude Include="SRC\STRDX\d3d\d3d11_render_target.h" />
+    <ClInclude Include="SRC\STRDX\d3d\d3d11_sampler_state.h" />
+    <ClInclude Include="SRC\STRDX\d3d\d3d11_shader.h" />
+    <ClInclude Include="SRC\STRDX\d3d\strdxwrl.h" />
+    <ClInclude Include="SRC\STRDX\rasterizer_state.h" />
+    <ClInclude Include="SRC\STRDX\render_target.h" />
+    <ClInclude Include="SRC\STRDX\sampler_state.h" />
+    <ClInclude Include="SRC\STRDX\shader.h" />
+    <ClInclude Include="SRC\STRDX\strdx.h" />
+    <ClInclude Include="SRC\STRDX\Topology.h" />
+    <ClInclude Include="SRC\STRDX\Vertex.h" />
+    <ClInclude Include="SRC\STRDX\Widgets.h" />
     <ClInclude Include="SRC\SYSTEM\ScriptingSystem.h" />
     <ClInclude Include="SRC\SYSTEM\ProjectSceneSystem.h" />
     <ClInclude Include="SRC\SPLASHSCREEN\SplashScreen.h" />
@@ -72,7 +91,21 @@
     <ClInclude Include="SRC\ENTITY\COMPONENT\TextMeshComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\EDITOR\WINDOW\Project.cpp" />
     <ClCompile Include="SRC\MODULE\Module.cpp" />
+    <ClCompile Include="SRC\STRDX\constant_buffer.cpp" />
+    <ClCompile Include="SRC\STRDX\context.cpp" />
+    <ClCompile Include="SRC\STRDX\d3d\d3d11_constant_buffer.cpp" />
+    <ClCompile Include="SRC\STRDX\d3d\d3d11_context.cpp" />
+    <ClCompile Include="SRC\STRDX\d3d\d3d11_rasterizer_state.cpp" />
+    <ClCompile Include="SRC\STRDX\d3d\d3d11_render_target.cpp" />
+    <ClCompile Include="SRC\STRDX\d3d\d3d11_sampler_state.cpp" />
+    <ClCompile Include="SRC\STRDX\d3d\d3d11_shader.cpp" />
+    <ClCompile Include="SRC\STRDX\rasterizer_state.cpp" />
+    <ClCompile Include="SRC\STRDX\render_target.cpp" />
+    <ClCompile Include="SRC\STRDX\sampler_state.cpp" />
+    <ClCompile Include="SRC\STRDX\shader.cpp" />
+    <ClCompile Include="SRC\STRDX\Widgets.cpp" />
     <ClCompile Include="SRC\SYSTEM\ScriptingSystem.cpp" />
     <ClCompile Include="SRC\SYSTEM\ProjectSceneSystem.cpp" />
     <ClCompile Include="SRC\SPLASHSCREEN\SplashScreen.cpp" />
@@ -237,7 +270,7 @@
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>

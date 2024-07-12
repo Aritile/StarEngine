@@ -15,6 +15,7 @@ public:
 private:
 	ID3D11ShaderResourceView* _StarBanner = nullptr;
 	std::string _VersionText = "";
-};
 
-AboutWindow& AboutClass();
+public:
+	static AboutWindow* GetSingleton();
+};

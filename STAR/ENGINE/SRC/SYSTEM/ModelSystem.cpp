@@ -11,13 +11,14 @@ ModelSystem& ModelSystemClass()
 
 /* ----------------------------------- */
 
-static DX* dx = &DXClass();
+static DX* dx = DX::GetSingleton();
 
 struct ConstantBuffer
 {
 	DirectX::XMMATRIX sProjection;
 	DirectX::XMMATRIX sView;
 	DirectX::XMMATRIX sModel;
+	bool hasTexture = false;
 };
 
 bool ModelSystem::Init()

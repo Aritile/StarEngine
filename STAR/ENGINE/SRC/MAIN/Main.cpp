@@ -20,6 +20,7 @@
 #pragma comment(lib, "Debug\\yaml-cppd.lib")
 #pragma comment(lib, "Debug\\lua-5.4.4.lib")
 #pragma comment(lib, "Debug\\assimp-vc143-mtd.lib")
+#pragma comment(lib, "Debug\\zlibd.lib")
 #else
 #pragma comment(lib, "Release\\PhysX_64.lib")
 #pragma comment(lib, "Release\\PhysXFoundation_64.lib")
@@ -30,9 +31,10 @@
 #pragma comment(lib, "Release\\yaml-cpp.lib")
 #pragma comment(lib, "Release\\lua-5.4.4.lib")
 #pragma comment(lib, "Release\\assimp-vc143-mt.lib")
+#pragma comment(lib, "Release\\zlib.lib")
 #endif
 
-static Game* game = &GameClass();
+static Game* game = Game::GetSingleton();
 static SplashScreen* splashScreen = &SplashScreenClass();
 
 int StartEngine(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine, int& nCmdShow)
@@ -86,14 +88,25 @@ int StartGame(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine, i
 	return 0;
 }
 
+#if defined(_DEBUG)
+int main()
+#else
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
+#endif
 {
+#if !defined(_DEBUG)
 	freopen("log.txt", "w", stdout);
-	std::cout << "..." << std::endl;
+#endif
 
 #if defined(XGAME)
 	return StartGame(hInstance, hPrevInstance, pCmdLine, nCmdShow);
 #else
+#if defined(_DEBUG)
+	HINSTANCE hInstance = GetModuleHandle(NULL);
+	HINSTANCE hPrevInstance = NULL;
+	PWSTR pCmdLine = GetCommandLineW();
+	int nCmdShow = SW_NORMAL;
+#endif
 	return StartEngine(hInstance, hPrevInstance, pCmdLine, nCmdShow);
 #endif
 	return 0;

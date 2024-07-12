@@ -7,19 +7,20 @@
 #include "../../ENTITY/COMPONENT/RigidBodyComponent.h"
 #include "../../GAME/Game.h"
 #include "../../SYSTEM/PhysicsSystem.h"
+#include "Assets.h"
 
-static ViewportWindow viewport;
-
-ViewportWindow& ViewportClass()
+ViewportWindow* ViewportWindow::GetSingleton()
 {
-	return viewport;
+	static ViewportWindow viewportWindow;
+	return &viewportWindow;
 }
 
 ///////////////////////////////////////////////////////////////
 
-static DX* dx = &DXClass();
-static Game* game = &GameClass();
-static Entity* ecs = &EntityClass();
+static DX* dx = DX::GetSingleton();
+static Game* game = Game::GetSingleton();
+static Entity* ecs = Entity::GetSingleton();
+static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 
 void ViewportWindow::Render()
 {
@@ -48,6 +49,29 @@ void ViewportWindow::Render()
 		}
 
 		ImGui::Image((void*)s_ShaderResourceView, windowSizeAvail);
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
+			{
+				FILEs payload_n = *(FILEs*)payload->Data;
+				std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
+				entt::entity entity = RunRay(false);
+				if (ecs->IsValid(entity))
+				{
+					if (payload_n.file_type == PNG || payload_n.file_type == JPEG || payload_n.file_type == DDS)
+					{
+						if (ecs->HasComponent<MeshComponent>(entity))
+						{
+							auto& meshComponent = ecs->GetComponent<MeshComponent>(entity);
+							meshComponent.LoadDiffuseTexture(buffer.c_str());
+						}
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+
 		RenderWidgets();
 	}
 	ImGui::End();
@@ -185,14 +209,16 @@ void ViewportWindow::ReleaseBuffer()
 
 bool ViewportWindow::IsBufferResized()
 {
-	if (bufferSize.x != windowSizeAvail.x || bufferSize.y != windowSizeAvail.y) return true; else return false;
+	if (bufferSize.x != windowSizeAvail.x || bufferSize.y != windowSizeAvail.y)
+		return true;
+	else
+		return false;
 }
 
 Matrix ViewportWindow::GetPerspectiveProjectionMatrix()
 {
 	return projection;
 }
-
 Matrix ViewportWindow::GetPerspectiveViewMatrix()
 {
 	return view;
@@ -210,7 +236,7 @@ void ViewportWindow::UpdateMovement()
 
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && cursorOnWindow)
 		if (!ImGuizmo::IsUsing())
-			RunRay();
+			RunRay(true);
 
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && cursorOnWindow)
 	{
@@ -283,17 +309,17 @@ void ViewportWindow::RenderWidgets()
 
 	if (ecs->selected != entt::null)
 	{
-		if (ecs->registry.any_of<GeneralComponent>(ecs->selected))
+		if (ecs->HasComponent<GeneralComponent>(ecs->selected))
 		{
-			auto& generalComponent = ecs->registry.get<GeneralComponent>(ecs->selected);
+			auto& generalComponent = ecs->GetComponent<GeneralComponent>(ecs->selected);
 			if (generalComponent.IsActive())
 			{
-				if (ecs->registry.any_of<TransformComponent>(ecs->selected))
+				if (ecs->HasComponent<TransformComponent>(ecs->selected))
 				{
-					auto& transformComponent = ecs->registry.get<TransformComponent>(ecs->selected);
-					RenderBoxColliderWidget(transformComponent);    /* (/) */
-					RenderCameraFrustumWidget(transformComponent); /* (/) */
-					RenderBoundingBoxWidget(transformComponent);  /* (2) */
+					auto& transformComponent = ecs->GetComponent<TransformComponent>(ecs->selected);
+					//RenderBoxColliderWidget(transformComponent);    /* (/) */
+					//RenderCameraFrustumWidget(transformComponent); /* (/) */
+					//RenderBoundingBoxWidget(transformComponent);  /* (2) */
 					RenderManipulateWidget(transformComponent);  /* (1) */
 				}
 			}
@@ -445,7 +471,7 @@ float ViewportWindow::PickMesh(DirectX::XMVECTOR pickRayInWorldSpacePos, DirectX
 
 	return FLT_MAX;
 }
-void ViewportWindow::RunRay()
+entt::entity ViewportWindow::RunRay(bool select)
 {
 	using namespace DirectX;
 
@@ -465,20 +491,25 @@ void ViewportWindow::RunRay()
 	auto view = ecs->registry.view<MeshComponent>();
 	for (auto entity : view)
 	{
-		auto& transComp = ecs->registry.get<TransformComponent>(entity);
-		auto& meshComp = ecs->registry.get<MeshComponent>(entity);
+		auto& transComp = ecs->GetComponent<TransformComponent>(entity);
+		auto& meshComp = ecs->GetComponent<MeshComponent>(entity);
 		tempDist = PickMesh(prwsPos, prwsDir, meshComp.GetVertices(), meshComp.GetIndices(), transComp.GetTransform());
-		if (tempDist < closestDist && ecs->registry.get<GeneralComponent>(entity).IsActive() && ecs->registry.get<MeshComponent>(entity).IsActive())
+		if (tempDist < closestDist && ecs->GetComponent<GeneralComponent>(entity).IsActive() && ecs->GetComponent<MeshComponent>(entity).IsActive())
 		{
 			closestDist = tempDist;
-			ecs->selected = entity;
+			if (select)
+				ecs->selected = entity;
+			return entity;
 			break;
 		}
 		else
 		{
-			ecs->selected = entt::null;
+			if (select)
+				ecs->selected = entt::null;
 		}
 	}
+
+	return entt::null;
 }
 
 void ViewportWindow::SetCamPosition(Vector3 position)
@@ -506,9 +537,9 @@ void ViewportWindow::RenderCameraFrustumWidget(TransformComponent& transformComp
 {
 	Matrix matrix = CreateNoScaleMatrix(transformComponent);
 
-	if (ecs->registry.any_of<CameraComponent>(ecs->selected))
+	if (ecs->HasComponent<CameraComponent>(ecs->selected))
 	{
-		auto& cameraComponent = ecs->registry.get<CameraComponent>(ecs->selected);
+		auto& cameraComponent = ecs->GetComponent<CameraComponent>(ecs->selected);
 		if (cameraComponent.IsActive())
 		{
 			if (cameraComponent.GetCameraType() == Perspective)
@@ -541,12 +572,18 @@ void ViewportWindow::RenderCameraFrustumWidget(TransformComponent& transformComp
 
 void ViewportWindow::RenderBoundingBoxWidget(TransformComponent& transformComponent)
 {
+	/*
+
+	//ImU32 col = IM_COL32(0xE2, 0x52, 0x52, 0xFF);
+	//ImVec4 xd = ImGui::ColorConvertU32ToFloat4(col);
+	//printf("%f, %f, %f\n", xd.x, xd.y, xd.z);
+
 	Matrix matrix = Matrix::Identity;
 	Vector3 min = Vector3(transformComponent.GetBoundingBox().Center) - transformComponent.GetBoundingBox().Extents;
 	Vector3 max = Vector3(transformComponent.GetBoundingBox().Center) + transformComponent.GetBoundingBox().Extents;
-	if (ecs->registry.any_of<MeshComponent>(ecs->selected))
+	if (ecs->HasComponent<MeshComponent>(ecs->selected))
 	{
-		auto& meshComponent = ecs->registry.get<MeshComponent>(ecs->selected);
+		auto& meshComponent = ecs->GetComponent<MeshComponent>(ecs->selected);
 		if (meshComponent.IsActive())
 		{
 			if (meshComponent.GetState())
@@ -560,14 +597,15 @@ void ViewportWindow::RenderBoundingBoxWidget(TransformComponent& transformCompon
 			}
 		}
 	}
+	*/
 }
 
 void ViewportWindow::RenderBoxColliderWidget(TransformComponent& transformComponent)
 {
 	Matrix matrix = transformComponent.GetTransform();
-	if (ecs->registry.any_of<PhysicsComponent>(ecs->selected))
+	if (ecs->HasComponent<PhysicsComponent>(ecs->selected))
 	{
-		auto& physicsComponent = ecs->registry.get<PhysicsComponent>(ecs->selected);
+		auto& physicsComponent = ecs->GetComponent<PhysicsComponent>(ecs->selected);
 		for (size_t i = 0; i < physicsComponent.GetBoxColliders().size(); i++)
 		{
 			if (!physicsComponent.GetBoxColliders()[i].activeComponent) continue;
@@ -614,12 +652,19 @@ void ViewportWindow::RenderManipulateWidget(TransformComponent& transformCompone
 	{
 		matrix *= transformComponent.GetParentTransform().Invert();
 		transformComponent.SetTransform(matrix);
+	}
 
+	if (ImGuizmo::IsUsing())
+	{
 		entt::entity entity = entt::to_entity(ecs->registry, transformComponent);
-		if (ecs->HasComponent<RigidBodyComponent>(entity))
+		if (ecs->IsValid(entity))
 		{
-			auto rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
-			rigidBodyComponent.SetTransform(physx::PxTransform(StarHelpers::matrix_to_physics(matrix)));
+			if (ecs->HasComponent<RigidBodyComponent>(entity))
+			{
+				auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
+				physx::PxTransform trans(StarHelpers::MatrixToPhysics(matrix));
+				rigidBodyComponent.SetTransform(trans);
+			}
 		}
 	}
 }

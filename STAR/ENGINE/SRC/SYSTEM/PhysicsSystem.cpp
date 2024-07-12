@@ -15,9 +15,9 @@ PhysicsSystem& PhysicsSystemClass()
 
 /* ----------------------------------- */
 
-static Entity* ecs = &EntityClass();
-static ConsoleWindow* consoleWindow = &ConsoleClass();
-static DX* dx = &DXClass();
+static Entity* ecs = Entity::GetSingleton();
+static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
+static DX* dx = DX::GetSingleton();
 
 bool PhysicsSystem::Init()
 {
@@ -201,9 +201,9 @@ void PhysicsComponent::Render()
 						if (ImGui::DragFloat3("##CenterPhysicsComponent", (float*)&_Center, 0.1f))
 							box_colliders[i].SetCenter(_Center);
 
-						Vector3 _Size = box_colliders[i].size;
+						Vector3 _Size = box_colliders[i].GetSize();
 						if (ImGui::DragFloat3("##Size", (float*)&_Size, 0.1f))
-							box_colliders[i].size = _Size;
+							box_colliders[i].SetSize(_Size);
 					}
 					ImGui::PopItemWidth();
 					ImGui::EndTable();
@@ -302,4 +302,58 @@ void BoxColliderBuffer::CreateMaterial()
 		DYNAMIC_FRICTION,
 		RESTITUTION);
 	if (!pxMaterial) StarHelpers::AddLog("[PhysX] -> Failed to create the material!");
+}
+
+void PhysicsComponent::SerializeComponent(YAML::Emitter& out)
+{
+	if (box_colliders.empty())
+		return;
+
+	out << YAML::Key << "Collider" << YAML::Value << YAML::BeginSeq;
+	for (size_t i = 0; i < box_colliders.size(); i++)
+	{
+		box_colliders[i].SerializeComponent(out);
+	}
+	out << YAML::EndSeq;
+}
+
+void BoxColliderBuffer::SerializeComponent(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << YAML::Key << "BoxCollider" << YAML::Value << YAML::BeginMap;
+	out << YAML::Key << "Active" << YAML::Value << activeComponent;
+	out << YAML::Key << "StaticFriction" << YAML::Value << GetStaticFriction();
+	out << YAML::Key << "DynamicFriction" << YAML::Value << GetDynamicFriction();
+	out << YAML::Key << "Restitution" << YAML::Value << GetRestitution();
+	out << YAML::Key << "Center"; StarHelpers::SerializeVector3(out, GetCenter());
+	out << YAML::Key << "Size"; StarHelpers::SerializeVector3(out, GetSize());
+	out << YAML::EndMap;
+	out << YAML::EndMap;
+}
+void PhysicsComponent::DeserializeComponent(YAML::Node& in)
+{
+	YAML::Node colliders = in["Colliders"];
+	if (colliders)
+	{
+		for (const auto& collider : colliders)
+		{
+			YAML::Node boxCollider = collider["BoxCollider"];
+			if (boxCollider)
+			{
+				AddBoxCollider();
+				box_colliders.back().DeserializeComponent(boxCollider);
+			}
+		}
+	}
+}
+void BoxColliderBuffer::DeserializeComponent(YAML::Node& in)
+{
+	activeComponent = in["Active"].as<bool>();
+	SetStaticFriction(in["StaticFriction"].as<float>());
+	SetDynamicFriction(in["DynamicFriction"].as<float>());
+	SetRestitution(in["Restitution"].as<float>());
+	auto center = in["Center"];
+	SetCenter(StarHelpers::DeserializeVector3(center));
+	auto size = in["Size"];
+	SetSize(StarHelpers::DeserializeVector3(size));
 }

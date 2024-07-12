@@ -5,20 +5,46 @@
 #include "../EDITOR/WINDOW/Viewport.h"
 #include <fstream>
 #include "../MAIN/Main.h"
+#include "../ENTITY/COMPONENT/CameraComponent.h"
+#include "../ENTITY/COMPONENT/RigidBodyComponent.h"
+#include "PhysicsSystem.h"
+#include "ScriptingSystem.h"
 
 #define XFILE "C:\\DX\\STAR\\ENGINE\\data.scene"
 
-static ProjectSceneSystem projectSceneSystem;
-
-ProjectSceneSystem& ProjectSceneSystemClass()
+// save last opened models
+struct ModelX
 {
-	return projectSceneSystem;
+	ModelX(Assimp::Importer* importer, std::string path) : importer(importer), path(path) {}
+	Assimp::Importer* importer;
+	std::string path;
+};
+static std::vector<ModelX> models;
+bool FindModel(std::string path)
+{
+	for (size_t i = 0; i < models.size(); ++i)
+		if (models[i].path == path)
+			return true;
+	return false;
+}
+ModelX* GetModel(std::string path)
+{
+	for (size_t i = 0; i < models.size(); ++i)
+		if (models[i].path == path)
+			return &models[i];
+	return NULL;
+}
+
+ProjectSceneSystem* ProjectSceneSystem::GetSingleton()
+{
+	static ProjectSceneSystem projectSceneSystem;
+	return &projectSceneSystem;
 }
 
 /* ----------------------------------- */
 
-static Entity* ecs = &EntityClass();
-static ViewportWindow* viewportWindow = &ViewportClass();
+static Entity* ecs = Entity::GetSingleton();
+static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 
 void ProjectSceneSystem::ClearScene()
 {
@@ -48,26 +74,11 @@ void ProjectSceneSystem::SaveScene()
 
 	YAML::Emitter out;
 
-	out << YAML::BeginMap;
+	StarHelpers::BeginFormat(out);
 	{
-		out << YAML::Key << "STAR" << YAML::Value << YAML::BeginMap;
-		{
-			out << YAML::Key << "VERSION" << YAML::Value << YAML::BeginMap;
-			{
-				out << YAML::Key << "MAJOR" << YAML::Value << MAJOR;
-				out << YAML::Key << "MINOR" << YAML::Value << MINOR;
-				out << YAML::Key << "PATCH" << YAML::Value << PATCH;
-			}
-			out << YAML::EndMap;
-			out << YAML::Key << "DATA" << YAML::Value << YAML::BeginMap;
-			{
-				SerializeHierarchy(out);
-			}
-			out << YAML::EndMap;
-		}
-		out << YAML::EndMap;
+		SerializeHierarchy(out);
 	}
-	out << YAML::EndMap;
+	StarHelpers::EndFormat(out);
 
 	SaveFile(out, XFILE);
 }
@@ -76,11 +87,15 @@ void ProjectSceneSystem::OpenScene()
 {
 	StarHelpers::AddLog("[Scene] -> Opening Scene...");
 
+	//StarHelpers::OpenFileDialog(L"C:\\", L"*.scene\0", L"Open");
+
 	ClearScene();
 
 	YAML::Node in = YAML::LoadFile(XFILE);
+	if (!StarHelpers::CheckSignature(in))
+		return;
 
-	if (!in["STAR"]) return;
+	DeserializeHierarchy(in);
 }
 
 void ProjectSceneSystem::SerializeEntity(YAML::Emitter& out, entt::entity entity)
@@ -89,7 +104,7 @@ void ProjectSceneSystem::SerializeEntity(YAML::Emitter& out, entt::entity entity
 
 	out << YAML::BeginMap;
 	{
-		out << YAML::Key << "ENTITY" << YAML::Value << YAML::BeginMap;
+		out << YAML::Key << "Entity" << YAML::Value << YAML::BeginMap;
 		{
 			if (ecs->HasComponent<GeneralComponent>(entity))
 				ecs->GetComponent<GeneralComponent>(entity).SerializeComponent(out);
@@ -97,21 +112,34 @@ void ProjectSceneSystem::SerializeEntity(YAML::Emitter& out, entt::entity entity
 				ecs->GetComponent<TransformComponent>(entity).SerializeComponent(out);
 			if (ecs->HasComponent<MeshComponent>(entity))
 				ecs->GetComponent<MeshComponent>(entity).SerializeComponent(out);
+			if (ecs->HasComponent<CameraComponent>(entity))
+				ecs->GetComponent<CameraComponent>(entity).SerializeComponent(out);
+			if (ecs->HasComponent<RigidBodyComponent>(entity))
+				ecs->GetComponent<RigidBodyComponent>(entity).SerializeComponent(out);
+			if (ecs->HasComponent<PhysicsComponent>(entity))
+				ecs->GetComponent<PhysicsComponent>(entity).SerializeComponent(out);
+			if (ecs->HasComponent<ScriptingComponent>(entity))
+				ecs->GetComponent<ScriptingComponent>(entity).SerializeComponent(out);
+
+			std::vector<entt::entity> children = parent.GetChildren();
+			if (!children.empty())
+			{
+				out << YAML::Key << "Children" << YAML::Value << YAML::BeginSeq;
+				for (size_t i = 0; i < children.size(); i++)
+				{
+					SerializeEntity(out, children[i]);
+				}
+				out << YAML::EndSeq;
+			}
 		}
 		out << YAML::EndMap;
 	}
 	out << YAML::EndMap;
-
-	for (size_t i = 0; i < parent.GetChildren().size(); i++)
-	{
-		auto& child = ecs->GetComponent<GeneralComponent>(parent.GetChildren()[i]);
-		SerializeEntity(out, parent.GetChildren()[i]);
-	}
 }
 
 void ProjectSceneSystem::SerializeHierarchy(YAML::Emitter& out)
 {
-	out << YAML::Key << "HIERARCHY" << YAML::Value << YAML::BeginSeq;
+	out << YAML::Key << "Hierarchy" << YAML::Value << YAML::BeginSeq;
 	{
 		SerializeEntity(out, ecs->root);
 	}
@@ -121,8 +149,135 @@ void ProjectSceneSystem::SerializeHierarchy(YAML::Emitter& out)
 void ProjectSceneSystem::SaveFile(YAML::Emitter& out, const char* filename)
 {
 	StarHelpers::AddLog("[Scene] -> Saving File...");
-	if (!out.good()) StarHelpers::AddLog("[YAML] -> %s", out.GetLastError().c_str());
+	if (!out.good())
+		StarHelpers::AddLog("[YAML] -> %s", out.GetLastError().c_str());
 	std::ofstream stream(filename);
 	stream << out.c_str();
 	stream.close();
+}
+
+void ProjectSceneSystem::SaveAsScene()
+{
+	const char* path = StarHelpers::SaveFileDialog(L"C:\\", L"*.scene\0", L"Save As");
+
+	if (strlen(path) == 0)
+		return;
+}
+
+void ProjectSceneSystem::DeserializeHierarchy(YAML::Node& in)
+{
+	YAML::Node hierarchy = in["Star"]["Data"]["Hierarchy"];
+	for (size_t i = 0; i < hierarchy.size(); ++i)
+	{
+		YAML::Node entityNode = hierarchy[i]["Entity"];
+		if (entityNode)
+		{
+			DeserializeEntity(entityNode, ecs->root);
+		}
+	}
+
+	// free memory
+	for (size_t i = 0; i < models.size(); ++i)
+		models[i].importer->FreeScene();
+	models.clear();
+}
+void ProjectSceneSystem::DeserializeEntity(YAML::Node& in, entt::entity parent)
+{
+	if (in["Children"])
+	{
+		for (size_t i = 0; i < in["Children"].size(); ++i)
+		{
+			YAML::Node childNode = in["Children"][i]["Entity"];
+			if (childNode)
+			{
+				entt::entity entity = ecs->CreateEntity();
+
+				{
+					if (!ecs->HasComponent<GeneralComponent>(entity))
+						ecs->AddComponent<GeneralComponent>(entity);
+					ecs->GetComponent<GeneralComponent>(entity).DeserializeComponent(childNode);
+				}
+
+				{
+					if (!ecs->HasComponent<TransformComponent>(entity))
+						ecs->AddComponent<TransformComponent>(entity);
+					ecs->GetComponent<TransformComponent>(entity).DeserializeComponent(childNode);
+				}
+
+				{
+					if (childNode["MeshComponent"])
+					{
+						ecs->AddComponent<MeshComponent>(entity);
+						auto& meshComponent = ecs->GetComponent<MeshComponent>(entity);
+						{
+							meshComponent.DeserializeComponent(childNode);
+							const char* path = meshComponent.modelPath.c_str();
+
+							const aiScene* scene = NULL;
+							if (FindModel(meshComponent.modelPath))
+							{
+								//printf("load old %s\n", path);
+								scene = GetModel(path)->importer->GetScene();
+								if (scene)
+								{
+									meshComponent.LoadMesh(scene);
+									meshComponent.SetupMesh();
+									if (!meshComponent.materialPath.empty())
+									{
+										meshComponent.DeserializeMaterial(meshComponent.materialPath.c_str());
+										meshComponent.SetupDiffuseTexture();
+									}
+								}
+							}
+							else
+							{
+								//printf("load new %s\n", path);
+								Assimp::Importer* importer = new Assimp::Importer();
+								scene = StarHelpers::OpenModel(importer, path);
+								if (scene)
+								{
+									meshComponent.LoadMesh(scene);
+									meshComponent.SetupMesh();
+									if (!meshComponent.materialPath.empty())
+									{
+										meshComponent.DeserializeMaterial(meshComponent.materialPath.c_str());
+										meshComponent.SetupDiffuseTexture();
+									}
+								}
+								models.push_back(ModelX(importer, path));
+							}
+						}
+					}
+				}
+				
+				if (childNode["CameraComponent"])
+				{
+					ecs->AddComponent<CameraComponent>(entity);
+					ecs->GetComponent<CameraComponent>(entity).DeserializeComponent(childNode);
+				}
+				
+				if (childNode["RigidBodyComponent"])
+				{
+					ecs->AddComponent<RigidBodyComponent>(entity);
+					ecs->GetComponent<RigidBodyComponent>(entity).CreateActor(); // !
+					ecs->GetComponent<RigidBodyComponent>(entity).DeserializeComponent(childNode);
+				}
+				
+				if (childNode["Colliders"])
+				{
+					ecs->GetComponent<PhysicsComponent>(entity).DeserializeComponent(childNode);
+				}
+
+				if (childNode["Scripts"])
+				{
+					ecs->GetComponent<ScriptingComponent>(entity).DeserializeComponent(childNode);
+				}
+
+				if (ecs->HasComponent<GeneralComponent>(entity))
+					ecs->GetComponent<GeneralComponent>(parent).AddChild(entity);
+
+				DeserializeEntity(childNode, entity);
+			}
+		}
+	}
 }

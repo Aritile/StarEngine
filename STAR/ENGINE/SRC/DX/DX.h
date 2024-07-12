@@ -23,6 +23,7 @@ public:
 	ID3D11DeviceContext* dxDeviceContext = NULL;
 	ID3D11RenderTargetView* dxRenderTargetView = NULL;
 	ID3D11DepthStencilView* dxDepthStencilView = NULL;
-};
 
-DX& DXClass();
+public:
+	static DX* GetSingleton();
+};
