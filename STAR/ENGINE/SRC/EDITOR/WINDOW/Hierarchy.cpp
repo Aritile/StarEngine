@@ -9,6 +9,7 @@
 static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
 static AssimpLoader* assimpLoader = &AssimpLoaderClass();
+static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 
 HierarchyWindow* HierarchyWindow::GetSingleton()
 {
@@ -118,6 +119,10 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 
 	if (ImGui::IsItemClicked() && entity != ecs->root)
 		ecs->selected = entity;
+
+	if (ImGui::IsItemHovered())
+		if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			viewportWindow->LookAtEntity(entity);
 
 	///////////////////////////////////////////////////////////
 

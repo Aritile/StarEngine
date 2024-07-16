@@ -11,17 +11,16 @@
 
 struct TransformComponent;
 
+// buffer
 #define MIN_XY 16
-#define DEFAULT_CAM_POS Vector3(0.0f, 0.0f, -5.0f)
-#define DEFAULT_CAM_ROT Vector3(0.0f, 0.0f, 0.0f)
 
 class ViewportWindow
 {
-	//// - Viewport System ///////////////////////////////////////
 public:
 	void Render();
 	void ReleaseBuffer();
 	bool renderViewport = true;
+	void SetDefaultCam();
 
 public:
 	D3D11_VIEWPORT GetViewport();
@@ -47,10 +46,15 @@ private:
 public:
 	ImVec2 GetBufferSize();
 
-	//// - Camera System /////////////////////////////////////////
 private:
-	Matrix projection = DirectX::XMMatrixIdentity();
-	Matrix view = DirectX::XMMatrixIdentity();
+	Matrix projection = Matrix::Identity;
+	Matrix view = Matrix::Identity;
+
+private:
+	Vector3 pos;
+	Quaternion rot;
+	Vector3 sPos;
+	Quaternion sRot;
 
 	void SetPerspectiveProjectionMatrix(ImVec2 size, float fov, float NearZ, float FarZ);
 
@@ -59,13 +63,8 @@ public:
 	Matrix GetPerspectiveViewMatrix();
 
 public:
-	Vector3 GetCamPosition();
-	Vector3 GetCamTarget();
-	Vector3 GetCamUp();
-
-public:
-	void SetCamPosition(Vector3 position);
-	void SetCamRotation(Vector3 rotation);
+	void LookAt(Vector3 lookAt);
+	void LookAtEntity(entt::entity entity);
 
 	POINT cursorPosition = { 0 };
 
@@ -81,23 +80,8 @@ private:
 	float camSensitivity = 0.001f;
 
 private:
-	Matrix     matrix   = Matrix::Identity;
-	Vector3    position = DEFAULT_CAM_POS;
-	Vector3    rotation = DEFAULT_CAM_ROT;
-	Vector3    lPosition = position;
-	Vector3    lrotation = rotation;
-
-	//// - Guizmo System //////////////////////////////////////
-private:
-	void RenderWidgets();
-	/* --- */
-	void RenderCameraFrustumWidget(TransformComponent& transformComponent);
-	void RenderBoundingBoxWidget(TransformComponent& transformComponent);
-	void RenderBoxColliderWidget(TransformComponent& transformComponent);
+	void RenderWidget();
 	void RenderManipulateWidget(TransformComponent& transformComponent);
-	void RenderGridWidget();
-	/* --- */
-	Matrix CreateNoScaleMatrix(TransformComponent& transformComponent);
 
 private:
 	ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
@@ -113,7 +97,6 @@ public:
 	bool useSnap = false;
 	float snap = 1.0f;
 
-	//// - Ray System //////////////////////////////////////
 private:
 	void RayVector(float mouseX, float mouseY, DirectX::XMVECTOR& pickRayInWorldSpacePos, DirectX::XMVECTOR& pickRayInWorldSpaceDir);
 	bool PointInTriangle(DirectX::XMVECTOR& triV1, DirectX::XMVECTOR& triV2, DirectX::XMVECTOR& triV3, DirectX::XMVECTOR& point);

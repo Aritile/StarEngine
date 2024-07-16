@@ -64,8 +64,7 @@ void ProjectSceneSystem::NewScene()
 	ecs->CreateCameraEntity(camera);
 	ecs->GetComponent<TransformComponent>(camera).SetPosition(Vector3(0.0f, 0.0f, -5.0f));
 
-	viewportWindow->SetCamPosition(DEFAULT_CAM_POS);
-	viewportWindow->SetCamRotation(DEFAULT_CAM_ROT);
+	viewportWindow->SetDefaultCam();
 }
 
 void ProjectSceneSystem::SaveScene()

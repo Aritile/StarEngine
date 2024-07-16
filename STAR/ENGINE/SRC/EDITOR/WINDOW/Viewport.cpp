@@ -9,18 +9,16 @@
 #include "../../SYSTEM/PhysicsSystem.h"
 #include "Assets.h"
 
+static DX* dx = DX::GetSingleton();
+static Game* game = Game::GetSingleton();
+static Entity* ecs = Entity::GetSingleton();
+static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
+
 ViewportWindow* ViewportWindow::GetSingleton()
 {
 	static ViewportWindow viewportWindow;
 	return &viewportWindow;
 }
-
-///////////////////////////////////////////////////////////////
-
-static DX* dx = DX::GetSingleton();
-static Game* game = Game::GetSingleton();
-static Entity* ecs = Entity::GetSingleton();
-static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 
 void ViewportWindow::Render()
 {
@@ -72,16 +70,10 @@ void ViewportWindow::Render()
 			ImGui::EndDragDropTarget();
 		}
 
-		RenderWidgets();
+		RenderWidget();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(1);
-}
-
-void ViewportWindow::RenderGridWidget()
-{
-	Matrix matrix = Matrix::Identity;
-	ImGuizmo::DrawGrid((float*)&view, (float*)&projection, (float*)&matrix, 16.f);
 }
 
 D3D11_VIEWPORT ViewportWindow::GetViewport()
@@ -263,46 +255,54 @@ void ViewportWindow::UpdateMovement()
 	else if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && cursorOnWindow)
 	{
 		float delta = ImGui::GetIO().DeltaTime;
+		float speed = (StarHelpers::InputGetKey(DIK_LSHIFT) ? camBoostSpeed : camSpeed) * delta;
 
-		if (StarHelpers::InputGetKey(DIK_W))
-			lPosition = lPosition + matrix.Backward() * (StarHelpers::InputGetKey(DIK_LSHIFT) ? camBoostSpeed : camSpeed) * delta;
 		if (StarHelpers::InputGetKey(DIK_S))
-			lPosition = lPosition - matrix.Backward() * (StarHelpers::InputGetKey(DIK_LSHIFT) ? camBoostSpeed : camSpeed) * delta;
+		{
+			Vector3 forward = Vector3::Transform(Vector3::Forward, rot);
+			forward.Normalize();
+			sPos += forward * speed;
+		}
+		if (StarHelpers::InputGetKey(DIK_W))
+		{
+			Vector3 backward = Vector3::Transform(Vector3::Backward, rot);
+			backward.Normalize();
+			sPos += backward * speed;
+		}
 		if (StarHelpers::InputGetKey(DIK_A))
-			lPosition = lPosition - matrix.Right() * (StarHelpers::InputGetKey(DIK_LSHIFT) ? camBoostSpeed : camSpeed) * delta;
+		{
+			Vector3 left = Vector3::Transform(Vector3::Left, rot);
+			left.y = 0.0f;
+			left.Normalize();
+			sPos += left * speed;
+		}
 		if (StarHelpers::InputGetKey(DIK_D))
-			lPosition = lPosition + matrix.Right() * (StarHelpers::InputGetKey(DIK_LSHIFT) ? camBoostSpeed : camSpeed) * delta;
+		{
+			Vector3 right = Vector3::Transform(Vector3::Right, rot);
+			right.y = 0.0f;
+			right.Normalize();
+			sPos += right * speed;
+		}
 
 		Vector2 current = StarHelpers::InputGetMouse();
-		lrotation.y += current.x * camSensitivity;
-		lrotation.x += current.y * camSensitivity;
+		float yaw = current.x * camSensitivity;
+		float pitch = current.y * camSensitivity;
+		Quaternion deltaRotation = Quaternion::CreateFromYawPitchRoll(yaw, pitch, 0.0f);
+		sRot = Quaternion::Concatenate(sRot, deltaRotation);
 	}
 
 	{
-		position = Vector3::Lerp(position, lPosition, 8.0f * ImGui::GetIO().DeltaTime);
-		rotation = Vector3::Lerp(rotation, lrotation, 16.0f * ImGui::GetIO().DeltaTime);
+		pos = Vector3::Lerp(pos, sPos, 8.0f * ImGui::GetIO().DeltaTime);
+		rot = Quaternion::Lerp(rot, sRot, 16.0f * ImGui::GetIO().DeltaTime);
 	}
 
-	matrix = Matrix::Identity;
-	matrix = Matrix::CreateTranslation(position) * matrix;
-	matrix = Matrix::CreateFromQuaternion(Quaternion::CreateFromYawPitchRoll(rotation)) * matrix;
-	view = XMMatrixLookAtLH(GetCamPosition(), GetCamPosition() + GetCamTarget(), GetCamUp());
+	Matrix matrix = Matrix::Identity;
+	matrix = Matrix::CreateTranslation(pos) * matrix;
+	matrix = Matrix::CreateFromQuaternion(rot) * matrix;
+	view = XMMatrixLookAtLH(matrix.Translation(), matrix.Translation() + matrix.Backward(), Vector3::Up);
 }
 
-Vector3 ViewportWindow::GetCamPosition()
-{
-	return matrix.Translation();
-}
-Vector3 ViewportWindow::GetCamTarget()
-{
-	return matrix.Backward();
-}
-Vector3 ViewportWindow::GetCamUp()
-{
-	return matrix.Up();
-}
-
-void ViewportWindow::RenderWidgets()
+void ViewportWindow::RenderWidget()
 {
 	ImGuizmo::SetDrawlist();
 	ImGuizmo::SetRect(windowPos.x, (windowPos.y + windowCursorPos.y), windowSize.x, (windowSize.y - windowCursorPos.y));
@@ -317,10 +317,7 @@ void ViewportWindow::RenderWidgets()
 				if (ecs->HasComponent<TransformComponent>(ecs->selected))
 				{
 					auto& transformComponent = ecs->GetComponent<TransformComponent>(ecs->selected);
-					//RenderBoxColliderWidget(transformComponent);    /* (/) */
-					//RenderCameraFrustumWidget(transformComponent); /* (/) */
-					//RenderBoundingBoxWidget(transformComponent);  /* (2) */
-					RenderManipulateWidget(transformComponent);  /* (1) */
+					RenderManipulateWidget(transformComponent);
 				}
 			}
 		}
@@ -512,126 +509,13 @@ entt::entity ViewportWindow::RunRay(bool select)
 	return entt::null;
 }
 
-void ViewportWindow::SetCamPosition(Vector3 position)
-{
-	this->position = position;
-	this->lPosition = position;
-}
-void ViewportWindow::SetCamRotation(Vector3 rotation)
-{
-	this->rotation = rotation;
-	this->lrotation = rotation;
-}
-
 ID3D11RenderTargetView* ViewportWindow::GetRenderTargetView()
 {
 	return s_RenderTargetView;
 }
-
 ID3D11DepthStencilView* ViewportWindow::GetDepthStencilView()
 {
 	return s_DepthStencilView;
-}
-
-void ViewportWindow::RenderCameraFrustumWidget(TransformComponent& transformComponent)
-{
-	Matrix matrix = CreateNoScaleMatrix(transformComponent);
-
-	if (ecs->HasComponent<CameraComponent>(ecs->selected))
-	{
-		auto& cameraComponent = ecs->GetComponent<CameraComponent>(ecs->selected);
-		if (cameraComponent.IsActive())
-		{
-			if (cameraComponent.GetCameraType() == Perspective)
-			{
-				ImGuizmo::DrawPerspectiveFrustum(
-					(float*)&view,
-					(float*)&projection,
-					(float*)&matrix,
-					cameraComponent.GetNear(),
-					cameraComponent.GetFar(),
-					cameraComponent.GetFixedProjectionValue(CameraType::Perspective).x,
-					cameraComponent.GetFixedProjectionValue(CameraType::Perspective).y,
-					cameraComponent.GetFov());
-			}
-
-			if (cameraComponent.GetCameraType() == Orthographic)
-			{
-				ImGuizmo::DrawOrthographicFrustum(
-					(float*)&view,
-					(float*)&projection,
-					(float*)&matrix,
-					cameraComponent.GetNear(),
-					cameraComponent.GetFar(),
-					cameraComponent.GetFixedProjectionValue(CameraType::Orthographic).x,
-					cameraComponent.GetFixedProjectionValue(CameraType::Orthographic).y);
-			}
-		}
-	}
-}
-
-void ViewportWindow::RenderBoundingBoxWidget(TransformComponent& transformComponent)
-{
-	/*
-
-	//ImU32 col = IM_COL32(0xE2, 0x52, 0x52, 0xFF);
-	//ImVec4 xd = ImGui::ColorConvertU32ToFloat4(col);
-	//printf("%f, %f, %f\n", xd.x, xd.y, xd.z);
-
-	Matrix matrix = Matrix::Identity;
-	Vector3 min = Vector3(transformComponent.GetBoundingBox().Center) - transformComponent.GetBoundingBox().Extents;
-	Vector3 max = Vector3(transformComponent.GetBoundingBox().Center) + transformComponent.GetBoundingBox().Extents;
-	if (ecs->HasComponent<MeshComponent>(ecs->selected))
-	{
-		auto& meshComponent = ecs->GetComponent<MeshComponent>(ecs->selected);
-		if (meshComponent.IsActive())
-		{
-			if (meshComponent.GetState())
-			{
-				ImGuizmo::DrawBoundingBox(
-					(float*)&view,
-					(float*)&projection,
-					(float*)&matrix,
-					(float*)&min,
-					(float*)&max);
-			}
-		}
-	}
-	*/
-}
-
-void ViewportWindow::RenderBoxColliderWidget(TransformComponent& transformComponent)
-{
-	Matrix matrix = transformComponent.GetTransform();
-	if (ecs->HasComponent<PhysicsComponent>(ecs->selected))
-	{
-		auto& physicsComponent = ecs->GetComponent<PhysicsComponent>(ecs->selected);
-		for (size_t i = 0; i < physicsComponent.GetBoxColliders().size(); i++)
-		{
-			if (!physicsComponent.GetBoxColliders()[i].activeComponent) continue;
-			Vector3 center = physicsComponent.GetBoxColliders()[i].GetCenter();
-			Vector3 size = physicsComponent.GetBoxColliders()[i].GetSize();
-
-			/*
-			ImGuizmo::DrawBoxCollider(
-				(float*)&view,
-				(float*)&projection,
-				(float*)&matrix,
-				(float*)&center,
-				(float*)&size);
-				*/
-
-			Matrix xMatrix = Matrix::Identity;
-			xMatrix = Matrix::CreateTranslation(transformComponent.GetPosition() + center) * xMatrix;
-			xMatrix = Matrix::CreateFromQuaternion(transformComponent.GetRotationQuaternion()) * xMatrix;
-			xMatrix = Matrix::CreateScale(transformComponent.GetScale() * size) * xMatrix;
-
-			ImGuizmo::DrawBoxCollider2(
-				(float*)&view,
-				(float*)&projection,
-				(float*)&xMatrix);
-		}
-	}
 }
 
 void ViewportWindow::RenderManipulateWidget(TransformComponent& transformComponent)
@@ -669,16 +553,35 @@ void ViewportWindow::RenderManipulateWidget(TransformComponent& transformCompone
 	}
 }
 
-Matrix ViewportWindow::CreateNoScaleMatrix(TransformComponent& transformComponent)
-{
-	Matrix matrix = Matrix::Identity;
-	matrix = Matrix::CreateTranslation(transformComponent.GetPosition()) * matrix;
-	matrix = Matrix::CreateFromQuaternion(transformComponent.GetRotationQuaternion()) * matrix;
-	matrix = Matrix::CreateScale(Vector3(1.0f, 1.0f, 1.0f)) * matrix;
-	return matrix;
-}
-
 ID3D11ShaderResourceView* ViewportWindow::GetShaderResourceView()
 {
 	return s_ShaderResourceView;
+}
+
+void ViewportWindow::LookAt(Vector3 lookAt)
+{
+	if (pos == lookAt)
+		return;
+
+	Vector3 forward = lookAt - pos;
+	sRot = Quaternion::LookRotation(-forward, Vector3::Up);
+}
+void ViewportWindow::LookAtEntity(entt::entity entity)
+{
+	if (!ecs->IsValid(entity)) return;
+	if (!ecs->HasComponent<TransformComponent>(entity)) return;
+
+	auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
+	LookAt(transformComponent.GetPosition());
+
+	/*
+	DirectX::BoundingBox boundingBox = transformComponent.GetBoundingBox();
+	Vector3 center = boundingBox.Center;
+	Vector3 extents = boundingBox.Extents;
+	*/
+}
+void ViewportWindow::SetDefaultCam()
+{
+	pos = Vector3(0, 0, -5);
+	sPos = Vector3(0, 0, -5);
 }
