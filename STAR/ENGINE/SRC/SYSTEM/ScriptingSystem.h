@@ -50,12 +50,6 @@ private:
 	/* entity */
 	void lua_add_entity();
 	void lua_add_engine();
-	void lua_add_general_component();
-	void lua_add_transform_component();
-	void lua_add_camera_component();
-	void lua_add_rigidbody_component();
-	void lua_add_mesh_component();
-	void lua_add_text_mesh_component();
 
 public:
 	static ScriptingSystem* GetSingleton();

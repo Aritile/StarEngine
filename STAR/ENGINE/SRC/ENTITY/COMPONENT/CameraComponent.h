@@ -2,6 +2,7 @@
 
 #include "../../IMGUI/imgui.h"
 #include "../../HELPERS/Helpers.h"
+#include <sol/sol.hpp>
 
 #define MIN_FOV 1.0f
 #define MAX_FOV 128.0f
@@ -58,4 +59,7 @@ public:
 public:
 	void SerializeComponent(YAML::Emitter& out);
 	void DeserializeComponent(YAML::Node& in);
+
+public:
+	static void LuaAdd(sol::state& state);
 };

@@ -356,3 +356,25 @@ float TextMeshComponent::GetWordSpacing()
 {
 	return wordSpacing;
 }
+
+void TextMeshComponent::LuaAdd(sol::state& state)
+{
+	sol::usertype<TextMeshComponent> component = state.new_usertype<TextMeshComponent>(
+		"TextMeshComponent");
+	component["SetText"] = &TextMeshComponent::SetText;
+	component["GetText"] = &TextMeshComponent::GetText;
+	component["SetQuality"] = &TextMeshComponent::SetQuality;
+	component["GetQuality"] = &TextMeshComponent::GetQuality;
+	component["SetFont"] = &TextMeshComponent::SetFont;
+	component["GetFont"] = &TextMeshComponent::GetFont;
+	component["SetAlign"] = &TextMeshComponent::SetAlign;
+	component["GetAlign"] = &TextMeshComponent::GetAlign;
+	component["SetMeshDepth"] = &TextMeshComponent::SetMeshDepth;
+	component["GetMeshDepth"] = &TextMeshComponent::GetMeshDepth;
+	component["SetCharSpacing"] = &TextMeshComponent::SetCharSpacing;
+	component["GetCharSpacing"] = &TextMeshComponent::GetCharSpacing;
+	component["SetLineSpacing"] = &TextMeshComponent::SetLineSpacing;
+	component["GetLineSpacing"] = &TextMeshComponent::GetLineSpacing;
+	component["SetWordSpacing"] = &TextMeshComponent::SetWordSpacing;
+	component["GetWordSpacing"] = &TextMeshComponent::GetWordSpacing;
+}

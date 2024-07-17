@@ -76,4 +76,7 @@ public:
 
 public:
 	void LookAt(Matrix matrix);
+
+public:
+	static void LuaAdd(sol::state& state);
 };

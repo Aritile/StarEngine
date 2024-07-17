@@ -637,3 +637,20 @@ void MeshComponent::LoadDiffuseTexture(const char* path)
 
 	LoadTexture(full.c_str(), &diffuse_texture);
 }
+
+void MeshComponent::LuaAdd(sol::state& state)
+{
+	sol::usertype<MeshComponent> component = state.new_usertype<MeshComponent>(
+		"MeshComponent");
+	component["GetNumVertices"] = &MeshComponent::GetNumVertices;
+	component["GetNumFaces"] = &MeshComponent::GetNumFaces;
+	component["AddVertices"] = &MeshComponent::AddVertices;
+	component["AddIndices"] = &MeshComponent::AddIndices;
+	component["SetupMesh"] = &MeshComponent::SetupMesh;
+
+	sol::usertype<Vertex> vertex = state.new_usertype<Vertex>(
+		"Vertex");
+	vertex["position"] = &Vertex::position;
+	vertex["normal"] = &Vertex::normal;
+	vertex["texCoords"] = &Vertex::texCoords;
+}

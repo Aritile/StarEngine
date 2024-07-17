@@ -389,3 +389,27 @@ void RigidBodyComponent::DeserializeComponent(YAML::Node& in)
 		}
 	}
 }
+
+void RigidBodyComponent::LuaAdd(sol::state& state)
+{
+	sol::usertype<RigidBodyComponent> component = state.new_usertype<RigidBodyComponent>(
+		"RigidbodyComponent");
+	component["SetMass"] = &RigidBodyComponent::SetMass;
+	component["GetMass"] = &RigidBodyComponent::GetMass;
+	component["SetLinearVelocity"] = &RigidBodyComponent::SetLinearVelocity;
+	component["GetLinearVelocity"] = &RigidBodyComponent::GetLinearVelocity;
+	component["SetAngularVelocity"] = &RigidBodyComponent::SetAngularVelocity;
+	component["GetAngularVelocity"] = &RigidBodyComponent::GetAngularVelocity;
+	component["SetLinearDamping"] = &RigidBodyComponent::SetLinearDamping;
+	component["GetLinearDamping"] = &RigidBodyComponent::GetLinearDamping;
+	component["SetAngularDamping"] = &RigidBodyComponent::SetAngularDamping;
+	component["GetAngularDamping"] = &RigidBodyComponent::GetAngularDamping;
+	component["SetGravity"] = &RigidBodyComponent::UseGravity;
+	component["GetGravity"] = &RigidBodyComponent::HasUseGravity;
+	component["SetKinematic"] = &RigidBodyComponent::SetKinematic;
+	component["GetKinematic"] = &RigidBodyComponent::GetKinematic;
+	component["AddForce"] = &RigidBodyComponent::AddForce;
+	component["AddTorque"] = &RigidBodyComponent::AddTorque;
+	component["ClearForce"] = &RigidBodyComponent::ClearForce;
+	component["ClearTorque"] = &RigidBodyComponent::ClearTorque;
+}

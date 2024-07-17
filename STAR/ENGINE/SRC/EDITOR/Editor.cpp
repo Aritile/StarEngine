@@ -629,7 +629,7 @@ void Editor::RenderFileMenuBar()
 		if (ImGui::BeginMenu("Open"))
 		{
 			if (ImGui::MenuItem("Scene"))
-				projectSceneSystem->OpenScene();
+				projectSceneSystem->OpenScene("C:\\DX\\STAR\\ENGINE\\data.scene");
 			ImGui::MenuItem("Project");
 			ImGui::EndMenu();
 		}

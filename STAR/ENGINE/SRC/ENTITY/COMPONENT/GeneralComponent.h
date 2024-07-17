@@ -7,6 +7,7 @@
 #include "../../HELPERS/Helpers.h"
 #include "../../IMGUI/imgui_stdlib.h"
 #include <yaml-cpp/yaml.h>
+#include <sol/sol.hpp>
 
 struct GeneralComponent
 {
@@ -55,4 +56,7 @@ public:
 
 private:
 	std::vector<entt::entity> toDestroy;
+
+public:
+	static void LuaAdd(sol::state& state);
 };

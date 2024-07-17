@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SRC\SYSTEM\PlayerPrefs.h" />
     <ClInclude Include="SRC\EDITOR\WINDOW\Project.h" />
     <ClInclude Include="SRC\MODULE\Module.h" />
     <ClInclude Include="SRC\STRDX\CB.h" />
@@ -91,6 +92,7 @@
     <ClInclude Include="SRC\ENTITY\COMPONENT\TextMeshComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\SYSTEM\PlayerPrefs.cpp" />
     <ClCompile Include="SRC\EDITOR\WINDOW\Project.cpp" />
     <ClCompile Include="SRC\MODULE\Module.cpp" />
     <ClCompile Include="SRC\STRDX\constant_buffer.cpp" />

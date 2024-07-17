@@ -10,6 +10,7 @@
 #include "../../IMGUI/imgui_stdlib.h"
 #include <yaml-cpp/yaml.h>
 #include <wrl/client.h>
+#include <sol/sol.hpp>
 
 // assimp
 #include <assimp/scene.h>
@@ -131,4 +132,7 @@ public:
 	std::string materialPath;
 	MeshConstantBuffer cb;
 	//unsigned int materialIndex = 0;
+
+public:
+	static void LuaAdd(sol::state& state);
 };

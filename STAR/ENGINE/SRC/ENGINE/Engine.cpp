@@ -11,6 +11,7 @@
 #include "../SYSTEM/ScriptingSystem.h"
 #include "../MODULE/Module.h"
 #include "../STRDX/Widgets.h"
+#include "../SYSTEM/PlayerPrefs.h"
 
 static DX* dx = DX::GetSingleton();
 static Editor* editor = &EditorClass();
@@ -23,6 +24,7 @@ static PhysicsSystem* physicsSystem = &PhysicsSystemClass();
 static ScriptingSystem* scriptingSystem = ScriptingSystem::GetSingleton();
 static Module* module = Module::GetSingleton();
 static Widgets* widgets = Widgets::GetSingleton();
+static PlayerPrefs* playerPrefs = PlayerPrefs::GetSingleton();
 
 static Vector4 clearColor = Vector4(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -269,6 +271,7 @@ void EngineStart()
     skyFile.SetSphereMap("DATA\\HDRIs\\qwantani_puresky_4k.hdr");
     sky->SetSky(skyFile);
 
+    playerPrefs->Test();
     game->InitTime();
 
     /* --------------------------- */

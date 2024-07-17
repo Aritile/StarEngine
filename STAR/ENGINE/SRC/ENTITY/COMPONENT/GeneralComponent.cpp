@@ -287,3 +287,20 @@ void GeneralComponent::DeserializeComponent(YAML::Node& _In)
 		SetStatic(generalComponent["Static"].as<bool>());
 	}
 }
+
+void GeneralComponent::LuaAdd(sol::state& state)
+{
+	sol::usertype<GeneralComponent> component = state.new_usertype<GeneralComponent>(
+		"GeneralComponent");
+	component["SetName"] = &GeneralComponent::SetName;
+	component["GetName"] = &GeneralComponent::GetName;
+	component["SetTag"] = &GeneralComponent::SetTag;
+	component["GetTag"] = &GeneralComponent::GetTag;
+	component["SetActive"] = &GeneralComponent::SetActive;
+	component["GetActive"] = &GeneralComponent::IsActive;
+	component["SetStatic"] = &GeneralComponent::SetStatic;
+	component["GetStatic"] = &GeneralComponent::IsStatic;
+	component["MoveUp"] = &GeneralComponent::MoveUp;
+	component["MoveDown"] = &GeneralComponent::MoveDown;
+	component["GetParentEntity"] = &GeneralComponent::GetParent;
+}

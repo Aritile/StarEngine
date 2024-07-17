@@ -115,7 +115,8 @@ bool Game::GameCreateWindow()
 
 void Game::StopGame()
 {
-    projectSceneSystem->OpenScene();
+    // fix
+    projectSceneSystem->OpenScene("C:\\DX\\STAR\\ENGINE\\data.scene");
 
     gameState = GameState::GameNone;
 

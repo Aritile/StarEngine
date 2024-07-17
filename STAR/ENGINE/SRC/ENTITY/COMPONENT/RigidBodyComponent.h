@@ -3,6 +3,7 @@
 #include <physx/PxPhysicsAPI.h>
 #include "../../XTK/MATH/SimpleMath.h"
 #include <yaml-cpp/yaml.h>
+#include <sol/sol.hpp>
 
 using namespace DirectX::SimpleMath;
 
@@ -65,4 +66,7 @@ private:
 public:
 	void SerializeComponent(YAML::Emitter& out);
 	void DeserializeComponent(YAML::Node& in);
+
+public:
+	static void LuaAdd(sol::state& state);
 };

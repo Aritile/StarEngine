@@ -7,7 +7,7 @@ class ProjectSceneSystem
 {
 public:
 	void NewScene();
-	void OpenScene();
+	void OpenScene(const char* path);
 	void SaveScene();
 	void SaveAsScene();
 	void ClearScene();

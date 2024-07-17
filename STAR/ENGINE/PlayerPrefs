@@ -1,0 +1,11 @@
+# do not edit
+# Jul 17 2024 01:23:35
+Star:
+  Version:
+    Major: 1
+    Minor: 1
+    Patch: 0
+  Data:
+    float: 5
+    int: 5
+    string: string

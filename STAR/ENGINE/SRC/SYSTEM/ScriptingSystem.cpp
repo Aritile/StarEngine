@@ -10,6 +10,8 @@
 #include "../ENTITY/COMPONENT/CameraComponent.h"
 #include "../ENTITY/COMPONENT/RigidbodyComponent.h"
 #include "../ENTITY/COMPONENT/TextMeshComponent.h"
+#include "ProjectSceneSystem.h"
+#include "PlayerPrefs.h"
 
 #define COMPONENT_ERROR "Failed to get %s because it was not found!"
 
@@ -26,6 +28,8 @@ static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
 static Game* game = Game::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
 static ScriptingSystem* scriptingSystem = ScriptingSystem::GetSingleton();
+static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
+static PlayerPrefs* playerPrefs = PlayerPrefs::GetSingleton();
 
 bool ScriptingSystem::Init()
 {
@@ -54,12 +58,14 @@ bool ScriptingSystem::Init()
 
 	/* entity */
 	lua_add_entity();
-	lua_add_general_component();
-	lua_add_transform_component();
-	lua_add_camera_component();
-	lua_add_rigidbody_component();
-	lua_add_mesh_component();
-	lua_add_text_mesh_component();
+
+	GeneralComponent::LuaAdd(lua);
+	TransformComponent::LuaAdd(lua);
+	CameraComponent::LuaAdd(lua);
+	RigidBodyComponent::LuaAdd(lua);
+	MeshComponent::LuaAdd(lua);
+	TextMeshComponent::LuaAdd(lua);
+	PlayerPrefs::LuaAdd(lua);
 
 	return true;
 }
@@ -345,135 +351,13 @@ void ScriptingSystem::lua_add_engine()
 {
 	// maybe use just &
 	lua["Engine"] = sol::new_table();
-	lua["Engine"]["FindByName"] = [](const char* name) { return GetSingleton()->FindByName(name); };
-	lua["Engine"]["FindByTag"]  = [](const char* tag)  { return GetSingleton()->FindByTag(tag);   };
-}
-void ScriptingSystem::lua_add_general_component()
-{
-	sol::usertype<GeneralComponent> component = lua.new_usertype<GeneralComponent>(
-		"GeneralComponent");
-	component["SetName"] = &GeneralComponent::SetName;
-	component["GetName"] = &GeneralComponent::GetName;
-	component["SetTag"] = &GeneralComponent::SetTag;
-	component["GetTag"] = &GeneralComponent::GetTag;
-	component["SetActive"] = &GeneralComponent::SetActive;
-	component["GetActive"] = &GeneralComponent::IsActive;
-	component["SetStatic"] = &GeneralComponent::SetStatic;
-	component["GetStatic"] = &GeneralComponent::IsStatic;
-	component["MoveUp"] = &GeneralComponent::MoveUp;
-	component["MoveDown"] = &GeneralComponent::MoveDown;
-	component["GetParentEntity"] = &GeneralComponent::GetParent;
-}
-void ScriptingSystem::lua_add_transform_component()
-{
-	sol::usertype<TransformComponent> component = lua.new_usertype<TransformComponent>(
-		"TransformComponent");
-	component["SetBoundingBox"] = &TransformComponent::SetBoundingBox;
-	component["GetBoundingBox"] = &TransformComponent::GetBoundingBox;
-	component["SetPosition"] = &TransformComponent::SetPosition;
-	component["SetRotationYawPitchRoll"] = &TransformComponent::SetRotationYawPitchRoll;
-	component["SetRotationQuaternion"] = &TransformComponent::SetRotationQuaternion;
-	component["SetScale"] = &TransformComponent::SetScale;
-	component["SetTransform"] = &TransformComponent::SetTransform;
-	component["AddPosition"] = &TransformComponent::AddPosition;
-	component["AddRotationYawPitchRoll"] = &TransformComponent::AddRotationYawPitchRoll;
-	component["AddRotationQuaternion"] = &TransformComponent::AddRotationQuaternion;
-	component["AddScale"] = &TransformComponent::AddScale;
-	component["AddTransform"] = &TransformComponent::AddTransform;
-	component["GetPosition"] = &TransformComponent::GetPosition;
-	component["GetRotationYawPitchRoll"] = &TransformComponent::GetRotationYawPitchRoll;
-	component["GetRotationQuaternion"] = &TransformComponent::GetRotationQuaternion;
-	component["GetScale"] = &TransformComponent::GetScale;
-	component["GetTransform"] = &TransformComponent::GetTransform;
-	component["GetLocalPosition"] = &TransformComponent::GetLocalPosition;
-	component["GetLocalRotationYawPitchRoll"] = &TransformComponent::GetLocalRotationYawPitchRoll;
-	component["GetLocalRotationQuaternion"] = &TransformComponent::GetLocalRotationQuaternion;
-	component["GetLocalScale"] = &TransformComponent::GetLocalScale;
-	component["GetLocalTransform"] = &TransformComponent::GetLocalTransform;
-	component["LookAt"] = &TransformComponent::LookAt;
-}
-void ScriptingSystem::lua_add_camera_component()
-{
-	sol::usertype<CameraComponent> component = lua.new_usertype<CameraComponent>(
-		"CameraComponent");
-	component["SetFov"] = &CameraComponent::SetFov;
-	component["SetNear"] = &CameraComponent::SetNear;
-	component["SetFar"] = &CameraComponent::SetFar;
-	component["GetFov"] = &CameraComponent::GetFov;
-	component["GetNear"] = &CameraComponent::GetNear;
-	component["GetFar"] = &CameraComponent::GetFar;
-	component["SetAspect"] = &CameraComponent::SetAspect;
-	component["GetAspect"] = &CameraComponent::GetAspect;
-	component["SetScale"] = &CameraComponent::SetScale;
-	component["GetScale"] = &CameraComponent::GetScale;
-}
-void ScriptingSystem::lua_add_rigidbody_component()
-{
-	sol::usertype<RigidBodyComponent> component = lua.new_usertype<RigidBodyComponent>(
-		"RigidbodyComponent");
+	lua["Engine"]["Entity"] = sol::new_table();
+	lua["Engine"]["Entity"]["FindByName"] = [](const char* name) { return GetSingleton()->FindByName(name); };
+	lua["Engine"]["Entity"]["FindByTag"]  = [](const char* tag)  { return GetSingleton()->FindByTag(tag);   };
 
-	component["SetMass"] = &RigidBodyComponent::SetMass;
-	component["GetMass"] = &RigidBodyComponent::GetMass;
-	component["SetLinearVelocity"] = &RigidBodyComponent::SetLinearVelocity;
-	component["GetLinearVelocity"] = &RigidBodyComponent::GetLinearVelocity;
-	component["SetAngularVelocity"] = &RigidBodyComponent::SetAngularVelocity;
-	component["GetAngularVelocity"] = &RigidBodyComponent::GetAngularVelocity;
-	component["SetLinearDamping"] = &RigidBodyComponent::SetLinearDamping;
-	component["GetLinearDamping"] = &RigidBodyComponent::GetLinearDamping;
-	component["SetAngularDamping"] = &RigidBodyComponent::SetAngularDamping;
-	component["GetAngularDamping"] = &RigidBodyComponent::GetAngularDamping;
-	component["SetGravity"] = &RigidBodyComponent::UseGravity;
-	component["GetGravity"] = &RigidBodyComponent::HasUseGravity;
-	component["SetKinematic"] = &RigidBodyComponent::SetKinematic;
-	component["GetKinematic"] = &RigidBodyComponent::GetKinematic;
-	component["AddForce"] = &RigidBodyComponent::AddForce;
-	component["AddTorque"] = &RigidBodyComponent::AddTorque;
-	component["ClearForce"] = &RigidBodyComponent::ClearForce;
-	component["ClearTorque"] = &RigidBodyComponent::ClearTorque;
+	lua["Scene"] = sol::new_table();
+	lua["Scene"]["LoadScene"] = [](const char* path) { projectSceneSystem->OpenScene(path); };
 }
-void ScriptingSystem::lua_add_mesh_component()
-{
-	sol::usertype<MeshComponent> component = lua.new_usertype<MeshComponent>(
-		"MeshComponent");
-
-	component["GetNumVertices"] = &MeshComponent::GetNumVertices;
-	component["GetNumFaces"] = &MeshComponent::GetNumFaces;
-	component["AddVertices"] = &MeshComponent::AddVertices;
-	component["AddIndices"] = &MeshComponent::AddIndices;
-	component["SetupMesh"] = &MeshComponent::SetupMesh;
-
-	/* --- */
-
-	sol::usertype<Vertex> vertex = lua.new_usertype<Vertex>(
-		"Vertex");
-
-	vertex["position"] = &Vertex::position;
-	vertex["normal"] = &Vertex::normal;
-	vertex["texCoords"] = &Vertex::texCoords;
-}
-void ScriptingSystem::lua_add_text_mesh_component()
-{
-	sol::usertype<TextMeshComponent> component = lua.new_usertype<TextMeshComponent>(
-		"TextMeshComponent");
-
-	component["SetText"]        = &TextMeshComponent::SetText;
-	component["GetText"]        = &TextMeshComponent::GetText;
-	component["SetQuality"]     = &TextMeshComponent::SetQuality;
-	component["GetQuality"]     = &TextMeshComponent::GetQuality;
-	component["SetFont"]        = &TextMeshComponent::SetFont;
-	component["GetFont"]        = &TextMeshComponent::GetFont;
-	component["SetAlign"]       = &TextMeshComponent::SetAlign;
-	component["GetAlign"]       = &TextMeshComponent::GetAlign;
-	component["SetMeshDepth"]   = &TextMeshComponent::SetMeshDepth;
-	component["GetMeshDepth"]   = &TextMeshComponent::GetMeshDepth;
-	component["SetCharSpacing"] = &TextMeshComponent::SetCharSpacing;
-	component["GetCharSpacing"] = &TextMeshComponent::GetCharSpacing;
-	component["SetLineSpacing"] = &TextMeshComponent::SetLineSpacing;
-	component["GetLineSpacing"] = &TextMeshComponent::GetLineSpacing;
-	component["SetWordSpacing"] = &TextMeshComponent::SetWordSpacing;
-	component["GetWordSpacing"] = &TextMeshComponent::GetWordSpacing;
-}
-
 void ScriptingComponent::AddScript(const char* path)
 {
 	std::filesystem::path file(path);

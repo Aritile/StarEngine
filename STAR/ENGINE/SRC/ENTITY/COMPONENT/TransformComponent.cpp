@@ -292,3 +292,32 @@ void TransformComponent::LookAt(Matrix matrix)
 	Matrix lookAt = Matrix::CreateLookAt(GetTransform().Translation(), matrix.Translation(), matrix.Up());
 	SetTransform(lookAt);
 }
+
+void TransformComponent::LuaAdd(sol::state& state)
+{
+	sol::usertype<TransformComponent> component = state.new_usertype<TransformComponent>(
+		"TransformComponent");
+	component["SetBoundingBox"] = &TransformComponent::SetBoundingBox;
+	component["GetBoundingBox"] = &TransformComponent::GetBoundingBox;
+	component["SetPosition"] = &TransformComponent::SetPosition;
+	component["SetRotationYawPitchRoll"] = &TransformComponent::SetRotationYawPitchRoll;
+	component["SetRotationQuaternion"] = &TransformComponent::SetRotationQuaternion;
+	component["SetScale"] = &TransformComponent::SetScale;
+	component["SetTransform"] = &TransformComponent::SetTransform;
+	component["AddPosition"] = &TransformComponent::AddPosition;
+	component["AddRotationYawPitchRoll"] = &TransformComponent::AddRotationYawPitchRoll;
+	component["AddRotationQuaternion"] = &TransformComponent::AddRotationQuaternion;
+	component["AddScale"] = &TransformComponent::AddScale;
+	component["AddTransform"] = &TransformComponent::AddTransform;
+	component["GetPosition"] = &TransformComponent::GetPosition;
+	component["GetRotationYawPitchRoll"] = &TransformComponent::GetRotationYawPitchRoll;
+	component["GetRotationQuaternion"] = &TransformComponent::GetRotationQuaternion;
+	component["GetScale"] = &TransformComponent::GetScale;
+	component["GetTransform"] = &TransformComponent::GetTransform;
+	component["GetLocalPosition"] = &TransformComponent::GetLocalPosition;
+	component["GetLocalRotationYawPitchRoll"] = &TransformComponent::GetLocalRotationYawPitchRoll;
+	component["GetLocalRotationQuaternion"] = &TransformComponent::GetLocalRotationQuaternion;
+	component["GetLocalScale"] = &TransformComponent::GetLocalScale;
+	component["GetLocalTransform"] = &TransformComponent::GetLocalTransform;
+	component["LookAt"] = &TransformComponent::LookAt;
+}

@@ -3,6 +3,7 @@
 #include "../../IMGUI/imgui.h"
 #include "../../IMGUI/imgui_stdlib.h"
 #include "../../TTF2MESH/ttf2mesh.h"
+#include <sol/sol.hpp>
 
 enum AlignGlyph : unsigned char
 {
@@ -61,4 +62,7 @@ private:
 private:
 	float GetMax(ttf_t* ttf);
 	bool SetupTextMesh();
+
+public:
+	static void LuaAdd(sol::state& state);
 };

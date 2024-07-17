@@ -82,7 +82,7 @@ void ProjectSceneSystem::SaveScene()
 	SaveFile(out, XFILE);
 }
 
-void ProjectSceneSystem::OpenScene()
+void ProjectSceneSystem::OpenScene(const char* path)
 {
 	StarHelpers::AddLog("[Scene] -> Opening Scene...");
 
@@ -90,7 +90,7 @@ void ProjectSceneSystem::OpenScene()
 
 	ClearScene();
 
-	YAML::Node in = YAML::LoadFile(XFILE);
+	YAML::Node in = YAML::LoadFile(path);
 	if (!StarHelpers::CheckSignature(in))
 		return;
 

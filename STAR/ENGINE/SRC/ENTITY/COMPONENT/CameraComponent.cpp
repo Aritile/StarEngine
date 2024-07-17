@@ -277,3 +277,19 @@ void CameraComponent::DeserializeComponent(YAML::Node& in)
 		SetAspect(StarHelpers::DeserializeVector2(aspect));
 	}
 }
+
+void CameraComponent::LuaAdd(sol::state& state)
+{
+	sol::usertype<CameraComponent> component = state.new_usertype<CameraComponent>(
+		"CameraComponent");
+	component["SetFov"] = &CameraComponent::SetFov;
+	component["SetNear"] = &CameraComponent::SetNear;
+	component["SetFar"] = &CameraComponent::SetFar;
+	component["GetFov"] = &CameraComponent::GetFov;
+	component["GetNear"] = &CameraComponent::GetNear;
+	component["GetFar"] = &CameraComponent::GetFar;
+	component["SetAspect"] = &CameraComponent::SetAspect;
+	component["GetAspect"] = &CameraComponent::GetAspect;
+	component["SetScale"] = &CameraComponent::SetScale;
+	component["GetScale"] = &CameraComponent::GetScale;
+}
