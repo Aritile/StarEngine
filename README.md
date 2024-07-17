@@ -493,6 +493,20 @@ TextMeshComponent.SetLineSpacing()
 TextMeshComponent.GetLineSpacing()
 TextMeshComponent.SetWordSpacing()
 TextMeshComponent.GetWordSpacing()
+
+PlayerPrefs
+PlayerPrefs.DeleteAll()
+PlayerPrefs.DeleteKey()
+PlayerPrefs.HasKey()
+PlayerPrefs.GetFloat()
+PlayerPrefs.GetInt()
+PlayerPrefs.GetString()
+PlayerPrefs.SetFloat()
+PlayerPrefs.SetInt()
+PlayerPrefs.SetString()
+
+Scene
+Scene.LoadScene()
 ```
 ## Credits
 Dear ImGui https://github.com/ocornut/imgui \
