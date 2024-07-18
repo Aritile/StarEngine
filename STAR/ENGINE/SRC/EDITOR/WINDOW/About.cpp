@@ -50,6 +50,8 @@ void AboutWindow::Render()
 			ImGui::Text("DirectXTex https://github.com/microsoft/DirectXTex");
 			ImGui::Text("STRDX https://github.com/HODAKdev/STRDX");
 			ImGui::Text("zlib https://zlib.net/");
+			ImGui::Text("ACES Filmic https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/");
+			ImGui::Text("Font Awesome https://fontawesome.com/");
 		}
 		ImGui::EndChild();
 		float _X = windowPadding.x + ImGui::CalcTextSize("Made in Slovakia").x;
