@@ -347,9 +347,10 @@ ttf2mesh https://github.com/fetisov/ttf2mesh \
 ImGuizmo https://github.com/CedricGuillemet/ImGuizmo \
 ImGuiWidgets https://github.com/HODAKdev/ImGuiWidgets \
 DirectXTex https://github.com/microsoft/DirectXTex \
+STRDX https://github.com/HODAKdev/STRDX \
+zlib https://zlib.net/ \
 ACES Filmic https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/ \
 Font Awesome https://fontawesome.com/ \
-Photogrammetry https://sketchfab.com/artfletch \
 ![](/images/entt.png)
 ![](/images/physx.png)
 ![](/images/lua.png)
