@@ -63,7 +63,7 @@ void AboutWindow::Init()
 {
 	DirectX::ScratchImage scratchImage;
 	if (FAILED(DirectX::LoadFromWICFile(
-		L"DATA\\Images\\Star.png",
+		L"data\\Images\\Star.png",
 		DirectX::WIC_FLAGS_NONE,
 		NULL,
 		scratchImage)))

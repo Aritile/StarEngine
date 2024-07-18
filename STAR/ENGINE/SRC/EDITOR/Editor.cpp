@@ -15,6 +15,7 @@
 #include <wincodec.h>
 #include "../MODULE/Module.h"
 #include "WINDOW/Project.h"
+#include "../SYSTEM/PlayerPrefs.h"
 
 static Editor editor;
 
@@ -39,6 +40,7 @@ static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton
 static ScriptingSystem*    scriptingSystem = ScriptingSystem::GetSingleton();
 static Module*             module = Module::GetSingleton();
 static ProjectWindow*      projectWindow = ProjectWindow::GetSingleton();
+static PlayerPrefs*        playerPrefs = PlayerPrefs::GetSingleton();
 
 static ImVec2 mainMenuBarSize = ImVec2(NULL, NULL);
 

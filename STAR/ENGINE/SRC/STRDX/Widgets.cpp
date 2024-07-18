@@ -26,8 +26,8 @@ void Widgets::InitBoundingBoxWidget()
 	boundingBoxShader = Shader::Create();
 	if (boundingBoxShader)
 	{
-		boundingBoxShader->LoadVertex("DATA\\Shaders\\Widget\\BoundingBox\\vertex.hlsl", true);
-		boundingBoxShader->LoadPixel("DATA\\Shaders\\Widget\\BoundingBox\\pixel.hlsl", true);
+		boundingBoxShader->LoadVertex("data\\Shaders\\Widget\\BoundingBox\\vertex.hlsl", true);
+		boundingBoxShader->LoadPixel("data\\Shaders\\Widget\\BoundingBox\\pixel.hlsl", true);
 
 		boundingBoxShader->CompileVertex();
 		boundingBoxShader->CompilePixel();
@@ -76,8 +76,8 @@ void Widgets::InitGridWidget()
 	gridShader = Shader::Create();
 	if (gridShader)
 	{
-		gridShader->LoadVertex("DATA\\Shaders\\Widget\\Grid\\vertex.hlsl", true);
-		gridShader->LoadPixel("DATA\\Shaders\\Widget\\Grid\\pixel.hlsl", true);
+		gridShader->LoadVertex("data\\Shaders\\Widget\\Grid\\vertex.hlsl", true);
+		gridShader->LoadPixel("data\\Shaders\\Widget\\Grid\\pixel.hlsl", true);
 
 		gridShader->CompileVertex();
 		gridShader->CompilePixel();
@@ -256,8 +256,8 @@ void Widgets::InitPerspectiveFrustumWidget()
 	perspectiveFrustum = Shader::Create();
 	if (perspectiveFrustum)
 	{
-		perspectiveFrustum->LoadVertex("DATA\\Shaders\\Widget\\PerspectiveFrustum\\vertex.hlsl", true);
-		perspectiveFrustum->LoadPixel("DATA\\Shaders\\Widget\\PerspectiveFrustum\\pixel.hlsl", true);
+		perspectiveFrustum->LoadVertex("data\\Shaders\\Widget\\PerspectiveFrustum\\vertex.hlsl", true);
+		perspectiveFrustum->LoadPixel("data\\Shaders\\Widget\\PerspectiveFrustum\\pixel.hlsl", true);
 
 		perspectiveFrustum->CompileVertex();
 		perspectiveFrustum->CompilePixel();
@@ -282,8 +282,8 @@ void Widgets::InitOrthographicFrustumWidget()
 	orthographicFrustum = Shader::Create();
 	if (orthographicFrustum)
 	{
-		orthographicFrustum->LoadVertex("DATA\\Shaders\\Widget\\OrthographicFrustum\\vertex.hlsl", true);
-		orthographicFrustum->LoadPixel("DATA\\Shaders\\Widget\\OrthographicFrustum\\pixel.hlsl", true);
+		orthographicFrustum->LoadVertex("data\\Shaders\\Widget\\OrthographicFrustum\\vertex.hlsl", true);
+		orthographicFrustum->LoadPixel("data\\Shaders\\Widget\\OrthographicFrustum\\pixel.hlsl", true);
 
 		orthographicFrustum->CompileVertex();
 		orthographicFrustum->CompilePixel();

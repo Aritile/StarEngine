@@ -268,10 +268,10 @@ void EngineStart()
     dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     SkyFile skyFile;
-    skyFile.SetSphereMap("DATA\\HDRIs\\qwantani_puresky_4k.hdr");
+    skyFile.SetSphereMap("data\\HDRIs\\qwantani_puresky_4k.hdr");
     sky->SetSky(skyFile);
 
-    playerPrefs->Test();
+    playerPrefs->Load();
     game->InitTime();
 
     /* --------------------------- */
@@ -379,6 +379,7 @@ void EngineProcess()
 void EngineShutdown()
 {
     StarHelpers::AddLog("[Engine] -> Shutting/Cleaning...");
+    playerPrefs->Save();
     editor->Shutdown();
     modelSystem->Shutdown();
     sky->Shutdown();
