@@ -5,6 +5,7 @@
 #include "constant_buffer.h"
 #include "rasterizer_state.h"
 #include "../ENTITY/COMPONENT/TransformComponent.h"
+#include "Vertex.h"
 
 class Widgets
 {
@@ -25,6 +26,21 @@ public:
 	void RenderOrthographicFrustumWidget();
 	void SetRasterizerState();
 	void UnsetRasterizerState();
+
+public:
+	void SetRenderGrid(bool _Render);
+	void SetGridSize(int _Size);
+	void SetGridPos(Vector3 _Pos);
+	bool GetRenderGrid();
+	int GetGridSize();
+	Vector3 GetGridPos();
+
+private:
+	bool renderGrid = true;
+	int gridSize = 15;
+	Vector3 gridPos;
+
+	std::vector<POSCOL> BuildGrid();
 
 private:
 	bool IsGood();

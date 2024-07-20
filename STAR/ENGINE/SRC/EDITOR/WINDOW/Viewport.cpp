@@ -292,8 +292,8 @@ void ViewportWindow::UpdateMovement()
 	}
 
 	{
-		pos = Vector3::Lerp(pos, sPos, 8.0f * ImGui::GetIO().DeltaTime);
-		rot = Quaternion::Lerp(rot, sRot, 16.0f * ImGui::GetIO().DeltaTime);
+		pos = Vector3::Lerp(pos, sPos, posLerp * ImGui::GetIO().DeltaTime);
+		rot = Quaternion::Lerp(rot, sRot, rotLerp * ImGui::GetIO().DeltaTime);
 	}
 
 	Matrix matrix = Matrix::Identity;
@@ -584,4 +584,64 @@ void ViewportWindow::SetDefaultCam()
 {
 	pos = Vector3(0, 0, -5);
 	sPos = Vector3(0, 0, -5);
+}
+
+float ViewportWindow::GetNear()
+{
+	return camNearZ;
+}
+float ViewportWindow::GetFar()
+{
+	return camFarZ;
+}
+float ViewportWindow::GetFov()
+{
+	return camFov;
+}
+float ViewportWindow::GetSpeed()
+{
+	return camSpeed;
+}
+float ViewportWindow::GetBoostSpeed()
+{
+	return camBoostSpeed;
+}
+void ViewportWindow::SetNear(float _Near)
+{
+	camNearZ = _Near;
+	SetPerspectiveProjectionMatrix(windowSizeAvail, camFov, camNearZ, camFarZ);
+}
+void ViewportWindow::SetFar(float _Far)
+{
+	camFarZ = _Far;
+	SetPerspectiveProjectionMatrix(windowSizeAvail, camFov, camNearZ, camFarZ);
+}
+void ViewportWindow::SetFov(float _Fov)
+{
+	camFov = _Fov;
+	SetPerspectiveProjectionMatrix(windowSizeAvail, camFov, camNearZ, camFarZ);
+}
+void ViewportWindow::SetSpeed(float _Speed)
+{
+	camSpeed = _Speed;
+}
+void ViewportWindow::SetBoostSpeed(float _BoostSpeed)
+{
+	camBoostSpeed = _BoostSpeed;
+}
+float ViewportWindow::GetPosLerp()
+{
+	return posLerp;
+}
+float ViewportWindow::GetRotLerp()
+{
+	return rotLerp;
+}
+void ViewportWindow::SetPosLerp(float _Value)
+{
+	posLerp = _Value;
+}
+void ViewportWindow::SetRotLerp(float _Value)
+{
+	rotLerp = _Value;
 }

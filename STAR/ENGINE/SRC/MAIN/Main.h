@@ -1,6 +1,6 @@
 #pragma once
 
-#define DEFAULT_FONT "data\\Fonts\\Roboto.ttf"
+#define DEFAULT_FONT "data\\font\\roboto.ttf"
 #define MAJOR 1
 #define MINOR 1
 #define PATCH 0

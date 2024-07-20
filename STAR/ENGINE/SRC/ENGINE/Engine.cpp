@@ -12,6 +12,7 @@
 #include "../MODULE/Module.h"
 #include "../STRDX/Widgets.h"
 #include "../SYSTEM/PlayerPrefs.h"
+#include "../EDITOR/WINDOW/Settings.h"
 
 static DX* dx = DX::GetSingleton();
 static Editor* editor = &EditorClass();
@@ -25,6 +26,7 @@ static ScriptingSystem* scriptingSystem = ScriptingSystem::GetSingleton();
 static Module* module = Module::GetSingleton();
 static Widgets* widgets = Widgets::GetSingleton();
 static PlayerPrefs* playerPrefs = PlayerPrefs::GetSingleton();
+static SettingsWindow* settingsWindow = SettingsWindow::GetSingleton();
 
 static Vector4 clearColor = Vector4(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -268,7 +270,7 @@ void EngineStart()
     dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     SkyFile skyFile;
-    skyFile.SetSphereMap("data\\HDRIs\\qwantani_puresky_4k.hdr");
+    skyFile.SetSphereMap("data\\hdr\\qwantani_puresky_4k.hdr");
     sky->SetSky(skyFile);
 
     playerPrefs->Load();
@@ -314,6 +316,8 @@ void EngineStart()
     widgets->InitGridWidget();
     widgets->InitPerspectiveFrustumWidget();
     widgets->InitOrthographicFrustumWidget();
+
+    settingsWindow->Load();
 
     ShowWindow(dx->hwnd, *dx->nCmdShow);
     UpdateWindow(dx->hwnd);
@@ -380,6 +384,7 @@ void EngineShutdown()
 {
     StarHelpers::AddLog("[Engine] -> Shutting/Cleaning...");
     playerPrefs->Save();
+    settingsWindow->Save();
     editor->Shutdown();
     modelSystem->Shutdown();
     sky->Shutdown();
@@ -444,7 +449,7 @@ void RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vector4 _Co
     dx->dxDeviceContext->ClearDepthStencilView(_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
     dx->dxDeviceContext->OMSetRenderTargets(1, &_RenderTargetView, _DepthStencilView);
     dx->dxDeviceContext->RSSetViewports(1, &_Viewport);
-
+    
     sky->Render(_ViewMatrix, _ProjectionMatrix);
 
     auto view = ecs->registry.view<GeneralComponent>();

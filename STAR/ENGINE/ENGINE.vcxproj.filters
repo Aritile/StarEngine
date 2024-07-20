@@ -228,6 +228,9 @@
     <ClInclude Include="SRC\SYSTEM\PlayerPrefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\EDITOR\WINDOW\Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SRC\MAIN\Main.cpp">
@@ -459,6 +462,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\SYSTEM\PlayerPrefs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\EDITOR\WINDOW\Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

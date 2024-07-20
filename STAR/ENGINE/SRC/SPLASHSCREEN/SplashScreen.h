@@ -14,7 +14,7 @@ private:
 	std::wstring name = L"StarSplashScreen";
 	UINT width = 620;
 	UINT height = 300;
-	std::wstring path = L"data\\Images\\SplashScreen.bmp";
+	std::wstring path = L"data\\image\\splashscreen.bmp";
 };
 
 SplashScreen& SplashScreenClass();

@@ -20,10 +20,10 @@ using namespace DirectX::SimpleMath;
 #define DYNAMIC_FRICTION 0.5f
 #define RESTITUTION 0.1f
 
-enum PhysicsProcesor : unsigned char
+enum PhysicsProcesor
 {
-	xCPU = 0x10,
-	xGPU = 0x20,
+	xCPU = 0,
+	xGPU = 1
 };
 
 struct PhysicsSystem
@@ -32,6 +32,8 @@ public:
 	bool Init();
 	void Update();
 	void Shutdown();
+	void SetProcesor(PhysicsProcesor _Procesor);
+	PhysicsProcesor GetProcesor();
 
 private:
 	physx::PxDefaultAllocator	   gAllocator;
@@ -45,7 +47,7 @@ private:
 	physx::PxCudaContextManager*   gCudaContextManager = NULL;
 
 private:
-	unsigned char physicsProcesor = PhysicsProcesor::xGPU;
+	PhysicsProcesor physicsProcesor = PhysicsProcesor::xGPU;
 
 public:
 	physx::PxPhysics* GetPhysics();

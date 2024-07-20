@@ -16,6 +16,7 @@
 #include "../MODULE/Module.h"
 #include "WINDOW/Project.h"
 #include "../SYSTEM/PlayerPrefs.h"
+#include "WINDOW/Settings.h"
 
 static Editor editor;
 
@@ -41,6 +42,7 @@ static ScriptingSystem*    scriptingSystem = ScriptingSystem::GetSingleton();
 static Module*             module = Module::GetSingleton();
 static ProjectWindow*      projectWindow = ProjectWindow::GetSingleton();
 static PlayerPrefs*        playerPrefs = PlayerPrefs::GetSingleton();
+static SettingsWindow*     settingsWindow = SettingsWindow::GetSingleton();
 
 static ImVec2 mainMenuBarSize = ImVec2(NULL, NULL);
 
@@ -66,6 +68,7 @@ bool Editor::Init()
 	assetsWindow->Init();
 	consoleWindow->Init();
 	aboutWindow->Init();
+	settingsWindow->Init();
 
 	start_time = std::chrono::steady_clock::now();
 
@@ -92,6 +95,7 @@ void Editor::Render()
 		fileWindow->Render();
 		consoleWindow->Render();
 		aboutWindow->Render();
+		settingsWindow->Render();
 
 		//if (module) module->myFunc(ImGui::GetCurrentContext());
 		//ImGui::ShowDemoWindow();
@@ -669,6 +673,8 @@ void Editor::RenderEditMenuBar()
 		ImGui::Separator();
 		ImGui::MenuItem("Project");
 		ImGui::MenuItem("Scene");
+		ImGui::Separator();
+		ImGui::MenuItem("Settings", NULL, &settingsWindow->renderSettings);
 		ImGui::EndMenu();
 	}
 }

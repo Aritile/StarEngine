@@ -1,6 +1,6 @@
 # Blender v3.1.2 OBJ File: ''
 # www.blender.org
-mtllib Capsule.mtl
+mtllib capsule.mtl
 o Sphere.001
 v 0.000000 -1.555570 -0.831470
 v 0.000000 -1.707107 -0.707107

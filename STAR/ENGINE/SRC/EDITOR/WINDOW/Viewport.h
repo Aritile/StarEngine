@@ -27,6 +27,20 @@ public:
 	ID3D11RenderTargetView* GetRenderTargetView();
 	ID3D11DepthStencilView* GetDepthStencilView();
 	ID3D11ShaderResourceView* GetShaderResourceView();
+	float GetNear();
+	float GetFar();
+	float GetFov();
+	float GetSpeed();
+	float GetBoostSpeed();
+	void SetNear(float _Near);
+	void SetFar(float _Far);
+	void SetFov(float _Fov);
+	void SetSpeed(float _Speed);
+	void SetBoostSpeed(float _BoostSpeed);
+	float GetPosLerp();
+	float GetRotLerp();
+	void SetPosLerp(float _Value);
+	void SetRotLerp(float _Value);
 
 private:
 	ID3D11RenderTargetView* s_RenderTargetView = NULL;
@@ -78,6 +92,8 @@ private:
 	float camSpeed = 8.0f;
 	float camBoostSpeed = 16.0f;
 	float camSensitivity = 0.001f;
+	float posLerp = 8.0f;
+	float rotLerp = 16.0f;
 
 private:
 	void RenderWidget();

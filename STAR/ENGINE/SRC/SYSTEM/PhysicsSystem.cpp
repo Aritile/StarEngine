@@ -357,3 +357,12 @@ void BoxColliderBuffer::DeserializeComponent(YAML::Node& in)
 	auto size = in["Size"];
 	SetSize(StarHelpers::DeserializeVector3(size));
 }
+
+void PhysicsSystem::SetProcesor(PhysicsProcesor _Procesor)
+{
+	physicsProcesor = _Procesor;
+}
+PhysicsProcesor PhysicsSystem::GetProcesor()
+{
+	return physicsProcesor;
+}

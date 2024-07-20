@@ -26,9 +26,9 @@ bool ModelSystem::Init()
 	ID3DBlob* VS = nullptr;
 	ID3DBlob* PS = nullptr;
 
-	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\Shaders\\Model\\vs.hlsl", ENTRY_POINT, VS_VERSION, &VS)))
+	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\shader\\model\\vertex.hlsl", ENTRY_POINT, VS_VERSION, &VS)))
 		return false;
-	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\Shaders\\Model\\ps.hlsl", ENTRY_POINT, PS_VERSION, &PS)))
+	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\shader\\model\\pixel.hlsl", ENTRY_POINT, PS_VERSION, &PS)))
 		return false;
 	if (FAILED(dx->dxDevice->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &pVS)))
 		return false;

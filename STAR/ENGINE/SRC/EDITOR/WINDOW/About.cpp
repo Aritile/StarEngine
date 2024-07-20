@@ -22,7 +22,7 @@ void AboutWindow::Render()
 	ImVec2 windowPadding = style->WindowPadding;
 
 	ImGui::SetNextWindowSize(ImVec2(400, 290));
-	ImGui::Begin("About", 0, ImGuiWindowFlags_NoResize 
+	ImGui::Begin("About", &renderAbout, ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoDocking
 		| ImGuiWindowFlags_NoScrollbar
 		| ImGuiWindowFlags_NoScrollWithMouse);
@@ -65,7 +65,7 @@ void AboutWindow::Init()
 {
 	DirectX::ScratchImage scratchImage;
 	if (FAILED(DirectX::LoadFromWICFile(
-		L"data\\Images\\Star.png",
+		L"data\\image\\star.png",
 		DirectX::WIC_FLAGS_NONE,
 		NULL,
 		scratchImage)))

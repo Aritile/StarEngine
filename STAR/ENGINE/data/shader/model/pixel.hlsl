@@ -1,4 +1,4 @@
-#include "../ToneMappers/ACES.hlsl"
+#include "../tonemapping/aces.hlsl"
 
 cbuffer ConstantBuffer : register(b0)
 {

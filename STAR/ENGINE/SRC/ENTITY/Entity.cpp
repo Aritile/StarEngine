@@ -13,10 +13,10 @@
 #include "../SYSTEM/PhysicsSystem.h"
 #include "../MODEL/AssimpLoader.h"
 
-#define CUBE_MODEL "data\\Models\\Cube.obj"
-#define SPHERE_MODEL "data\\Models\\Sphere.obj"
-#define CAPSULE_MODEL "data\\Models\\Capsule.obj"
-#define PLANE_MODEL "data\\Models\\Plane.obj"
+#define CUBE_MODEL "data\\model\\cube.obj"
+#define SPHERE_MODEL "data\\model\\sphere.obj"
+#define CAPSULE_MODEL "data\\model\\capsule.obj"
+#define PLANE_MODEL "data\\model\\plane.obj"
 
 Entity* Entity::GetSingleton()
 {

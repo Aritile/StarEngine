@@ -1,5 +1,4 @@
 #include "Sky.h"
-
 #include <fstream>
 #include "../DX/DX.h"
 #include "../EDITOR/Editor.h"
@@ -29,9 +28,9 @@ static ConstantBuffer cb;
 
 bool Sky::Init()
 {
-	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\Shaders\\Sky\\vs.hlsl", "main", VS_VERSION, &VS)))
+	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\shader\\sky\\vertex.hlsl", "main", VS_VERSION, &VS)))
 		return false;
-	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\Shaders\\Sky\\ps.hlsl", "main", PS_VERSION, &PS)))
+	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\shader\\sky\\pixel.hlsl", "main", PS_VERSION, &PS)))
 		return false;
 	if (FAILED(dx->dxDevice->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &pVS)))
 		return false;
@@ -94,7 +93,7 @@ bool Sky::Init()
 			return false;
 	}
 
-	sphereModel = assimpLoader->LoadRawModel("DATA\\Models\\Sphere.obj");
+	sphereModel = assimpLoader->LoadRawModel("data\\model\\sphere.obj");
 
 	{
 		D3D11_BUFFER_DESC desc;
@@ -208,16 +207,6 @@ void Sky::OutCore(SkyFile sky)
 			std::string buffer = sky.GetSpherePath().substr(pos);
 
 			/*
-			if (buffer == PNG || buffer == JPEG)
-			{
-				if (FAILED(DirectX::LoadFromWICFile(
-					StarHelpers::ConvertString(sky.GetSpherePath()).c_str(),
-					DirectX::WIC_FLAGS_NONE,
-					nullptr,
-					sphere_image)))
-					return;
-			}
-
 			if (buffer == DDS)
 			{
 				if (FAILED(DirectX::LoadFromDDSFile(

@@ -8,7 +8,6 @@
 #include "../ENTITY/COMPONENT/CameraComponent.h"
 
 // strdx
-#include "Vertex.h"
 #include "context.h"
 
 static Context* context = Context::GetSingleton();
@@ -26,8 +25,8 @@ void Widgets::InitBoundingBoxWidget()
 	boundingBoxShader = Shader::Create();
 	if (boundingBoxShader)
 	{
-		boundingBoxShader->LoadVertex("data\\Shaders\\Widget\\BoundingBox\\vertex.hlsl", true);
-		boundingBoxShader->LoadPixel("data\\Shaders\\Widget\\BoundingBox\\pixel.hlsl", true);
+		boundingBoxShader->LoadVertex("data\\shader\\widget\\bounding_box\\vertex.hlsl", true);
+		boundingBoxShader->LoadPixel("data\\shader\\widget\\bounding_box\\pixel.hlsl", true);
 
 		boundingBoxShader->CompileVertex();
 		boundingBoxShader->CompilePixel();
@@ -76,8 +75,8 @@ void Widgets::InitGridWidget()
 	gridShader = Shader::Create();
 	if (gridShader)
 	{
-		gridShader->LoadVertex("data\\Shaders\\Widget\\Grid\\vertex.hlsl", true);
-		gridShader->LoadPixel("data\\Shaders\\Widget\\Grid\\pixel.hlsl", true);
+		gridShader->LoadVertex("data\\shader\\widget\\grid\\vertex.hlsl", true);
+		gridShader->LoadPixel("data\\shader\\widget\\grid\\pixel.hlsl", true);
 
 		gridShader->CompileVertex();
 		gridShader->CompilePixel();
@@ -89,61 +88,8 @@ void Widgets::InitGridWidget()
 		gridShader->AddLayout("COLOR", 0, 4, 0, 12);
 		gridShader->CreateLayout();
 
-		std::vector<POSCOL> vertices;
-
-		float size = 14;
-		float lenght = 27;
-		float alpha = 1.0f;
-		float pos = 1;
-
-		for (int i = 0; i < size; i++)
-		{
-			vertices.push_back(POSCOL(-lenght, -1.0f, pos, 1.0f, 1.0f, 1.0f, alpha));
-			vertices.push_back(POSCOL(lenght, -1.0f, pos, 1.0f, 1.0f, 1.0f, alpha));
-			pos++;
-			pos++;
-		}
-
-		pos = -1;
-
-		for (int i = 0; i < size; i++)
-		{
-			vertices.push_back(POSCOL(-lenght, -1.0f, pos, 1.0f, 1.0f, 1.0f, alpha));
-			vertices.push_back(POSCOL(lenght, -1.0f, pos, 1.0f, 1.0f, 1.0f, alpha));
-			pos--;
-			pos--;
-		}
-
-		pos = 1;
-
-		for (int i = 0; i < size; i++)
-		{
-			vertices.push_back(POSCOL(pos, -1.0f, -lenght, 1.0f, 1.0f, 1.0f, alpha));
-			vertices.push_back(POSCOL(pos, -1.0f, lenght, 1.0f, 1.0f, 1.0f, alpha));
-			pos++;
-			pos++;
-		}
-
-		pos = -1;
-
-		for (int i = 0; i < size; i++)
-		{
-			vertices.push_back(POSCOL(pos, -1.0f, -lenght, 1.0f, 1.0f, 1.0f, alpha));
-			vertices.push_back(POSCOL(pos, -1.0f, lenght, 1.0f, 1.0f, 1.0f, alpha));
-			pos--;
-			pos--;
-		}
-
-		vertices.push_back(POSCOL(lenght, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, alpha));
-		vertices.push_back(POSCOL(-lenght, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, alpha));
-
-		vertices.push_back(POSCOL(0.0f, -1.0f, lenght, 0.0f, 0.0f, 1.0f, alpha));
-		vertices.push_back(POSCOL(0.0f, -1.0f, -lenght, 0.0f, 0.0f, 1.0f, alpha));
-
-		vertices.push_back(POSCOL(0.0f, lenght, 0.0f, 0.0f, 1.0f, 0.0f, alpha));
-		vertices.push_back(POSCOL(0.0f, -lenght, 0.0f, 0.0f, 1.0f, 0.0f, alpha));
-
-		gridShader->CreateVertexBuffer<POSCOL>(vertices);
+		std::vector<POSCOL> vertices = BuildGrid();
+		gridShader->CreateVertexBuffer<POSCOL>(vertices, true);
 
 		gridShader->ReleaseVertexBlob();
 		gridShader->ReleasePixelBlob();
@@ -151,19 +97,21 @@ void Widgets::InitGridWidget()
 }
 void Widgets::RenderGridWidget()
 {
-	if (gridShader)
+	if (gridShader && renderGrid)
 	{
 		context->SetPrimitiveTopology(PT_LINELIST);
 		{
 			context->Set(gridShader);
 			context->SetVertexConstantBuffer(constantBuffer, 0);
 
-			DirectX::XMMATRIX view = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveViewMatrix());
-			DirectX::XMMATRIX proj = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveProjectionMatrix());
+			Matrix view = viewportWindow->GetPerspectiveViewMatrix();
+			Matrix proj = viewportWindow->GetPerspectiveProjectionMatrix();
+			Matrix world = Matrix::Identity;
+			world = Matrix::CreateTranslation(gridPos) * world;
 
-			cb.SetProjection(proj);
-			cb.SetView(view);
-			cb.SetWorld(Matrix::Identity);
+			cb.SetProjection(DirectX::XMMatrixTranspose(proj));
+			cb.SetView(DirectX::XMMatrixTranspose(view));
+			cb.SetWorld(DirectX::XMMatrixTranspose(world));
 			constantBuffer->Update(&cb);
 
 			context->Draw(gridShader);
@@ -256,8 +204,8 @@ void Widgets::InitPerspectiveFrustumWidget()
 	perspectiveFrustum = Shader::Create();
 	if (perspectiveFrustum)
 	{
-		perspectiveFrustum->LoadVertex("data\\Shaders\\Widget\\PerspectiveFrustum\\vertex.hlsl", true);
-		perspectiveFrustum->LoadPixel("data\\Shaders\\Widget\\PerspectiveFrustum\\pixel.hlsl", true);
+		perspectiveFrustum->LoadVertex("data\\shader\\widget\\perspective_frustum\\vertex.hlsl", true);
+		perspectiveFrustum->LoadPixel("data\\shader\\widget\\perspective_frustum\\pixel.hlsl", true);
 
 		perspectiveFrustum->CompileVertex();
 		perspectiveFrustum->CompilePixel();
@@ -282,8 +230,8 @@ void Widgets::InitOrthographicFrustumWidget()
 	orthographicFrustum = Shader::Create();
 	if (orthographicFrustum)
 	{
-		orthographicFrustum->LoadVertex("data\\Shaders\\Widget\\OrthographicFrustum\\vertex.hlsl", true);
-		orthographicFrustum->LoadPixel("data\\Shaders\\Widget\\OrthographicFrustum\\pixel.hlsl", true);
+		orthographicFrustum->LoadVertex("data\\shader\\widget\\orthographic_frustum\\vertex.hlsl", true);
+		orthographicFrustum->LoadPixel("data\\shader\\widget\\orthographic_frustum\\pixel.hlsl", true);
 
 		orthographicFrustum->CompileVertex();
 		orthographicFrustum->CompilePixel();
@@ -502,4 +450,82 @@ void Widgets::UnsetRasterizerState()
 {
 	if (rasterizerState)
 		rasterizerState->Unset();
+}
+
+void Widgets::SetRenderGrid(bool _Render)
+{
+	renderGrid = _Render;
+}
+void Widgets::SetGridSize(int _Size)
+{
+	gridSize = _Size;
+
+	std::vector<POSCOL> vertices = BuildGrid();
+	gridShader->CreateVertexBuffer<POSCOL>(vertices, true);
+}
+void Widgets::SetGridPos(Vector3 _Pos)
+{
+	gridPos = _Pos;
+}
+bool Widgets::GetRenderGrid()
+{
+	return renderGrid;
+}
+int Widgets::GetGridSize()
+{
+	return gridSize;
+}
+Vector3 Widgets::GetGridPos()
+{
+	return gridPos;
+}
+std::vector<POSCOL> Widgets::BuildGrid()
+{
+	std::vector<POSCOL> vertices;
+	float lenght = gridSize * 2;
+	lenght -= 1.0;
+	float pos = 1.0f;
+
+	for (int i = 0; i < gridSize; i++)
+	{
+		vertices.push_back(POSCOL(-lenght, -1.0f, pos, 1.0f, 1.0f, 1.0f, 1.0f));
+		vertices.push_back(POSCOL(lenght, -1.0f, pos, 1.0f, 1.0f, 1.0f, 1.0f));
+		pos += 2.0f;
+	}
+
+	pos = -1.0f;
+
+	for (int i = 0; i < gridSize; i++)
+	{
+		vertices.push_back(POSCOL(-lenght, -1.0f, pos, 1.0f, 1.0f, 1.0f, 1.0f));
+		vertices.push_back(POSCOL(lenght, -1.0f, pos, 1.0f, 1.0f, 1.0f, 1.0f));
+		pos -= 2.0f;
+	}
+
+	pos = 1.0f;
+
+	for (int i = 0; i < gridSize; i++)
+	{
+		vertices.push_back(POSCOL(pos, -1.0f, -lenght, 1.0f, 1.0f, 1.0f, 1.0f));
+		vertices.push_back(POSCOL(pos, -1.0f, lenght, 1.0f, 1.0f, 1.0f, 1.0f));
+		pos += 2.0f;
+	}
+
+	pos = -1.0f;
+
+	for (int i = 0; i < gridSize; i++)
+	{
+		vertices.push_back(POSCOL(pos, -1.0f, -lenght, 1.0f, 1.0f, 1.0f, 1.0f));
+		vertices.push_back(POSCOL(pos, -1.0f, lenght, 1.0f, 1.0f, 1.0f, 1.0f));
+		pos -= 2.0f;
+	}
+
+	vertices.push_back(POSCOL(lenght, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f));
+	vertices.push_back(POSCOL(-lenght, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f));
+	vertices.push_back(POSCOL(0.0f, -1.0f, lenght, 0.0f, 0.0f, 1.0f, 1.0f));
+	vertices.push_back(POSCOL(0.0f, -1.0f, -lenght, 0.0f, 0.0f, 1.0f, 1.0f));
+	vertices.push_back(POSCOL(0.0f, lenght, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f));
+	vertices.push_back(POSCOL(0.0f, -lenght, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f));
+
+	return vertices;
 }
