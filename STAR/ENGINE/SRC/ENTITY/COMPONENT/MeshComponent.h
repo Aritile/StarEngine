@@ -38,6 +38,7 @@ struct MeshConstantBuffer
 	DirectX::XMMATRIX sView;
 	DirectX::XMMATRIX sModel;
 	bool hasTexture = false;
+	int renderState = 0;
 };
 
 struct MeshComponent

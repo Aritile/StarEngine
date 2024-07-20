@@ -40,7 +40,6 @@ private:
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
 	bool opt_fullscreen = true;
 	bool opt_padding = false;
-	unsigned char renderState = PrimitiveState::PrimitiveTriangle;
 
 public:
 	ImFont* font = nullptr;

@@ -99,24 +99,20 @@ void Widgets::RenderGridWidget()
 {
 	if (gridShader && renderGrid)
 	{
-		context->SetPrimitiveTopology(PT_LINELIST);
-		{
-			context->Set(gridShader);
-			context->SetVertexConstantBuffer(constantBuffer, 0);
+		context->Set(gridShader);
+		context->SetVertexConstantBuffer(constantBuffer, 0);
 
-			Matrix view = viewportWindow->GetPerspectiveViewMatrix();
-			Matrix proj = viewportWindow->GetPerspectiveProjectionMatrix();
-			Matrix world = Matrix::Identity;
-			world = Matrix::CreateTranslation(gridPos) * world;
+		Matrix view = viewportWindow->GetPerspectiveViewMatrix();
+		Matrix proj = viewportWindow->GetPerspectiveProjectionMatrix();
+		Matrix world = Matrix::Identity;
+		world = Matrix::CreateTranslation(gridPos) * world;
 
-			cb.SetProjection(DirectX::XMMatrixTranspose(proj));
-			cb.SetView(DirectX::XMMatrixTranspose(view));
-			cb.SetWorld(DirectX::XMMatrixTranspose(world));
-			constantBuffer->Update(&cb);
+		cb.SetProjection(DirectX::XMMatrixTranspose(proj));
+		cb.SetView(DirectX::XMMatrixTranspose(view));
+		cb.SetWorld(DirectX::XMMatrixTranspose(world));
+		constantBuffer->Update(&cb);
 
-			context->Draw(gridShader);
-		}
-		context->SetPrimitiveTopology(PT_TRIANGLELIST);
+		context->Draw(gridShader);
 	}
 }
 void Widgets::RenderBoundingBoxWidget()
@@ -135,8 +131,6 @@ void Widgets::RenderBoundingBoxWidget()
 		{
 			if (meshComponent.GetState())
 			{
-				context->SetPrimitiveTopology(PT_LINELIST);
-
 				if (boundingBoxShader)
 				{
 					context->Set(boundingBoxShader);
@@ -179,8 +173,6 @@ void Widgets::RenderBoundingBoxWidget()
 					context->UpdateVertexBuffer<POS>(boundingBoxShader, vertices);
 					context->Draw(boundingBoxShader);
 				}
-
-				context->SetPrimitiveTopology(PT_TRIANGLELIST);
 			}
 		}
 	}
@@ -263,8 +255,6 @@ void Widgets::RenderPerspectiveFrustumWidget()
 		{
 			if (cameraComponent.GetCameraType() == Perspective)
 			{
-				context->SetPrimitiveTopology(PT_LINELIST);
-
 				if (perspectiveFrustum)
 				{
 					context->Set(perspectiveFrustum);
@@ -331,8 +321,6 @@ void Widgets::RenderPerspectiveFrustumWidget()
 					context->UpdateVertexBuffer<POS>(perspectiveFrustum, vertices);
 					context->Draw(perspectiveFrustum);
 				}
-
-				context->SetPrimitiveTopology(PT_TRIANGLELIST);
 			}
 		}
 	}
@@ -349,8 +337,6 @@ void Widgets::RenderOrthographicFrustumWidget()
 		{
 			if (cameraComponent.GetCameraType() == Orthographic)
 			{
-				context->SetPrimitiveTopology(PT_LINELIST);
-
 				if (orthographicFrustum)
 				{
 					context->Set(orthographicFrustum);
@@ -408,8 +394,6 @@ void Widgets::RenderOrthographicFrustumWidget()
 					context->UpdateVertexBuffer<POS>(orthographicFrustum, vertices);
 					context->Draw(orthographicFrustum);
 				}
-
-				context->SetPrimitiveTopology(PT_TRIANGLELIST);
 			}
 		}
 	}

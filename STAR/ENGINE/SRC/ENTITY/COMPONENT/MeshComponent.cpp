@@ -195,6 +195,12 @@ void MeshComponent::DrawMesh(DirectX::XMMATRIX view, DirectX::XMMATRIX projectio
 		cb.sProjection = DirectX::XMMatrixTranspose(projection);
 		cb.sView = DirectX::XMMatrixTranspose(view);
 		cb.sModel = DirectX::XMMatrixTranspose(transComp.GetTransform());
+		if (viewportWindow->GetRenderState() == RenderState::Pos)
+			cb.renderState = 3;
+		else if (viewportWindow->GetRenderState() == RenderState::Normal)
+			cb.renderState = 4;
+		else
+			cb.renderState = 0;
 
 		if (diffuse_texture) cb.hasTexture = true;
 		else cb.hasTexture = false;

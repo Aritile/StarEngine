@@ -25,7 +25,6 @@ void SettingsWindow::Render()
 	ImGui::Begin("Settings", &renderSettings);
 	{
         // Left
-        static int selected = 0;
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 0.0f);
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 4));
@@ -302,7 +301,7 @@ void SettingsWindow::Load()
 		widgets->SetRenderGrid(grid["Render"].as<bool>());
 		auto position = grid["Position"];
 		widgets->SetGridPos(StarHelpers::DeserializeVector3(position));
-		widgets->SetGridSize(grid["Size"].as<float>());
+		widgets->SetGridSize(grid["Size"].as<int>());
 	}
 
 	if (settings["Camera"])

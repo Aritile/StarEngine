@@ -17,6 +17,7 @@ Sky& SkyClass()
 
 static DX* dx = DX::GetSingleton();
 static AssimpLoader* assimpLoader = &AssimpLoaderClass();
+static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 
 struct ConstantBuffer
 {
@@ -151,10 +152,14 @@ void Sky::Render(DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 			UINT stride = sizeof(Vertex);
 			UINT offset = 0;
 
-			dx->dxDeviceContext->IASetVertexBuffers(0, 1, &sphereVertexBuffer, &stride, &offset);
-			dx->dxDeviceContext->IASetIndexBuffer(sphereIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-			dx->dxDeviceContext->PSSetShaderResources(0, 1, &sphere_texture);
-			dx->dxDeviceContext->DrawIndexed((UINT)sphereModel[0].indices.size(), 0, 0);
+			dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			{
+				dx->dxDeviceContext->IASetVertexBuffers(0, 1, &sphereVertexBuffer, &stride, &offset);
+				dx->dxDeviceContext->IASetIndexBuffer(sphereIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+				dx->dxDeviceContext->PSSetShaderResources(0, 1, &sphere_texture);
+				dx->dxDeviceContext->DrawIndexed((UINT)sphereModel[0].indices.size(), 0, 0);
+			}
+			viewportWindow->RefreshRenderState();
 		}
 	}
 }

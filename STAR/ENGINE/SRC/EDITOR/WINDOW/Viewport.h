@@ -9,6 +9,15 @@
 #include "../../ENTITY/COMPONENT/MeshComponent.h"
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
 
+enum RenderState
+{
+	Triangle,
+	Line,
+	Point,
+	Pos,
+	Normal
+};
+
 struct TransformComponent;
 
 // buffer
@@ -84,6 +93,9 @@ public:
 
 public:
 	void UpdateMovement();
+	void SetRenderState(RenderState _RenderState);
+	RenderState GetRenderState();
+	void RefreshRenderState();
 
 private:
 	float camNearZ = 0.1f;
@@ -94,6 +106,7 @@ private:
 	float camSensitivity = 0.001f;
 	float posLerp = 8.0f;
 	float rotLerp = 16.0f;
+	RenderState renderState = RenderState::Triangle;
 
 private:
 	void RenderWidget();

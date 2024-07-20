@@ -645,3 +645,55 @@ void ViewportWindow::SetRotLerp(float _Value)
 {
 	rotLerp = _Value;
 }
+void ViewportWindow::SetRenderState(RenderState _RenderState)
+{
+	renderState = _RenderState;
+
+	if (renderState == RenderState::Triangle)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	}
+	else if (renderState == RenderState::Line)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+	}
+	else if (renderState == RenderState::Point)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+	}
+	else if (renderState == RenderState::Pos)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	}
+	else if (renderState == RenderState::Normal)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	}
+}
+RenderState ViewportWindow::GetRenderState()
+{
+	return renderState;
+}
+void ViewportWindow::RefreshRenderState()
+{
+	if (renderState == RenderState::Triangle)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	}
+	else if (renderState == RenderState::Line)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+	}
+	else if (renderState == RenderState::Point)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+	}
+	else if (renderState == RenderState::Pos)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	}
+	else if (renderState == RenderState::Normal)
+	{
+		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	}
+}

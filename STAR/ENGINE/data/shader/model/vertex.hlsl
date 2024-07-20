@@ -4,6 +4,7 @@ cbuffer ConstantBuffer : register(b0)
 	matrix sView;
 	matrix sModel;
     bool hasTexture;
+    int renderState;
 }
 
 struct VOut

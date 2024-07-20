@@ -270,7 +270,7 @@ void EngineStart()
     dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     SkyFile skyFile;
-    skyFile.SetSphereMap("data\\hdr\\qwantani_puresky_4k.hdr");
+    skyFile.SetSphereMap("data\\hdr\\overcast_soil_puresky_4k.hdr");
     sky->SetSky(skyFile);
 
     playerPrefs->Load();
@@ -471,12 +471,14 @@ void RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vector4 _Co
 
     if (!game)
     {
+        dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
         //widgets->SetRasterizerState();
         widgets->RenderBoundingBoxWidget();
         widgets->RenderGridWidget();
         widgets->RenderPerspectiveFrustumWidget();
         widgets->RenderOrthographicFrustumWidget();
         //widgets->UnsetRasterizerState();
+        viewportWindow->RefreshRenderState();
     }
 
     if (_SwapChain) _SwapChain->Present(1, 0);

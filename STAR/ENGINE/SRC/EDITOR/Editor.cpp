@@ -362,20 +362,25 @@ void Editor::RenderUpBar()
 		ImGui::SameLine();
 		if (ImGui::Button(ICON_FA_VECTOR_SQUARE, size))
 		{
-			if (renderState == PrimitiveState::PrimitiveTriangle)
+			if (viewportWindow->GetRenderState() == RenderState::Triangle)
 			{
-				renderState = PrimitiveState::PrimitiveLine;
-				dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+				viewportWindow->SetRenderState(RenderState::Line);
 			}
-			else if (renderState == PrimitiveState::PrimitiveLine)
+			else if (viewportWindow->GetRenderState() == RenderState::Line)
 			{
-				renderState = PrimitiveState::PrimitivePoint;
-				dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+				viewportWindow->SetRenderState(RenderState::Point);
 			}
-			else if (renderState == PrimitiveState::PrimitivePoint)
+			else if (viewportWindow->GetRenderState() == RenderState::Point)
 			{
-				renderState = PrimitiveState::PrimitiveTriangle;
-				dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+				viewportWindow->SetRenderState(RenderState::Pos);
+			}
+			else if (viewportWindow->GetRenderState() == RenderState::Pos)
+			{
+				viewportWindow->SetRenderState(RenderState::Normal);
+			}
+			else if (viewportWindow->GetRenderState() == RenderState::Normal)
+			{
+				viewportWindow->SetRenderState(RenderState::Triangle);
 			}
 		}
 

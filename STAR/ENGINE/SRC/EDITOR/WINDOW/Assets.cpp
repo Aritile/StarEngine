@@ -21,15 +21,15 @@ static Entity* ecs = Entity::GetSingleton();
 static AssimpLoader* assimpLoader = &AssimpLoaderClass();
 static SettingsWindow* settingsWindow = SettingsWindow::GetSingleton();
 
-#define FOLDER_ICON_PATH   L"data\\icon\\64px\\Folder.dds"   /**/
-#define IMAGE_ICON_PATH    L"data\\icon\\64px\\Image.dds"    /**/
-#define FILE_ICON_PATH     L"data\\icon\\64px\\File.dds"     /**/
-#define LUA_ICON_PATH      L"data\\icon\\64px\\Lua.dds"      /**/
-#define MODEL_ICON_PATH    L"data\\icon\\64px\\Model.dds"    /**/
-#define FONT_ICON_PATH     L"data\\icon\\64px\\Font.dds"     /**/
-#define AUDIO_ICON_PATH    L"data\\icon\\64px\\Audio.dds"    /**/
-#define SKY_ICON_PATH      L"data\\icon\\64px\\Sky.dds"      /**/
-#define MATERIAL_ICON_PATH L"data\\icon\\64px\\Material.dds" /**/
+#define FOLDER_ICON_PATH   L"data\\icon\\folder.dds"   /**/
+#define IMAGE_ICON_PATH    L"data\\icon\\image.dds"    /**/
+#define FILE_ICON_PATH     L"data\\icon\\file.dds"     /**/
+#define LUA_ICON_PATH      L"data\\icon\\lua.dds"      /**/
+#define MODEL_ICON_PATH    L"data\\icon\\model.dds"    /**/
+#define FONT_ICON_PATH     L"data\\icon\\font.dds"     /**/
+#define AUDIO_ICON_PATH    L"data\\icon\\audio.dds"    /**/
+#define SKY_ICON_PATH      L"data\\icon\\sky.dds"      /**/
+#define MATERIAL_ICON_PATH L"data\\icon\\material.dds" /**/
 
 void AssetsWindow::Init()
 {

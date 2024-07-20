@@ -43,7 +43,7 @@
 #   include <dirent.h>
 #elif defined(__WINNT__) || defined(_WIN32) || defined(_WIN64)
 #   define TTF_WINDOWS
-#   define _CRT_SECURE_NO_WARNINGS
+//#   define _CRT_SECURE_NO_WARNINGS
 #   define PATH_SEP '\\'
 #   define PATH_MAX MAX_PATH
 #   include <windows.h>
