@@ -4,6 +4,7 @@
 #include "../../MAIN/Main.h"
 #include <fstream>
 #include "../../ENTITY/COMPONENT/GeneralComponent.h"
+#include "Settings.h"
 
 AssetsWindow* AssetsWindow::GetSingleton()
 {
@@ -18,6 +19,7 @@ static Sky* sky = &SkyClass();
 static Editor* editor = &EditorClass();
 static Entity* ecs = Entity::GetSingleton();
 static AssimpLoader* assimpLoader = &AssimpLoaderClass();
+static SettingsWindow* settingsWindow = SettingsWindow::GetSingleton();
 
 #define FOLDER_ICON_PATH   L"data\\icon\\64px\\Folder.dds"   /**/
 #define IMAGE_ICON_PATH    L"data\\icon\\64px\\Image.dds"    /**/
@@ -356,8 +358,24 @@ void AssetsWindow::Render()
 
 											if (type.compare(LUA) == 0)
 											{
-												std::string vs = "start devenv " + buffer + " /Edit";
-												system(vs.c_str());
+												if (settingsWindow->GetEditorProgram() == 0)
+												{
+													// text editor
+													std::string vs = "notepad " + buffer;
+													system(vs.c_str());
+												}
+												else if (settingsWindow->GetEditorProgram() == 1)
+												{
+													// visual studio
+													std::string vs = "start devenv " + buffer + " /Edit";
+													system(vs.c_str());
+												}
+												else if (settingsWindow->GetEditorProgram() == 2)
+												{
+													// visual studio code
+													std::string vs = "code " + buffer;
+													system(vs.c_str());
+												}
 											}
 										}
 										else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))

@@ -53,6 +53,8 @@ void SettingsWindow::Render()
                     RenderPlayerPrefs();
                 if (selected == 3)
                     RenderPhysics();
+				if (selected == 4)
+					RenderLuaEditor();
             }
             ImGui::EndChild();
             ImGui::EndGroup();
@@ -67,6 +69,7 @@ void SettingsWindow::Init()
     list.push_back("Camera");
     list.push_back("PlayerPrefs");
     list.push_back("Physics");
+    list.push_back("Lua Editor");
 }
 
 void SettingsWindow::RenderGrid()
@@ -260,6 +263,17 @@ void SettingsWindow::Save()
 				out << YAML::Key << "UseGpu" << YAML::Value << (physicsProcesor == xCPU ? false : true);
 			}
 			out << YAML::EndMap;
+
+			out << YAML::Key << "LuaEditor" << YAML::Value << YAML::BeginMap;
+			{
+				if (programSelected == 0)
+					out << YAML::Key << "Program" << YAML::Value << programList[0];
+				else if (programSelected == 1)
+					out << YAML::Key << "Program" << YAML::Value << programList[1];
+				else if (programSelected == 2)
+					out << YAML::Key << "Program" << YAML::Value << programList[2];
+			}
+			out << YAML::EndMap;
 		}
 		out << YAML::EndMap;
 	}
@@ -285,7 +299,6 @@ void SettingsWindow::Load()
 	if (settings["Grid"])
 	{
 		YAML::Node grid = settings["Grid"];
-
 		widgets->SetRenderGrid(grid["Render"].as<bool>());
 		auto position = grid["Position"];
 		widgets->SetGridPos(StarHelpers::DeserializeVector3(position));
@@ -295,7 +308,6 @@ void SettingsWindow::Load()
 	if (settings["Camera"])
 	{
 		YAML::Node camera = settings["Camera"];
-
 		viewportWindow->SetNear(camera["Near"].as<float>());
 		viewportWindow->SetFar(camera["Far"].as<float>());
 		viewportWindow->SetFov(camera["Fov"].as<float>());
@@ -308,7 +320,39 @@ void SettingsWindow::Load()
 	if (settings["Physics"])
 	{
 		YAML::Node physics = settings["Physics"];
-
 		physicsSystem->SetProcesor(physics["UseGpu"].as<bool>() == false ? xCPU : xGPU);
 	}
+
+	if (settings["LuaEditor"])
+	{
+		YAML::Node luaEditor = settings["LuaEditor"];
+		std::string program = luaEditor["Program"].as<std::string>();
+		if (program.compare(programList[0]) == 0) programSelected = 0;
+		else if (program.compare(programList[1]) == 0) programSelected = 1;
+		else if (program.compare(programList[2]) == 0) programSelected = 2;
+	}
+}
+void SettingsWindow::RenderLuaEditor()
+{
+	ImGui::SeparatorText("Lua Editor");
+	if (ImGui::BeginTable("Lua Editor", 2, ImGuiTableFlags_Resizable))
+	{
+		ImGui::TableNextRow();
+		ImGui::TableNextColumn();
+		{
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+			ImGui::Text("Select Program");
+		}
+		ImGui::TableNextColumn();
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+		{
+			ImGui::Combo("##SelectProgramLuaEditor", &programSelected, programList, ARRAYSIZE(programList));
+		}
+		ImGui::PopItemWidth();
+		ImGui::EndTable();
+	}
+}
+int SettingsWindow::GetEditorProgram()
+{
+	return programSelected;
 }

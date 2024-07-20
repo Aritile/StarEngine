@@ -21,3 +21,5 @@ Star:
         RotationLerp: 16
       Physics:
         UseGpu: true
+      LuaEditor:
+        Program: Text Editor
