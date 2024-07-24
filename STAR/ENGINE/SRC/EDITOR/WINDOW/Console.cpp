@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <chrono>
 
+#define BUFFSIZE 512
+
 ConsoleWindow* ConsoleWindow::GetSingleton()
 {
 	static ConsoleWindow consoleWindow;
@@ -192,10 +194,10 @@ void ConsoleWindow::AddDebugMessage(const char* text, ...)
 	if (std::string(text).empty())
 		return;
 
-	char buff[MAX_PATH];
+	char buff[BUFFSIZE];
 	va_list args;
 	va_start(args, text);
-	vsnprintf(buff, MAX_PATH, text, args);
+	vsnprintf(buff, BUFFSIZE, text, args);
 	va_end(args);
 	messages.push_back(ConsoleMessage(GetNowTime(), buff, DebugMessage));
 #endif
@@ -206,10 +208,10 @@ void ConsoleWindow::AddInfoMessage(const char* text, ...)
 	if (std::string(text).empty())
 		return;
 
-	char buff[MAX_PATH];
+	char buff[BUFFSIZE];
 	va_list args;
 	va_start(args, text);
-	vsnprintf(buff, MAX_PATH, text, args);
+	vsnprintf(buff, BUFFSIZE, text, args);
 	va_end(args);
 	messages.push_back(ConsoleMessage(GetNowTime(), buff, InfoMessage));
 	info_count++;
@@ -220,10 +222,10 @@ void ConsoleWindow::AddWarningMessage(const char* text, ...)
 	if (std::string(text).empty())
 		return;
 
-	char buff[MAX_PATH];
+	char buff[BUFFSIZE];
 	va_list args;
 	va_start(args, text);
-	vsnprintf(buff, MAX_PATH, text, args);
+	vsnprintf(buff, BUFFSIZE, text, args);
 	va_end(args);
 	messages.push_back(ConsoleMessage(GetNowTime(), buff, WarningMessage));
 	warning_count++;
@@ -234,10 +236,10 @@ void ConsoleWindow::AddErrorMessage(const char* text, ...)
 	if (std::string(text).empty())
 		return;
 
-	char buff[MAX_PATH];
+	char buff[BUFFSIZE];
 	va_list args;
 	va_start(args, text);
-	vsnprintf(buff, MAX_PATH, text, args);
+	vsnprintf(buff, BUFFSIZE, text, args);
 	va_end(args);
 	messages.push_back(ConsoleMessage(GetNowTime(), buff, ErrorMessage));
 	error_count++;
