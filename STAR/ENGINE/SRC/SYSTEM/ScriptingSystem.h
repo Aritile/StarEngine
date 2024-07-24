@@ -1,7 +1,7 @@
 #pragma once
 
 //#define SOL_PRINT_ERRORS 1
-//#define SOL_ALL_SAFETIES_ON 1
+#define SOL_ALL_SAFETIES_ON 1
 //#define SOL_EXCEPTIONS_ALWAYS_UNSAFE 1
 //#define SOL_EXCEPTIONS 1
 
@@ -9,6 +9,7 @@
 #include <entt/entt.hpp>
 #include <zlib/zlib.h>
 #include <yaml-cpp/yaml.h>
+#include "../ENTITY/COMPONENT/ScriptComponent.h"
 
 struct EntityX
 {
@@ -54,25 +55,7 @@ private:
 public:
 	static ScriptingSystem* GetSingleton();
 };
-struct ScriptBuffer
-{
-public:
-	std::string filePath;
-	std::string fileName;
-	std::string fileNameToUpper;
-	uLong checksum = 0;
 
-public:
-	bool activeComponent = true;
-	//bool error = false;
-
-public:
-	void RecompileScript();
-	void RecompileScriptsChecksum();
-
-public:
-	void SerializeComponent(YAML::Emitter& out);
-};
 struct ScriptingComponent
 {
 public:
@@ -89,7 +72,7 @@ private:
 	void lua_add_entity_from_component();
 
 private:
-	std::vector<ScriptBuffer> scripts;
+	std::vector<ScriptComponent> scripts;
 
 public:
 	void SerializeComponent(YAML::Emitter& out);

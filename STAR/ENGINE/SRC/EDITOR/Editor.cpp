@@ -640,7 +640,7 @@ void Editor::RenderFileMenuBar()
 		if (ImGui::BeginMenu("Open"))
 		{
 			if (ImGui::MenuItem("Scene"))
-				projectSceneSystem->OpenScene("C:\\DX\\STAR\\ENGINE\\data.scene");
+				projectSceneSystem->OpenScene("data.scene");
 			ImGui::MenuItem("Project");
 			ImGui::EndMenu();
 		}

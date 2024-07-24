@@ -536,18 +536,14 @@ void ViewportWindow::RenderManipulateWidget(TransformComponent& transformCompone
 	{
 		matrix *= transformComponent.GetParentTransform().Invert();
 		transformComponent.SetTransform(matrix);
-	}
 
-	if (ImGuizmo::IsUsing())
-	{
 		entt::entity entity = entt::to_entity(ecs->registry, transformComponent);
 		if (ecs->IsValid(entity))
 		{
 			if (ecs->HasComponent<RigidBodyComponent>(entity))
 			{
 				auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
-				physx::PxTransform trans(StarHelpers::MatrixToPhysics(matrix));
-				rigidBodyComponent.SetTransform(trans);
+				rigidBodyComponent.SetTransform(transformComponent.GetTransform());
 			}
 		}
 	}

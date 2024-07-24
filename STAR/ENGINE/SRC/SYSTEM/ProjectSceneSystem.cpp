@@ -10,8 +10,6 @@
 #include "PhysicsSystem.h"
 #include "ScriptingSystem.h"
 
-#define XFILE "C:\\DX\\STAR\\ENGINE\\data.scene"
-
 // save last opened models
 struct ModelX
 {
@@ -45,12 +43,15 @@ ProjectSceneSystem* ProjectSceneSystem::GetSingleton()
 
 static Entity* ecs = Entity::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
+static PhysicsSystem* physicsSystem = PhysicsSystem::GetSingleton();
 
 void ProjectSceneSystem::ClearScene()
 {
 	ecs->selected = entt::null;
 	auto& generalComponent = ecs->GetComponent<GeneralComponent>(ecs->root);
 	generalComponent.DestroyChildren();
+
+	physicsSystem->ClearScene();
 }
 void ProjectSceneSystem::NewScene()
 {
@@ -79,7 +80,9 @@ void ProjectSceneSystem::SaveScene()
 	}
 	StarHelpers::EndFormat(out);
 
-	SaveFile(out, XFILE);
+	std::string path = "data.scene";
+	printf("[Scene] -> Saving to %s\n", path.c_str());
+	SaveFile(out, path.c_str());
 }
 
 void ProjectSceneSystem::OpenScene(const char* path)

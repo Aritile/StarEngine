@@ -361,20 +361,20 @@ void AssetsWindow::Render()
 												if (settingsWindow->GetEditorProgram() == 0)
 												{
 													// text editor
-													std::string vs = "notepad " + buffer;
-													system(vs.c_str());
+													std::string comm = "notepad " + buffer;
+													StarHelpers::StartCommand(comm);
 												}
 												else if (settingsWindow->GetEditorProgram() == 1)
 												{
 													// visual studio
-													std::string vs = "start devenv " + buffer + " /Edit";
-													system(vs.c_str());
+													std::string comm = "start devenv " + buffer + " /Edit";
+													StarHelpers::StartCommand(comm);
 												}
 												else if (settingsWindow->GetEditorProgram() == 2)
 												{
 													// visual studio code
-													std::string vs = "code " + buffer;
-													system(vs.c_str());
+													std::string comm = "code " + buffer;
+													StarHelpers::StartCommand(comm);
 												}
 											}
 										}

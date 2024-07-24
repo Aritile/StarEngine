@@ -586,7 +586,7 @@ bool MeshComponent::LoadTexture(const char* path, ID3D11ShaderResourceView** sha
 			return true;
 		}
 	}
-	else if (extension.compare(DDS))
+	else if (extension.compare(DDS) == 0)
 	{
 		if (*shaderResourceView)
 			(*shaderResourceView)->Release();

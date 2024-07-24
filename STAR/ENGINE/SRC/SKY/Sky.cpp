@@ -242,4 +242,5 @@ void Sky::OutCore(SkyFile sky)
 	}
 
 	type = sky.GetType();
+	StarHelpers::AddLog("[Sky] -> Successfully loaded");
 }

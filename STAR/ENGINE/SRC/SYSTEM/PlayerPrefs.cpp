@@ -22,7 +22,7 @@ bool PlayerPrefs::WriteFloat(KeyX* _Float, std::FILE* _File)
 		return false;
 
 	float keyValue = std::get<float>(_Float->keyValue);
-	uint32_t keyLength = _Float->keyName.length();
+	uint32_t keyLength = (uint32_t)_Float->keyName.length();
 	const char* keyName = _Float->keyName.c_str();
 
 	WriteToFile(&keyValue, sizeof(keyValue), _File);
@@ -37,7 +37,7 @@ bool PlayerPrefs::WriteInt(KeyX* _Int, std::FILE* _File)
 		return false;
 
 	int keyValue = std::get<int>(_Int->keyValue);
-	uint32_t keyLength = _Int->keyName.length();
+	uint32_t keyLength = (uint32_t)_Int->keyName.length();
 	const char* keyName = _Int->keyName.c_str();
 
 	WriteToFile(&keyValue, sizeof(keyValue), _File);
@@ -51,9 +51,9 @@ bool PlayerPrefs::WriteString(KeyX* _String, std::FILE* _File)
 	if (!_File)
 		return false;
 
-	uint32_t valueLength = std::get<std::string>(_String->keyValue).length();
+	uint32_t valueLength = (uint32_t)std::get<std::string>(_String->keyValue).length();
 	const char* valueName = std::get<std::string>(_String->keyValue).c_str();
-	uint32_t keyLength = _String->keyName.length();
+	uint32_t keyLength = (uint32_t)_String->keyName.length();
 	const char* keyName = _String->keyName.c_str();
 
 	WriteToFile(&valueLength, sizeof(valueLength), _File);

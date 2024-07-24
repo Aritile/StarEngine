@@ -8,7 +8,7 @@
 
 static Entity* ecs = Entity::GetSingleton();
 static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
-static PhysicsSystem* physicsSystem = &PhysicsSystemClass();
+static PhysicsSystem* physicsSystem = PhysicsSystem::GetSingleton();
 
 void RigidBodyComponent::Render()
 {
@@ -119,6 +119,7 @@ void RigidBodyComponent::CreateActor()
 		physx::PxTransform pxTransform = physx::PxTransform(
 			StarHelpers::Vector3ToPhysics(transformComponent.GetPosition()),
 			StarHelpers::QuatToPhysics(transformComponent.GetRotationQuaternion()));
+		printf("pos %f %f %f\n", transformComponent.GetPosition().x, transformComponent.GetPosition().y, transformComponent.GetPosition().z);
 		pxRigidBody = physicsSystem->GetPhysics()->createRigidDynamic(pxTransform);
 		if (!pxRigidBody) consoleWindow->AddWarningMessage("[RigidBody] -> Failed to create the RigidBody!");
 		physicsSystem->GetScene()->addActor(*pxRigidBody); /*<*>*/
@@ -126,11 +127,24 @@ void RigidBodyComponent::CreateActor()
 		if (ecs->HasComponent<PhysicsComponent>(entity))
 		{
 			auto& physicsComponent = ecs->GetComponent<PhysicsComponent>(entity);
-			for (size_t i = 0; i < physicsComponent.GetBoxColliders().size(); i++)
-				if (physicsComponent.GetBoxColliders()[i].GetShape())
-					pxRigidBody->attachShape(*physicsComponent.GetBoxColliders()[i].GetShape());
+			for (size_t i = 0; i < physicsComponent.GetBoxColliders()->size(); i++)
+			{
+				BoxColliderComponent index = physicsComponent.GetBoxColliders()->at(i);
+				if (index.GetShape())
+					pxRigidBody->attachShape(*index.GetShape());
 				else
 					consoleWindow->AddWarningMessage("[RigidBody] -> Failed to attach shape to the RigidBody!");
+				printf("Attaching shape\n");
+			}
+			for (size_t i = 0; i < physicsComponent.GetSphereColliders()->size(); i++)
+			{
+				SphereColliderComponent index = physicsComponent.GetSphereColliders()->at(i);
+				if (index.GetShape())
+					pxRigidBody->attachShape(*index.GetShape());
+				else
+					consoleWindow->AddWarningMessage("[RigidBody] -> Failed to attach shape to the RigidBody!");
+				printf("Attaching shape\n");
+			}
 		}
 	}
 }
@@ -304,17 +318,24 @@ bool RigidBodyComponent::GetLock(physx::PxRigidDynamicLockFlag::Enum flag)
 	// missing code
 	return false;
 }
-void RigidBodyComponent::SetTransform(physx::PxTransform value)
+void RigidBodyComponent::SetTransform(Matrix value)
 {
-	if (!pxRigidBody) return;
+	if (!pxRigidBody)
+		return;
 
-	pxRigidBody->setGlobalPose(value);
+	physx::PxTransform trans(StarHelpers::MatrixToPhysics(value));
+	pxRigidBody->setGlobalPose(trans);
 }
-physx::PxTransform RigidBodyComponent::GetTransform()
+Matrix RigidBodyComponent::GetTransform()
 {
-	if (!pxRigidBody) return physx::PxTransform();
+	Matrix matrix;
 
-	return pxRigidBody->getGlobalPose();
+	if (!pxRigidBody)
+		return matrix;
+
+	physx::PxTransform trans(pxRigidBody->getGlobalPose());
+	matrix = StarHelpers::PhysicsToMatrix(trans);
+	return matrix;
 }
 void RigidBodyComponent::ReleaseActor()
 {

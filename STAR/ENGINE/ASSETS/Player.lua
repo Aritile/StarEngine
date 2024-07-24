@@ -3,13 +3,10 @@ Player = {
 	rigidbodyComponent = nil;
 }
 
-player = nil;
-
 -- Use this for initialization
 function Player:Start()
 	transformComponent = entity:GetComponent("TransformComponent")
 	rigidbodyComponent = entity:GetComponent("RigidbodyComponent")
-	player = entity
 end
 
 -- Update is called once per frame

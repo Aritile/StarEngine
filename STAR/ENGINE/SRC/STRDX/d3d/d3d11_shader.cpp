@@ -374,6 +374,7 @@ bool D3D11Shader::CompileShader(std::vector<uint8_t>& _Data, std::string _EntryP
         {
             printf("compile shader failed\n");
             printf("%s\n", (char*)errorBlob->GetBufferPointer());
+            //PostQuitMessage(0);
             return false;
         }
     }

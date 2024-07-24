@@ -57,8 +57,8 @@ public:
 	bool GetLock(physx::PxRigidDynamicLockFlag::Enum flag);
 
 public:
-	void SetTransform(physx::PxTransform value);
-	physx::PxTransform GetTransform();
+	void SetTransform(Matrix value);
+	Matrix GetTransform();
 
 private:
 	physx::PxRigidBody* pxRigidBody = NULL;

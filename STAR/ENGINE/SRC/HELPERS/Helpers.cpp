@@ -44,6 +44,7 @@ void StarHelpers::AddLog(const char* text, ...)
 	va_end(args);
 	OutputDebugStringA(buff);
 	OutputDebugStringA("\n");
+	printf("%s\n", buff);
 }
 
 HRESULT StarHelpers::CompileShaderFromFile(std::wstring srcFile, std::string entryPoint, std::string profile, ID3DBlob** blob)
@@ -79,6 +80,7 @@ HRESULT StarHelpers::CompileShaderFromFile(std::wstring srcFile, std::string ent
 		{
 			StarHelpers::AddLog((char*)errorBlob->GetBufferPointer());
 			errorBlob->Release();
+			PostQuitMessage(0);
 		}
 
 		if (shaderBlob)
@@ -594,4 +596,31 @@ const aiScene* StarHelpers::OpenModel(Assimp::Importer* importer, const char* pa
 	}
 
 	return scene;
+}
+physx::PxReal StarHelpers::FloatToPhysics(float value)
+{
+	return value;
+}
+float StarHelpers::PhysicsToFloat(physx::PxReal value)
+{
+	return value;
+}
+void StarHelpers::StartCommand(std::string string)
+{
+	STARTUPINFOA si;
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&pi, sizeof(pi));
+	LPSTR lpstr = const_cast<LPSTR>(string.c_str());
+
+	if (CreateProcessA(NULL, lpstr, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+	{
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+	else
+	{
+		printf("StartCommand() failed\n");
+	}
 }

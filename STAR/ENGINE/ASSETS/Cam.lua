@@ -1,12 +1,12 @@
 Cam = {
 	transformComponentPlayer = nil;
 	transformComponentCam = nil;
+	player = nil;
 }
-
-player = nil;
 
 -- Use this for initialization
 function Cam:Start()
+	player = Engine.FindByName("Player")
 	transformComponentPlayer = player:GetComponent("TransformComponent")
 	transformComponentCam = entity:GetComponent("TransformComponent")
 end

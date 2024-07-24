@@ -24,7 +24,7 @@ private:
 	Matrix parent = Matrix::Identity;
 
 private:
-	bool isDirty = true;
+	bool isDirty = false;
 
 public:
 	void Render();
@@ -79,4 +79,7 @@ public:
 
 public:
 	static void LuaAdd(sol::state& state);
+
+private:
+	void UpdatePhysics();
 };

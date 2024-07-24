@@ -58,6 +58,7 @@ bool ScriptingSystem::Init()
 
 	/* entity */
 	lua_add_entity();
+	lua_add_engine();
 
 	GeneralComponent::LuaAdd(lua);
 	TransformComponent::LuaAdd(lua);
@@ -349,14 +350,10 @@ void ScriptingSystem::lua_add_entity()
 }
 void ScriptingSystem::lua_add_engine()
 {
-	// maybe use just &
 	lua["Engine"] = sol::new_table();
-	lua["Engine"]["Entity"] = sol::new_table();
-	lua["Engine"]["Entity"]["FindByName"] = [](const char* name) { return GetSingleton()->FindByName(name); };
-	lua["Engine"]["Entity"]["FindByTag"]  = [](const char* tag)  { return GetSingleton()->FindByTag(tag);   };
-
-	lua["Scene"] = sol::new_table();
-	lua["Scene"]["LoadScene"] = [](const char* path) { projectSceneSystem->OpenScene(path); };
+	lua["Engine"]["FindByName"] = [](const char* name) { return GetSingleton()->FindByName(name); };
+	lua["Engine"]["FindByTag"] = [](const char* tag) { return GetSingleton()->FindByTag(tag); };
+	lua["Engine"]["LoadScene"] = [](const char* path) { projectSceneSystem->OpenScene(path); };
 }
 void ScriptingComponent::AddScript(const char* path)
 {
@@ -369,10 +366,10 @@ void ScriptingComponent::AddScript(const char* path)
 			return;
 
 	scriptingSystem->CompileScript(path);
-	ScriptBuffer scriptBuffer;
+	ScriptComponent scriptComponent;
 
 	{
-		scriptBuffer.checksum = StarHelpers::GetChecksum(path);
+		scriptComponent.checksum = StarHelpers::GetChecksum(path);
 
 		// old
 		//scriptBuffer.filePath = path;
@@ -382,17 +379,17 @@ void ScriptingComponent::AddScript(const char* path)
 		std::string model = StarHelpers::GetParent(path);
 		std::string dir = StarHelpers::GetRelativePath(model, exe);
 		std::string full = dir + "\\" + StarHelpers::GetFileNameFromPath(path) + StarHelpers::GetFileExtensionFromPath(path);
-		scriptBuffer.filePath = full;
+		scriptComponent.filePath = full;
 
-		scriptBuffer.fileName = file.stem().string();
-		scriptBuffer.fileNameToUpper = scriptBuffer.fileName;
+		scriptComponent.fileName = file.stem().string();
+		scriptComponent.fileNameToUpper = scriptComponent.fileName;
 		std::transform(
-			scriptBuffer.fileNameToUpper.begin(),
-			scriptBuffer.fileNameToUpper.end(),
-			scriptBuffer.fileNameToUpper.begin(),
+			scriptComponent.fileNameToUpper.begin(),
+			scriptComponent.fileNameToUpper.end(),
+			scriptComponent.fileNameToUpper.begin(),
 			[](unsigned char c) { return std::toupper(c); });
 	}
-	scripts.push_back(scriptBuffer);
+	scripts.push_back(scriptComponent);
 }
 void ScriptingComponent::Render()
 {
@@ -400,26 +397,7 @@ void ScriptingComponent::Render()
 	{
 		ImGui::PushID((int)i);
 		{
-			ImGui::Checkbox("##SCRIPT", &scripts[i].activeComponent);
-			ImGui::SameLine();
-
-			std::string buffer = scripts[i].fileNameToUpper + " (SCRIPT)";
-			if (ImGui::CollapsingHeader(buffer.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				/* code */
-			}
-
-			if (ImGui::BeginPopupContextItem())
-			{
-				if (ImGui::MenuItem("Copy")) {}
-				if (ImGui::MenuItem("Paste")) {}
-				ImGui::Separator();
-				if (ImGui::MenuItem("Remove"))
-				{
-					scripts.erase(scripts.begin() + i);
-				}
-				ImGui::EndPopup();
-			}
+			scripts[i].Render();
 		}
 		ImGui::PopID();
 	}
@@ -675,19 +653,6 @@ void EntityX::RemoveComponent(const char* component_name)
 	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
 }
 
-void ScriptBuffer::RecompileScript()
-{
-	const char* path = filePath.c_str();
-	if (scriptingSystem->CompileScript(path))
-		checksum = StarHelpers::GetChecksum(path);
-}
-void ScriptBuffer::RecompileScriptsChecksum()
-{
-	//printf("%lu\n", checksum);
-	if (StarHelpers::GetChecksum(filePath.c_str()) != checksum)
-		RecompileScript();
-}
-
 void ScriptingComponent::SerializeComponent(YAML::Emitter& out)
 {
 	if (scripts.empty())
@@ -699,15 +664,6 @@ void ScriptingComponent::SerializeComponent(YAML::Emitter& out)
 		scripts[i].SerializeComponent(out);
 	}
 	out << YAML::EndSeq;
-}
-void ScriptBuffer::SerializeComponent(YAML::Emitter& out)
-{
-	out << YAML::BeginMap;
-	out << YAML::Key << "Script" << YAML::Value << YAML::BeginMap;
-	out << YAML::Key << "Name" << YAML::Value << fileName.c_str();
-	out << YAML::Key << "Path" << YAML::Value << filePath.c_str();
-	out << YAML::EndMap;
-	out << YAML::EndMap;
 }
 void ScriptingComponent::DeserializeComponent(YAML::Node& in)
 {
@@ -727,6 +683,7 @@ void ScriptingComponent::DeserializeComponent(YAML::Node& in)
 
 EntityX ScriptingSystem::FindByName(const char* name)
 {
+	printf("FindByName() %s\n", name);
 	EntityX entityX;
 
 	auto view = ecs->registry.view<GeneralComponent>();

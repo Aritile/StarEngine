@@ -1,5 +1,5 @@
 # do not edit
-# Jul 20 2024 22:22:51
+# Jul 24 2024 10:48:03
 Star:
   Version:
     Major: 1
@@ -10,7 +10,7 @@ Star:
       Grid:
         Render: true
         Position: [0, 0, 0]
-        Size: 100
+        Size: 15
       Camera:
         Near: 0.100000001
         Far: 1000

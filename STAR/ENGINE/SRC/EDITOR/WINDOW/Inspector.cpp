@@ -82,9 +82,9 @@ void InspectorWindow::RenderAdd()
 		if (ImGui::BeginMenu("Collider"))
 		{
 			if (ImGui::MenuItem("Box"))
-			{
 				ecs->registry.get<PhysicsComponent>(ecs->selected).AddBoxCollider();
-			}
+			if (ImGui::MenuItem("Sphere"))
+				ecs->registry.get<PhysicsComponent>(ecs->selected).AddSphereCollider();
 
 			ImGui::EndMenu();
 		}

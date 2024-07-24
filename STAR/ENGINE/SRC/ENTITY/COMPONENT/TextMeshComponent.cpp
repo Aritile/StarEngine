@@ -248,6 +248,11 @@ bool TextMeshComponent::SetupTextMesh()
 					vertex.normal.x = out->normals[i].x;
 					vertex.normal.y = out->normals[i].y;
 					vertex.normal.z = out->normals[i].z;
+
+					// why not?
+					vertex.texCoords.x = out->vert[i].x;
+					vertex.texCoords.y = out->vert[i].y;
+
 					meshComponent.AddVertices(vertex);
 				}
 

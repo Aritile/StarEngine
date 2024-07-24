@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\SphereColliderComponent.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\PhysicsMaterialComponent.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\ScriptComponent.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\BoxColliderComponent.h" />
     <ClInclude Include="SRC\EDITOR\WINDOW\Settings.h" />
     <ClInclude Include="SRC\SYSTEM\PlayerPrefs.h" />
     <ClInclude Include="SRC\EDITOR\WINDOW\Project.h" />
@@ -93,6 +97,10 @@
     <ClInclude Include="SRC\ENTITY\COMPONENT\TextMeshComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\SphereColliderComponent.cpp" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\PhysicsMaterialComponent.cpp" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\ScriptComponent.cpp" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\BoxColliderComponent.cpp" />
     <ClCompile Include="SRC\EDITOR\WINDOW\Settings.cpp" />
     <ClCompile Include="SRC\SYSTEM\PlayerPrefs.cpp" />
     <ClCompile Include="SRC\EDITOR\WINDOW\Project.cpp" />

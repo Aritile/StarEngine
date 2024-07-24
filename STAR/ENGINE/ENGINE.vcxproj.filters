@@ -231,6 +231,18 @@
     <ClInclude Include="SRC\EDITOR\WINDOW\Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\BoxColliderComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\ScriptComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\PhysicsMaterialComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\SphereColliderComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SRC\MAIN\Main.cpp">
@@ -465,6 +477,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\EDITOR\WINDOW\Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\BoxColliderComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\ScriptComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\PhysicsMaterialComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\SphereColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

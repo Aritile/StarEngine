@@ -8,7 +8,7 @@
 #include <filesystem>
 
 static PlayerPrefs* playerPrefs = PlayerPrefs::GetSingleton();
-static PhysicsSystem* physicsSystem = &PhysicsSystemClass();
+static PhysicsSystem* physicsSystem = PhysicsSystem::GetSingleton();
 static Widgets* widgets = Widgets::GetSingleton();
 ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 

@@ -466,7 +466,7 @@ Vector3 Widgets::GetGridPos()
 std::vector<POSCOL> Widgets::BuildGrid()
 {
 	std::vector<POSCOL> vertices;
-	float lenght = gridSize * 2;
+	float lenght = (float)(gridSize * 2);
 	lenght -= 1.0;
 	float pos = 1.0f;
 

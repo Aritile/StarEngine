@@ -44,9 +44,9 @@ namespace StarHelpers
 	bool InputGetKey(unsigned char key);
 	Vector2 InputGetMouse();
 	/* --------------------- */
+
 	Vector3 ToRadians(Vector3 rotation);
 	Vector3 ToDegrees(Vector3 rotation);
-
 	float RadToDeg(float value);
 	float DegToRad(float value);
 
@@ -57,6 +57,8 @@ namespace StarHelpers
 	physx::PxMat44 MatrixToPhysics(Matrix value);
 	Matrix PhysicsToMatrix(physx::PxMat44 value);
 	physx::PxTransform PositionRotationToPhysics(Vector3 position, Quaternion rotation);
+	physx::PxReal FloatToPhysics(float value);
+	float PhysicsToFloat(physx::PxReal value);
 
 	const char* OpenFileDialog(LPCWSTR dir, LPCWSTR filter, LPCWSTR title);
 	const char* SaveFileDialog(LPCWSTR dir, LPCWSTR filter, LPCWSTR title);
@@ -89,4 +91,6 @@ namespace StarHelpers
 	void CreateFolder(std::string path);
 
 	const aiScene* OpenModel(Assimp::Importer* importer, const char* path);
+
+	void StartCommand(std::string string);
 }

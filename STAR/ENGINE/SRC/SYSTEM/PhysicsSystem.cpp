@@ -5,15 +5,7 @@
 #include "../HELPERS/Helpers.h"
 #include "../EDITOR/WINDOW/Console.h"
 #include "../ENTITY/COMPONENT/TransformComponent.h"
-
-static PhysicsSystem physicsSystem;
-
-PhysicsSystem& PhysicsSystemClass()
-{
-	return physicsSystem;
-}
-
-/* ----------------------------------- */
+#include "../ENTITY/COMPONENT/BoxColliderComponent.h"
 
 static Entity* ecs = Entity::GetSingleton();
 static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
@@ -22,16 +14,19 @@ static DX* dx = DX::GetSingleton();
 bool PhysicsSystem::Init()
 {
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
-
 	gPvd = PxCreatePvd(*gFoundation);
+
+	// for debug
+#if defined(_DEBUG)
 	transport = physx::PxDefaultPvdSocketTransportCreate(PVD_HOST, PVD_PORT, 10);
 	if (!gPvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL))
-		StarHelpers::AddLog("[PhysX] -> PhysX Visual Debugger is not connected!\n[PhysX] -> HOST %s PORT %i", PVD_HOST, PVD_PORT);
+		StarHelpers::AddLog("[PhysX] -> PhysX Visual Debugger is not connected!\n[PhysX] -> Host %s Port %i", PVD_HOST, PVD_PORT);
+#endif
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, physx::PxTolerancesScale(), true, gPvd);
 
-	physx::PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = NONE_GRAVITY;
+	sceneDesc = new physx::PxSceneDesc(gPhysics->getTolerancesScale());
+	sceneDesc->gravity = EARTH_GRAVITY;
 
 	if (physicsProcesor == PhysicsProcesor::xCPU)
 	{
@@ -46,63 +41,31 @@ bool PhysicsSystem::Init()
 		if (gCudaContextManager) if (!gCudaContextManager->contextIsValid()) StarHelpers::AddLog("[PhysX] -> Cuda Context Manager Error!");
 
 		gDispatcher = physx::PxDefaultCpuDispatcherCreate(4);
-		sceneDesc.gpuDispatcher = gCudaContextManager->getGpuDispatcher();
+		sceneDesc->gpuDispatcher = gCudaContextManager->getGpuDispatcher();
 
-		sceneDesc.flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS;
-		sceneDesc.flags |= physx::PxSceneFlag::eENABLE_PCM;
-		sceneDesc.flags |= physx::PxSceneFlag::eENABLE_STABILIZATION;
-		sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
-		sceneDesc.gpuMaxNumPartitions = 8;
+		sceneDesc->flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS;
+		sceneDesc->flags |= physx::PxSceneFlag::eENABLE_PCM;
+		sceneDesc->flags |= physx::PxSceneFlag::eENABLE_STABILIZATION;
+		sceneDesc->broadPhaseType = physx::PxBroadPhaseType::eGPU;
+		sceneDesc->gpuMaxNumPartitions = 8;
 	}
 	else
 	{
 		StarHelpers::AddLog("[PhysX] -> Processor Error!");
 	}
 
-	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
+	sceneDesc->cpuDispatcher = gDispatcher;
+	sceneDesc->filterShader = physx::PxDefaultSimulationFilterShader;
 
-	gScene = gPhysics->createScene(sceneDesc);
-	physx::PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-	if (pvdClient)
-	{
-		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-	}
-
-	/***
-	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
-	gPvd = PxCreatePvd(*gFoundation);
-	transport = physx::PxDefaultPvdSocketTransportCreate(PVD_HOST, PVD_PORT, 10);
-	if (!gPvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL))
-		StarHelpers::AddLog("[PhysX] -> PhysX Visual Debugger is not connected!\n[PhysX] -> HOST %s PORT %i", PVD_HOST, PVD_PORT);
-	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, physx::PxTolerancesScale(), true, gPvd);
-	physx::PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = NONE_GRAVITY;
-	gDispatcher = physx::PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
-	gScene = gPhysics->createScene(sceneDesc);
-	physx::PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-	if (pvdClient)
-	{
-		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-	}
-	***/
-
+	CreateScene();
 	return true;
 }
-
 void PhysicsSystem::Update()
 {
 	//gScene->simulate(1.0f / 60.0f);
 	gScene->simulate(ImGui::GetIO().DeltaTime);
 	gScene->fetchResults(true);
 }
-
 void PhysicsSystem::Shutdown()
 {
 	if (gScene)              gScene->release();
@@ -112,8 +75,12 @@ void PhysicsSystem::Shutdown()
 	if (transport)           transport->release();
 	if (gCudaContextManager) gCudaContextManager->release();
 	if (gFoundation)         gFoundation->release();
+	if (sceneDesc)
+	{
+		delete sceneDesc;
+		sceneDesc = nullptr;
+	}
 }
-
 physx::PxPhysics* PhysicsSystem::GetPhysics()
 {
 	return gPhysics;
@@ -125,17 +92,22 @@ physx::PxScene* PhysicsSystem::GetScene()
 
 void PhysicsComponent::AddBoxCollider()
 {
-	BoxColliderBuffer boxColliderBuffer;
+	BoxColliderComponent boxColliderBuffer;
 	{
-		boxColliderBuffer.CreateMaterial();
+		//boxColliderBuffer.CreateMaterial();
 		entt::entity entity = entt::to_entity(ecs->registry, *this);
-		boxColliderBuffer.CreateShape(entity);
+		if (ecs->HasComponent<TransformComponent>(entity))
+		{
+			auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
+			boxColliderBuffer.CreateShape(transformComponent.GetScale());
+		}
 
 		if (ecs->registry.any_of<RigidBodyComponent>(entity))
 		{
 			auto& rigidBodyComponent = ecs->registry.get<RigidBodyComponent>(entity);
 			if (rigidBodyComponent.GetRigidBody())
 				rigidBodyComponent.GetRigidBody()->attachShape(*boxColliderBuffer.GetShape());
+			printf("Attaching shape\n");
 		}
 	}
 	box_colliders.push_back(boxColliderBuffer);
@@ -147,188 +119,43 @@ void PhysicsComponent::Render()
 	{
 		ImGui::PushID((int)i);
 		{
-			ImGui::Checkbox("##BOXCOLLIDER", &box_colliders[i].activeComponent);
-			ImGui::SameLine();
-			if (ImGui::CollapsingHeader("BOXCOLLIDER", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				if (ImGui::BeginPopupContextItem())
-				{
-					if (ImGui::MenuItem("Copy")) {}
-					if (ImGui::MenuItem("Paste")) {}
-					ImGui::Separator();
-					if (ImGui::MenuItem("Remove"))
-					{
-						if (ecs->registry.any_of<RigidBodyComponent>(ecs->selected))
-							ecs->registry.get<RigidBodyComponent>(ecs->selected).GetRigidBody()->detachShape(*box_colliders[i].GetShape());
-						box_colliders.erase(box_colliders.begin() + i);
-					}
-					ImGui::EndPopup();
-				}
-
-				if (ImGui::BeginTable("PhysicsComponentTable", 2, ImGuiTableFlags_Resizable))
-				{
-					ImGui::TableNextRow();
-					ImGui::TableNextColumn();
-					{
-						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-						ImGui::Text("Static Friction");
-						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
-						ImGui::Text("Dynamic Friction");
-						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
-						ImGui::Text("Restitution");
-						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
-						ImGui::Text("Center");
-						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
-						ImGui::Text("Size");
-					}
-					ImGui::TableNextColumn();
-					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-					{
-						float _StaticFriction = box_colliders[i].GetStaticFriction();
-						if (ImGui::DragFloat("##StaticFrictionPhysicsComponent", &_StaticFriction, 0.1f, 0.0f, FLT_MAX))
-							box_colliders[i].SetStaticFriction(_StaticFriction);
-
-						float _DynamicFriction = box_colliders[i].GetDynamicFriction();
-						if (ImGui::DragFloat("##DynamicFrictionPhysicsComponent", &_DynamicFriction, 0.1f, 0.0f, FLT_MAX))
-							box_colliders[i].SetDynamicFriction(_DynamicFriction);
-
-
-						float _Restitution = box_colliders[i].GetRestitution();
-						if (ImGui::DragFloat("##RestitutionPhysicsComponent", &_Restitution, 0.1f, 0.0f, FLT_MAX))
-							box_colliders[i].SetRestitution(_Restitution);
-
-						Vector3 _Center = box_colliders[i].GetCenter();
-						if (ImGui::DragFloat3("##CenterPhysicsComponent", (float*)&_Center, 0.1f))
-							box_colliders[i].SetCenter(_Center);
-
-						Vector3 _Size = box_colliders[i].GetSize();
-						if (ImGui::DragFloat3("##Size", (float*)&_Size, 0.1f))
-							box_colliders[i].SetSize(_Size);
-					}
-					ImGui::PopItemWidth();
-					ImGui::EndTable();
-				}
-			}
+			box_colliders[i].Render(GetBoxColliders(), i);
+		}
+		ImGui::PopID();
+	}
+	for (size_t i = 0; i < sphere_colliders.size(); i++)
+	{
+		ImGui::PushID((int)i);
+		{
+			sphere_colliders[i].Render(GetSphereColliders(), i);
 		}
 		ImGui::PopID();
 	}
 }
 
-physx::PxShape* BoxColliderBuffer::GetShape() const
+std::vector<BoxColliderComponent>* PhysicsComponent::GetBoxColliders()
 {
-	return pxShape;
+	return &box_colliders;
 }
-physx::PxMaterial* BoxColliderBuffer::GetMaterial() const
+std::vector<SphereColliderComponent>* PhysicsComponent::GetSphereColliders()
 {
-	return pxMaterial;
+	return &sphere_colliders;
 }
-void BoxColliderBuffer::SetStaticFriction(float value)
-{
-	if (value < 0.0f) return;
-	if (pxMaterial) pxMaterial->setStaticFriction(value);
-}
-float BoxColliderBuffer::GetStaticFriction()
-{
-	if (!pxMaterial) return 0.0f;
-	return pxMaterial->getStaticFriction();
-}
-void BoxColliderBuffer::SetDynamicFriction(float value)
-{
-	if (value < 0.0f) return;
-	if (pxMaterial) pxMaterial->setDynamicFriction(value);
-}
-float BoxColliderBuffer::GetDynamicFriction()
-{
-	if (!pxMaterial) return 0.0f;
-	return pxMaterial->getDynamicFriction();
-}
-void BoxColliderBuffer::SetRestitution(float value)
-{
-	if (value < 0.0f) return;
-	if (pxMaterial) pxMaterial->setRestitution(value);
-}
-float BoxColliderBuffer::GetRestitution()
-{
-	if (!pxMaterial) return 0.0f;
-	return pxMaterial->getRestitution();
-}
-void BoxColliderBuffer::SetCenter(Vector3 value)
-{
-	if (pxShape) pxShape->setLocalPose(physx::PxTransform(value.x, value.y, value.z));
-}
-Vector3 BoxColliderBuffer::GetCenter() const
-{
-	physx::PxTransform pxTransform;
-	if (pxShape) pxTransform = pxShape->getLocalPose();
-	return Vector3(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z);
-}
-void BoxColliderBuffer::SetSize(Vector3 value)
-{
-	physx::PxBoxGeometry geometry;
-	if (pxShape) pxShape->getBoxGeometry(geometry);
-	geometry.halfExtents = physx::PxVec3(value.x, value.y, value.z);
-	if (pxShape) pxShape->setGeometry(geometry);
-}
-Vector3 BoxColliderBuffer::GetSize() const
-{
-	physx::PxBoxGeometry geometry;
-	if (pxShape) pxShape->getBoxGeometry(geometry);
-	return Vector3(geometry.halfExtents.x, geometry.halfExtents.y, geometry.halfExtents.z);
-}
-
-const std::vector<BoxColliderBuffer>& PhysicsComponent::GetBoxColliders()
-{
-	return box_colliders;
-}
-
-void BoxColliderBuffer::CreateShape(entt::entity entity)
-{
-	if (pxShape) pxShape->release();
-	if (ecs->registry.any_of<TransformComponent>(entity))
-	{
-		auto& transformComponent = ecs->registry.get<TransformComponent>(entity);
-		pxShape = physicsSystem.GetPhysics()->createShape(physx::PxBoxGeometry(
-			transformComponent.GetScale().x,
-			transformComponent.GetScale().y,
-			transformComponent.GetScale().z), *pxMaterial, true);
-		if (!pxShape) StarHelpers::AddLog("[PhysX] -> Failed to create the box shape!");
-	}
-}
-void BoxColliderBuffer::CreateMaterial()
-{
-	if (pxMaterial) pxMaterial->release();
-	pxMaterial = physicsSystem.GetPhysics()->createMaterial(
-		STATIC_FRICTION,
-		DYNAMIC_FRICTION,
-		RESTITUTION);
-	if (!pxMaterial) StarHelpers::AddLog("[PhysX] -> Failed to create the material!");
-}
-
 void PhysicsComponent::SerializeComponent(YAML::Emitter& out)
 {
-	if (box_colliders.empty())
+	if (box_colliders.empty() && sphere_colliders.empty())
 		return;
 
-	out << YAML::Key << "Collider" << YAML::Value << YAML::BeginSeq;
+	out << YAML::Key << "Colliders" << YAML::Value << YAML::BeginSeq;
 	for (size_t i = 0; i < box_colliders.size(); i++)
 	{
 		box_colliders[i].SerializeComponent(out);
 	}
+	for (size_t i = 0; i < sphere_colliders.size(); i++)
+	{
+		sphere_colliders[i].SerializeComponent(out);
+	}
 	out << YAML::EndSeq;
-}
-
-void BoxColliderBuffer::SerializeComponent(YAML::Emitter& out)
-{
-	out << YAML::BeginMap;
-	out << YAML::Key << "BoxCollider" << YAML::Value << YAML::BeginMap;
-	out << YAML::Key << "Active" << YAML::Value << activeComponent;
-	out << YAML::Key << "StaticFriction" << YAML::Value << GetStaticFriction();
-	out << YAML::Key << "DynamicFriction" << YAML::Value << GetDynamicFriction();
-	out << YAML::Key << "Restitution" << YAML::Value << GetRestitution();
-	out << YAML::Key << "Center"; StarHelpers::SerializeVector3(out, GetCenter());
-	out << YAML::Key << "Size"; StarHelpers::SerializeVector3(out, GetSize());
-	out << YAML::EndMap;
-	out << YAML::EndMap;
 }
 void PhysicsComponent::DeserializeComponent(YAML::Node& in)
 {
@@ -343,19 +170,14 @@ void PhysicsComponent::DeserializeComponent(YAML::Node& in)
 				AddBoxCollider();
 				box_colliders.back().DeserializeComponent(boxCollider);
 			}
+			YAML::Node sphereCollider = collider["SphereCollider"];
+			if (sphereCollider)
+			{
+				AddSphereCollider();
+				sphere_colliders.back().DeserializeComponent(sphereCollider);
+			}
 		}
 	}
-}
-void BoxColliderBuffer::DeserializeComponent(YAML::Node& in)
-{
-	activeComponent = in["Active"].as<bool>();
-	SetStaticFriction(in["StaticFriction"].as<float>());
-	SetDynamicFriction(in["DynamicFriction"].as<float>());
-	SetRestitution(in["Restitution"].as<float>());
-	auto center = in["Center"];
-	SetCenter(StarHelpers::DeserializeVector3(center));
-	auto size = in["Size"];
-	SetSize(StarHelpers::DeserializeVector3(size));
 }
 
 void PhysicsSystem::SetProcesor(PhysicsProcesor _Procesor)
@@ -365,4 +187,50 @@ void PhysicsSystem::SetProcesor(PhysicsProcesor _Procesor)
 PhysicsProcesor PhysicsSystem::GetProcesor()
 {
 	return physicsProcesor;
+}
+void PhysicsSystem::ClearScene()
+{
+	if (gScene)
+		gScene->release();
+
+	CreateScene();
+}
+void PhysicsSystem::CreateScene()
+{
+	gScene = gPhysics->createScene(*sceneDesc);
+	physx::PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+	if (pvdClient)
+	{
+		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+		pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+	}
+}
+PhysicsSystem* PhysicsSystem::GetSingleton()
+{
+	static PhysicsSystem physicsSystem;
+	return &physicsSystem;
+}
+void PhysicsComponent::AddSphereCollider()
+{
+	SphereColliderComponent sphereColliderBuffer;
+	{
+		//boxColliderBuffer.CreateMaterial();
+		entt::entity entity = entt::to_entity(ecs->registry, *this);
+		if (ecs->HasComponent<TransformComponent>(entity))
+		{
+			auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
+			float extent = std::max(std::max(transformComponent.GetScale().x, transformComponent.GetScale().y), transformComponent.GetScale().z);
+			sphereColliderBuffer.CreateShape(extent); // fixed! static? what about this? (1.0f, 1.0f, 1.0f) / 3
+		}
+
+		if (ecs->registry.any_of<RigidBodyComponent>(entity))
+		{
+			auto& rigidBodyComponent = ecs->registry.get<RigidBodyComponent>(entity);
+			if (rigidBodyComponent.GetRigidBody())
+				rigidBodyComponent.GetRigidBody()->attachShape(*sphereColliderBuffer.GetShape());
+			printf("Attaching shape\n");
+		}
+	}
+	sphere_colliders.push_back(sphereColliderBuffer);
 }

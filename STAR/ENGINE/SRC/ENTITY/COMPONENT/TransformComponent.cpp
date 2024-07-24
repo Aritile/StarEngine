@@ -1,6 +1,7 @@
 #include "TransformComponent.h"
 #include "GeneralComponent.h"
 #include "RigidbodyComponent.h"
+#include "../../SYSTEM/PhysicsSystem.h"
 
 static Entity* ecs = Entity::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
@@ -37,51 +38,24 @@ void TransformComponent::Render()
 			ImGui::TableNextColumn();
 			ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 			{
-				Vector3 position = localTransform.position;
+				Vector3 position = GetLocalPosition();
 				if (ImGui::DragFloat3("##PositionTransformComponent", (float*)&position, viewportWindow->useSnap ? viewportWindow->snap : 0.1f))
 				{
 					SetPosition(position);
-
-					entt::entity entity = entt::to_entity(ecs->registry, *this);
-					if (ecs->IsValid(entity))
-					{
-						if (ecs->HasComponent<RigidBodyComponent>(entity))
-						{
-							auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
-							physx::PxTransform trans(StarHelpers::Vector3ToPhysics(GetPosition()));
-							rigidBodyComponent.SetTransform(trans);
-						}
-					}
+					UpdatePhysics();
 				}
 
-				Vector3 rotation = StarHelpers::ToDegrees(localTransform.rotation.ToEuler());
+				Vector3 rotation = StarHelpers::ToDegrees(GetLocalTransform().ToEuler());
 				if (ImGui::DragFloat3("##RotationTransformComponent", (float*)&rotation, viewportWindow->useSnap ? viewportWindow->snap : 0.1f))
 				{
 					SetRotationYawPitchRoll(StarHelpers::ToRadians(rotation));
-
-					entt::entity entity = entt::to_entity(ecs->registry, *this);
-					if (ecs->IsValid(entity))
-					{
-						if (ecs->HasComponent<RigidBodyComponent>(entity))
-						{
-							auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
-							physx::PxTransform trans(StarHelpers::QuatToPhysics(GetRotationQuaternion()));
-							trans.p = StarHelpers::Vector3ToPhysics(GetPosition());
-							rigidBodyComponent.SetTransform(trans);
-						}
-					}
+					UpdatePhysics();
 				}
 
-				Vector3 scale = localTransform.scale;
+				Vector3 scale = GetLocalScale();
 				if (ImGui::DragFloat3("##ScaleTransformComponent", (float*)&scale, viewportWindow->useSnap ? viewportWindow->snap : 0.1f, 0.0f, FLT_MAX))
 				{
 					SetScale(scale);
-
-					entt::entity entity = entt::to_entity(ecs->registry, *this);
-					if (ecs->IsValid(entity))
-					{
-						// missing code for physics scale
-					}
 				}
 			}
 			ImGui::PopItemWidth();
@@ -185,6 +159,33 @@ void TransformComponent::UpdateTransformFromPositionRotationScale()
 	localTransform.transform = Matrix::CreateTranslation(localTransform.position) * localTransform.transform;
 	localTransform.transform = Matrix::CreateFromQuaternion(localTransform.rotation) * localTransform.transform;
 	localTransform.transform = Matrix::CreateScale(localTransform.scale) * localTransform.transform;
+
+	entt::entity entity = entt::to_entity(ecs->registry, *this);
+	if (ecs->HasComponent<PhysicsComponent>(entity))
+	{
+		auto& physicsComponent = ecs->GetComponent<PhysicsComponent>(entity);
+		std::vector<BoxColliderComponent>* boxColliderComponent = physicsComponent.GetBoxColliders();
+		std::vector<SphereColliderComponent>* sphereColliderComponent = physicsComponent.GetSphereColliders();
+		for (size_t i = 0; i < boxColliderComponent->size(); i++)
+		{
+			BoxColliderComponent* index = &physicsComponent.GetBoxColliders()->at(i);
+			if (index->GetExtents() != GetScale()) // loop fix
+			{
+				index->SetExtents(GetScale());
+				index->Update();
+			}
+		}
+		for (size_t i = 0; i < sphereColliderComponent->size(); i++)
+		{
+			SphereColliderComponent* index = &physicsComponent.GetSphereColliders()->at(i);
+			float extent = std::max(std::max(GetScale().x, GetScale().y), GetScale().z);
+			if (index->GetExtent() != extent) // loop fix
+			{
+				index->SetExtent(extent); // is this good solution?
+				index->Update();
+			}
+		}
+	}
 }
 void TransformComponent::UpdatePositionRotationScaleFromTransform(Matrix transform)
 {
@@ -289,8 +290,22 @@ void TransformComponent::DeserializeComponent(YAML::Node& in)
 
 void TransformComponent::LookAt(Matrix matrix)
 {
-	Matrix lookAt = Matrix::CreateLookAt(GetTransform().Translation(), matrix.Translation(), matrix.Up());
+	if (GetTransform() == matrix)
+		return;
+
+	Vector3 p;
+	Quaternion r;
+	Vector3 s;
+	matrix.Decompose(s, r, p);
+
+	Vector3 forward = p - GetPosition();
+	SetRotationQuaternion(Quaternion::LookRotation(-forward, Vector3::Up));
+
+	// this not working, idk why
+	/*
+	Matrix lookAt = Matrix::CreateLookAt(GetTransform().Translation(), matrix.Translation(), Vector3::Up);
 	SetTransform(lookAt);
+	*/
 }
 
 void TransformComponent::LuaAdd(sol::state& state)
@@ -320,4 +335,17 @@ void TransformComponent::LuaAdd(sol::state& state)
 	component["GetLocalScale"] = &TransformComponent::GetLocalScale;
 	component["GetLocalTransform"] = &TransformComponent::GetLocalTransform;
 	component["LookAt"] = &TransformComponent::LookAt;
+}
+
+void TransformComponent::UpdatePhysics()
+{
+	entt::entity entity = entt::to_entity(ecs->registry, *this);
+	if (ecs->IsValid(entity))
+	{
+		if (ecs->HasComponent<RigidBodyComponent>(entity))
+		{
+			auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
+			rigidBodyComponent.SetTransform(GetTransform());
+		}
+	}
 }

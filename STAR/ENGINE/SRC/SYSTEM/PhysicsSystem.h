@@ -4,6 +4,8 @@
 #include <physx/PxPhysicsAPI.h>
 #include "../XTK/MATH/SimpleMath.h"
 #include <yaml-cpp/yaml.h>
+#include "../ENTITY/COMPONENT/BoxColliderComponent.h"
+#include "../ENTITY/COMPONENT/SphereColliderComponent.h"
 
 #define PVD_HOST "127.0.0.1"
 #define PVD_PORT 5425
@@ -26,11 +28,13 @@ enum PhysicsProcesor
 	xGPU = 1
 };
 
-struct PhysicsSystem
+class PhysicsSystem
 {
 public:
 	bool Init();
 	void Update();
+	void CreateScene();
+	void ClearScene();
 	void Shutdown();
 	void SetProcesor(PhysicsProcesor _Procesor);
 	PhysicsProcesor GetProcesor();
@@ -46,46 +50,17 @@ private:
 	physx::PxPvdTransport*         transport = NULL;
 	physx::PxCudaContextManager*   gCudaContextManager = NULL;
 
+	physx::PxSceneDesc* sceneDesc;
+
 private:
 	PhysicsProcesor physicsProcesor = PhysicsProcesor::xGPU;
 
 public:
 	physx::PxPhysics* GetPhysics();
 	physx::PxScene* GetScene();
-};
-
-PhysicsSystem& PhysicsSystemClass();
-
-struct BoxColliderBuffer
-{
-public:
-	bool activeComponent = true;
 
 public:
-	void CreateShape(entt::entity entity);
-	void CreateMaterial();
-
-private:
-	physx::PxShape* pxShape = NULL;
-	physx::PxMaterial* pxMaterial = NULL;
-
-public:
-	physx::PxShape* GetShape() const;
-	physx::PxMaterial* GetMaterial() const;
-	void SetStaticFriction(float value);
-	float GetStaticFriction();
-	void SetDynamicFriction(float value);
-	float GetDynamicFriction();
-	void SetRestitution(float value);
-	float GetRestitution();
-	void SetCenter(Vector3 value);
-	Vector3 GetCenter() const;
-	void SetSize(Vector3 value);
-	Vector3 GetSize() const;
-
-public:
-	void SerializeComponent(YAML::Emitter& out);
-	void DeserializeComponent(YAML::Node& in);
+	static PhysicsSystem* GetSingleton();
 };
 
 struct PhysicsComponent
@@ -93,14 +68,17 @@ struct PhysicsComponent
 public:
 	void Render();
 	void AddBoxCollider();
+	void AddSphereCollider();
 
 public:
 	void SerializeComponent(YAML::Emitter& out);
 	void DeserializeComponent(YAML::Node& in);
 
 public:
-	const std::vector<BoxColliderBuffer>& GetBoxColliders();
+	std::vector<BoxColliderComponent>* GetBoxColliders();
+	std::vector<SphereColliderComponent>* GetSphereColliders();
 
 private:
-	std::vector<BoxColliderBuffer> box_colliders;
+	std::vector<BoxColliderComponent> box_colliders;
+	std::vector<SphereColliderComponent> sphere_colliders;
 };
