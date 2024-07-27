@@ -30,6 +30,8 @@ void EngineProcess();
 void EngineShutdown();
 void UpdateTransform(entt::entity _Entity);
 void GamePlayUpdate();
+void GamePlayLateUpdate();
+void GamePlayFixedUpdate();
 void RenderToMainBuffer();
 void RenderEnvironment(Matrix _ProjectionMatrix,
 	                   Matrix _ViewMatrix,

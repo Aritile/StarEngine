@@ -22,8 +22,10 @@ class Game
 {
 private:
 	std::wstring name = L"StarGame";
-	int width = 1280; /* 1920 */
-	int height = 720; /* 800 */
+	//int width = 1280; /* 1920 */
+	//int height = 720; /* 800 */
+	int width = 1600; /* 1920 */
+	int height = 900; /* 800 */
 	//UINT antialiasing = 8;
 
 private:
@@ -39,6 +41,11 @@ public:
 	void StopGame();
 	unsigned char GetGameState();
 	bool GameResizeBuffer();
+
+	// fix
+	bool Game1(HWND parent);
+	void Game2();
+	void Game3();
 
 public:
 	D3D11_VIEWPORT GetViewport();

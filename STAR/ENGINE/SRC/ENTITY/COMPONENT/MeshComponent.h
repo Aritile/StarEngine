@@ -125,6 +125,8 @@ public:
 	bool LoadTexture(const char* path, ID3D11ShaderResourceView** shaderResourceView);
 	void SetupDiffuseTexture();
 	void LoadDiffuseTexture(const char* path);
+	void SetMaterialName(const char* name);
+	std::string GetMaterialName();
 
 public:
 	unsigned int meshIndex = 0;

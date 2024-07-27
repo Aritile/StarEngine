@@ -91,6 +91,6 @@ namespace StarHelpers
 	void CreateFolder(std::string path);
 
 	const aiScene* OpenModel(Assimp::Importer* importer, const char* path);
-
 	void StartCommand(std::string string);
+	std::string SlashesFix(std::string string);
 }

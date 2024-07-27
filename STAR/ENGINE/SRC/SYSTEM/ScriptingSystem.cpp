@@ -12,9 +12,22 @@
 #include "../ENTITY/COMPONENT/TextMeshComponent.h"
 #include "ProjectSceneSystem.h"
 #include "PlayerPrefs.h"
+#include "PhysicsSystem.h"
 
+#include "LUA/LuaBoundingBox.h"
+#include "LUA/LuaConsole.h"
+#include "LUA/LuaInput.h"
+#include "LUA/LuaMatrix.h"
+#include "LUA/LuaQuaternion.h"
+#include "LUA/LuaTime.h"
+#include "LUA/LuaVector2.h"
+#include "LUA/LuaVector3.h"
+#include "LUA/LuaVector4.h"
+#include "LUA/LuaEngine.h"
+#include "LUA/LuaEntity.h"
+
+#define INCLUDE_LUASOCKET
 #define COMPONENT_ERROR "Failed to get %s because it was not found!"
-
 
 ScriptingSystem* ScriptingSystem::GetSingleton()
 {
@@ -30,6 +43,7 @@ static Entity* ecs = Entity::GetSingleton();
 static ScriptingSystem* scriptingSystem = ScriptingSystem::GetSingleton();
 static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
 static PlayerPrefs* playerPrefs = PlayerPrefs::GetSingleton();
+static PhysicsSystem* physicsSystem = PhysicsSystem::GetSingleton();
 
 bool ScriptingSystem::Init()
 {
@@ -45,20 +59,29 @@ bool ScriptingSystem::Init()
 	lua.open_libraries(sol::lib::bit32);
 	lua.open_libraries(sol::lib::io);
 
-	/* system */
-	lua_add_vector2();
-	lua_add_vector3();
-	lua_add_vector4();
-	lua_add_quaternion();
-	lua_add_matrix();
-	lua_add_console();
-	lua_add_time();
-	lua_add_input();
-	lua_add_bounding_box();
+#if defined INCLUDE_LUASOCKET
+	std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
+	std::string path = R"(package.path = package.path .. ';)" + exe + R"(/data/lua/luasocket/LDIR/?.lua')";
+	std::string cpath = R"(package.cpath = package.cpath .. ';)" + exe + R"(/data/lua/luasocket/CDIR/?.dll')";
 
-	/* entity */
-	lua_add_entity();
-	lua_add_engine();
+	path = StarHelpers::SlashesFix(path);
+	cpath = StarHelpers::SlashesFix(cpath);
+
+	lua.script(path);
+	lua.script(cpath);
+#endif
+
+	LuaBoundingBox::LuaAdd(lua);
+	LuaConsole::LuaAdd(lua);
+	LuaInput::LuaAdd(lua);
+	LuaMatrix::LuaAdd(lua);
+	LuaQuaternion::LuaAdd(lua);
+	LuaTime::LuaAdd(lua);
+	LuaVector2::LuaAdd(lua);
+	LuaVector3::LuaAdd(lua);
+	LuaVector4::LuaAdd(lua);
+	LuaEngine::LuaAdd(lua);
+	LuaEntity::LuaAdd(lua);
 
 	GeneralComponent::LuaAdd(lua);
 	TransformComponent::LuaAdd(lua);
@@ -69,291 +92,6 @@ bool ScriptingSystem::Init()
 	PlayerPrefs::LuaAdd(lua);
 
 	return true;
-}
-
-/* system */
-void ScriptingSystem::lua_add_vector2()
-{
-	typedef Vector2 VECTORX;
-
-	sol::usertype<VECTORX> vector = lua.new_usertype<VECTORX>(
-		"Vector2",
-		sol::constructors<VECTORX(), VECTORX(float, float)>(),
-		sol::meta_function::addition,       [](const VECTORX& x, const VECTORX& y)          { return x + y;                     },
-		sol::meta_function::subtraction,    [](const VECTORX& x, const VECTORX& y)          { return x - y;                     },
-		sol::meta_function::multiplication, [](const VECTORX& x, const VECTORX& y)          { return x * y;                     },
-		sol::meta_function::division,       [](const VECTORX& x, const VECTORX& y)          { return x / y;                     },
-		sol::meta_function::addition,       [](const VECTORX& x, const float y)             { return VECTORX(x.x + y, x.y + y); },
-		sol::meta_function::subtraction,    [](const VECTORX& x, const float y)             { return VECTORX(x.x - y, x.y - y); },
-		sol::meta_function::multiplication, [](const VECTORX& x, const float y)             { return VECTORX(x.x * y, x.y * y); },
-		sol::meta_function::division,       [](const VECTORX& x, const float y)             { return VECTORX(x.x / y, x.y / y); },
-		sol::meta_function::unary_minus,    [](const VECTORX& x)                            { return -x;                        });
-	vector["Length"]     =                  [](const VECTORX& x)                            { return x.Length();                };
-	vector["Dot"]        =                  [](const VECTORX& x, const VECTORX& y)          { return x.Dot(y);                  };
-	vector["Cross"]      =                  [](const VECTORX& x, const VECTORX& y)          { return x.Cross(y);                };
-	vector["Normalize"]  =                  [](VECTORX& x)                                  { x.Normalize();    return x;       };
-	vector["Clamp"]      =                  [](VECTORX& x, const VECTORX& y)                { x.Clamp(x, y);    return x;       };
-	vector["Distance"]   =                  [](const VECTORX& x, const VECTORX& y)          { x.Distance(x, y); return x;       };
-	vector["Min"]        =                  [](const VECTORX& x, const VECTORX& y)          { x.Min(x, y);      return x;       };
-	vector["Max"]        =                  [](const VECTORX& x, const VECTORX& y)          { x.Max(x, y);      return x;       };
-	vector["Lerp"]       =                  [](const VECTORX& x, const VECTORX& y, float z) { x.Lerp(x, y, z);  return x;       };
-	vector["Zero"]       = sol::var(VECTORX::Zero);
-	vector["One"]        = sol::var(VECTORX::One);
-	vector["x"]          = &VECTORX::x;
-	vector["y"]          = &VECTORX::y;
-}
-void ScriptingSystem::lua_add_vector3()
-{
-	typedef Vector3 VECTORX;
-
-	sol::usertype<VECTORX> vector = lua.new_usertype<VECTORX>(
-		"Vector3",
-		sol::constructors<VECTORX(), VECTORX(float, float, float)>(),
-		sol::meta_function::addition,       [](const VECTORX& x, const VECTORX& y)          { return x + y;                              },
-		sol::meta_function::subtraction,    [](const VECTORX& x, const VECTORX& y)          { return x - y;                              },
-		sol::meta_function::multiplication, [](const VECTORX& x, const VECTORX& y)          { return x * y;                              },
-		sol::meta_function::division,       [](const VECTORX& x, const VECTORX& y)          { return x / y;                              },
-		sol::meta_function::addition,       [](const VECTORX& x, const float y)             { return VECTORX(x.x + y, x.y + y, x.z + y); },
-		sol::meta_function::subtraction,    [](const VECTORX& x, const float y)             { return VECTORX(x.x - y, x.y - y, x.z - y); },
-		sol::meta_function::multiplication, [](const VECTORX& x, const float y)             { return VECTORX(x.x * y, x.y * y, x.z * y); },
-		sol::meta_function::division,       [](const VECTORX& x, const float y)             { return VECTORX(x.x / y, x.y / y, x.z / y); },
-		sol::meta_function::unary_minus,    [](const VECTORX& x)                            { return -x;                                 });
-	vector["Length"]    =                   [](const VECTORX& x)                            { return x.Length();                         };
-	vector["Dot"]       =                   [](const VECTORX& x, const VECTORX& y)          { return x.Dot(y);                           };
-	vector["Cross"]     =                   [](const VECTORX& x, const VECTORX& y)          { return x.Cross(y);                         };
-	vector["Normalize"] =                   [](VECTORX& x)                                  { x.Normalize();    return x;                };
-	vector["Clamp"]     =                   [](VECTORX& x, const VECTORX& y)                { x.Clamp(x, y);    return x;                };
-	vector["Distance"]  =                   [](const VECTORX& x, const VECTORX& y)          { x.Distance(x, y); return x;                };
-	vector["Min"]       =                   [](const VECTORX& x, const VECTORX& y)          { x.Min(x, y);      return x;                };
-	vector["Max"]       =                   [](const VECTORX& x, const VECTORX& y)          { x.Max(x, y);      return x;                };
-	vector["Lerp"]      =                   [](const VECTORX& x, const VECTORX& y, float z) { x.Lerp(x, y, z);  return x;                };
-	vector["Zero"]      = sol::var(VECTORX::Zero);
-	vector["One"]       = sol::var(VECTORX::One);
-	vector["Up"]        = sol::var(VECTORX::Up);
-	vector["Down"]      = sol::var(VECTORX::Down);
-	vector["Right"]     = sol::var(VECTORX::Right);
-	vector["Left"]      = sol::var(VECTORX::Left);
-	vector["Forward"]   = sol::var(VECTORX::Forward);
-	vector["Backward"]  = sol::var(VECTORX::Backward);
-	vector["x"]         = &VECTORX::x;
-	vector["y"]         = &VECTORX::y;
-	vector["z"]         = &VECTORX::z;
-}
-void ScriptingSystem::lua_add_vector4()
-{
-	typedef Vector4 VECTORX;
-
-	sol::usertype<VECTORX> vector = lua.new_usertype<VECTORX>(
-		"Vector4",
-		sol::constructors<VECTORX(), VECTORX(float, float, float, float)>(),
-		sol::meta_function::addition,       [](const VECTORX& x, const VECTORX& y)                { return x + y;                                       },
-		sol::meta_function::subtraction,    [](const VECTORX& x, const VECTORX& y)                { return x - y;                                       },
-		sol::meta_function::multiplication, [](const VECTORX& x, const VECTORX& y)                { return x * y;                                       },
-		sol::meta_function::division,       [](const VECTORX& x, const VECTORX& y)                { return x / y;                                       },
-		sol::meta_function::addition,       [](const VECTORX& x, const float y)                   { return VECTORX(x.x + y, x.y + y, x.z + y, x.w + y); },
-		sol::meta_function::subtraction,    [](const VECTORX& x, const float y)                   { return VECTORX(x.x - y, x.y - y, x.z - y, x.w - y); },
-		sol::meta_function::multiplication, [](const VECTORX& x, const float y)                   { return VECTORX(x.x * y, x.y * y, x.z * y, x.w * y); },
-		sol::meta_function::division,       [](const VECTORX& x, const float y)                   { return VECTORX(x.x / y, x.y / y, x.z / y, x.w / y); },
-		sol::meta_function::unary_minus,    [](const VECTORX& x)                                  { return -x;                                          });
-	vector["Length"]    =                   [](const VECTORX& x)                                  { return x.Length();                                  };
-	vector["Dot"]       =                   [](const VECTORX& x, const VECTORX& y)                { return x.Dot(y);                                    };
-	vector["Cross"]     =                   [](const VECTORX& x, const VECTORX& y)                { return x.Cross(x, y);                               };
-	vector["Normalize"] =                   [](VECTORX& x)                                        { x.Normalize();    return x;                         };
-	vector["Clamp"]     =                   [](VECTORX& x, const VECTORX& y)                      { x.Clamp(x, y);    return x;                         };
-	vector["Distance"]  =                   [](const VECTORX& x, const VECTORX& y)                { x.Distance(x, y); return x;                         };
-	vector["Min"]       =                   [](const VECTORX& x, const VECTORX& y)                { x.Min(x, y);      return x;                         };
-	vector["Max"]       =                   [](const VECTORX& x, const VECTORX& y)                { x.Max(x, y);      return x;                         };
-	vector["Lerp"]      =                   [](const VECTORX& x, const VECTORX& y, const float z) { x.Lerp(x, y, z);  return x;                         };
-	vector["Zero"]      = sol::var(VECTORX::Zero);
-	vector["One"]       = sol::var(VECTORX::One);
-	vector["x"]         = &VECTORX::x;
-	vector["y"]         = &VECTORX::y;
-	vector["z"]         = &VECTORX::z;
-	vector["w"]         = &VECTORX::w;
-}
-void ScriptingSystem::lua_add_quaternion()
-{
-	sol::usertype<Quaternion> quaternion = lua.new_usertype<Quaternion>(
-		"Quaternion",
-		sol::constructors<Quaternion(), Quaternion(float, float, float, float)>(),
-		sol::meta_function::addition,       [](const Quaternion& x, const Quaternion& y) { return x + y; },
-		sol::meta_function::subtraction,    [](const Quaternion& x, const Quaternion& y) { return x - y; },
-		sol::meta_function::multiplication, [](const Quaternion& x, const Quaternion& y) { return x * y; },
-		sol::meta_function::division,       [](const Quaternion& x, const Quaternion& y) { return x / y; },
-		sol::meta_function::unary_minus,    [](const Quaternion& x) { return -x;                         }); // why not
-	quaternion["Identity"] = sol::var(Quaternion::Identity);
-	quaternion["x"]        = &Quaternion::x;
-	quaternion["y"]        = &Quaternion::y;
-	quaternion["z"]        = &Quaternion::z;
-	quaternion["w"]        = &Quaternion::w;
-}
-void ScriptingSystem::lua_add_matrix()
-{
-	sol::usertype<Matrix> matrix = lua.new_usertype<Matrix>(
-		"Matrix",
-		sol::constructors<Matrix(), Matrix(
-			float, float, float, float,
-			float, float, float, float,
-			float, float, float, float,
-			float, float, float, float)>(),
-		sol::meta_function::addition,       [](const Matrix& x, const Matrix& y)                     { return x + y;                         },
-		sol::meta_function::subtraction,    [](const Matrix& x, const Matrix& y)                     { return x - y;                         },
-		sol::meta_function::multiplication, [](const Matrix& x, const Matrix& y)                     { return x * y;                         },
-		sol::meta_function::division,       [](const Matrix& x, const Matrix& y)                     { return x / y;                         },
-		sol::meta_function::unary_minus,    [](const Matrix& x)                                      { return -x;                            });
-	matrix["Up"]       =                    [](const Matrix& x)                                      { return x.Up();                        };
-	matrix["Down"]     =                    [](const Matrix& x)                                      { return x.Down();                      };
-	matrix["Right"]    =                    [](const Matrix& x)                                      { return x.Right();                     };
-	matrix["Left"]     =                    [](const Matrix& x)                                      { return x.Left();                      };
-	matrix["Forward"]  =                    [](const Matrix& x)                                      { return x.Forward();                   };
-	matrix["Backward"] =                    [](const Matrix& x)                                      { return x.Backward();                  };
-	matrix["Lerp"]     =                    [](const Matrix& x, const Matrix& y, const float z)      { return x.Lerp(x, y, z);               };
-	matrix["CreateLookAt"] =                [](const Vector3& x, const Vector3& y, const Vector3& z) { return Matrix::CreateLookAt(x, y, z); };
-	matrix["Identity"] = sol::var(Matrix::Identity);
-	matrix["_11"]      = &Matrix::_11;
-	matrix["_12"]      = &Matrix::_12;
-	matrix["_13"]      = &Matrix::_13;
-	matrix["_14"]      = &Matrix::_14;
-	matrix["_21"]      = &Matrix::_21;
-	matrix["_22"]      = &Matrix::_22;
-	matrix["_23"]      = &Matrix::_23;
-	matrix["_24"]      = &Matrix::_24;
-	matrix["_31"]      = &Matrix::_31;
-	matrix["_32"]      = &Matrix::_32;
-	matrix["_33"]      = &Matrix::_33;
-	matrix["_34"]      = &Matrix::_34;
-	matrix["_41"]      = &Matrix::_41;
-	matrix["_42"]      = &Matrix::_42;
-	matrix["_43"]      = &Matrix::_43;
-	matrix["_44"]      = &Matrix::_44;
-}
-void ScriptingSystem::lua_add_console()
-{
-	lua["Console"] = sol::new_table();
-	lua["Console"]["Info"]    = [](const char* message) { consoleWindow->AddInfoMessage(message);    };
-	lua["Console"]["Warning"] = [](const char* message) { consoleWindow->AddWarningMessage(message); };
-	lua["Console"]["Error"]   = [](const char* message) { consoleWindow->AddErrorMessage(message);   };
-}
-void ScriptingSystem::lua_add_time()
-{
-	lua["Time"] = sol::new_table();
-	lua["Time"]["FrameTime"]   = []() { return game->GetFrameTime();   };
-	lua["Time"]["DeltaTime"]   = []() { return game->GetDeltaTime();   };
-	lua["Time"]["ElapsedTime"] = []() { return game->GetElapsedTime(); };
-	lua["Time"]["FrameCount"]  = []() { return game->GetFrameCount();  };
-}
-void ScriptingSystem::lua_add_input()
-{
-	lua["Input"] = sol::new_table();
-
-	/* Mouse */
-	//lua["Input"]["ShowCursor"] = []() { StarHelpers::ShowCursor(true); };
-	//lua["Input"]["HideCursor"] = []() { StarHelpers::ShowCursor(false); };
-	lua["Input"]["HideCursor"]     = [](bool value) { game->HideCursor(value); };
-	lua["Input"]["LockCursor"]     = [](bool value) { game->LockCursor(value); };
-	lua["Input"]["IsCursorHidden"] = []() { return game->IsCursorHidden(); };
-	lua["Input"]["IsCursorLocked"] = []() { return game->IsCursorLocked(); };
-	lua["Input"]["GetCursorAxis"]  = []() { return game->GetCursorAxis(); };
-	lua["Input"]["GetCursorAxisX"] = []() { return game->GetCursorAxis().x; };
-	lua["Input"]["GetCursorAxisY"] = []() { return game->GetCursorAxis().y; };
-
-	/* Keyboard */
-	lua["Input"]["GetKeyDown"] = [](unsigned char key) { return game->InputGetKey(key); };
-	lua["Input"]["KeyCode"] = sol::new_table();
-
-	lua["Input"]["KeyCode"]["Q"] = DIK_Q;
-	lua["Input"]["KeyCode"]["W"] = DIK_W;
-	lua["Input"]["KeyCode"]["E"] = DIK_E;
-	lua["Input"]["KeyCode"]["R"] = DIK_R;
-	lua["Input"]["KeyCode"]["T"] = DIK_T;
-	lua["Input"]["KeyCode"]["Y"] = DIK_Y;
-	lua["Input"]["KeyCode"]["U"] = DIK_U;
-	lua["Input"]["KeyCode"]["I"] = DIK_I;
-	lua["Input"]["KeyCode"]["O"] = DIK_O;
-	lua["Input"]["KeyCode"]["P"] = DIK_P;
-
-	lua["Input"]["KeyCode"]["A"] = DIK_A;
-	lua["Input"]["KeyCode"]["S"] = DIK_S;
-	lua["Input"]["KeyCode"]["D"] = DIK_D;
-	lua["Input"]["KeyCode"]["F"] = DIK_F;
-	lua["Input"]["KeyCode"]["G"] = DIK_G;
-	lua["Input"]["KeyCode"]["H"] = DIK_H;
-	lua["Input"]["KeyCode"]["J"] = DIK_J;
-	lua["Input"]["KeyCode"]["K"] = DIK_K;
-	lua["Input"]["KeyCode"]["L"] = DIK_L;
-
-	lua["Input"]["KeyCode"]["Z"] = DIK_Z;
-	lua["Input"]["KeyCode"]["X"] = DIK_X;
-	lua["Input"]["KeyCode"]["C"] = DIK_C;
-	lua["Input"]["KeyCode"]["V"] = DIK_V;
-	lua["Input"]["KeyCode"]["B"] = DIK_B;
-	lua["Input"]["KeyCode"]["N"] = DIK_N;
-	lua["Input"]["KeyCode"]["M"] = DIK_M;
-
-	lua["Input"]["KeyCode"]["1"] = DIK_1;
-	lua["Input"]["KeyCode"]["2"] = DIK_2;
-	lua["Input"]["KeyCode"]["3"] = DIK_3;
-	lua["Input"]["KeyCode"]["4"] = DIK_4;
-	lua["Input"]["KeyCode"]["5"] = DIK_5;
-	lua["Input"]["KeyCode"]["6"] = DIK_6;
-	lua["Input"]["KeyCode"]["7"] = DIK_7;
-	lua["Input"]["KeyCode"]["8"] = DIK_8;
-	lua["Input"]["KeyCode"]["9"] = DIK_9;
-	lua["Input"]["KeyCode"]["0"] = DIK_0;
-
-	lua["Input"]["KeyCode"]["F1"] = DIK_F1;
-	lua["Input"]["KeyCode"]["F2"] = DIK_F2;
-	lua["Input"]["KeyCode"]["F3"] = DIK_F3;
-	lua["Input"]["KeyCode"]["F4"] = DIK_F4;
-	lua["Input"]["KeyCode"]["F5"] = DIK_F5;
-	lua["Input"]["KeyCode"]["F6"] = DIK_F6;
-	lua["Input"]["KeyCode"]["F7"] = DIK_F7;
-	lua["Input"]["KeyCode"]["F8"] = DIK_F8;
-	lua["Input"]["KeyCode"]["F9"] = DIK_F9;
-	lua["Input"]["KeyCode"]["F10"] = DIK_F10;
-	lua["Input"]["KeyCode"]["F11"] = DIK_F11;
-	lua["Input"]["KeyCode"]["F12"] = DIK_F12;
-
-	lua["Input"]["KeyCode"]["Up"] = DIK_UP;
-	lua["Input"]["KeyCode"]["Down"] = DIK_DOWN;
-	lua["Input"]["KeyCode"]["Left"] = DIK_LEFT;
-	lua["Input"]["KeyCode"]["Right"] = DIK_RIGHT;
-
-	lua["Input"]["KeyCode"]["LeftControl"] = DIK_LCONTROL;
-	lua["Input"]["KeyCode"]["RightControl"] = DIK_RCONTROL;
-
-	lua["Input"]["KeyCode"]["LeftShift"] = DIK_LSHIFT;
-	lua["Input"]["KeyCode"]["RightShift"] = DIK_RSHIFT;
-
-	lua["Input"]["KeyCode"]["LeftAlt"] = DIK_LALT;
-	lua["Input"]["KeyCode"]["RightAlt"] = DIK_RALT;
-}
-void ScriptingSystem::lua_add_bounding_box()
-{
-	using namespace DirectX;
-
-	sol::usertype<BoundingBox> boundingBox = lua.new_usertype<BoundingBox>(
-		"BoundingBox",
-		sol::constructors<BoundingBox(), BoundingBox(Vector3, Vector3)>());
-}
-
-/* entity */
-void ScriptingSystem::lua_add_entity()
-{
-	sol::usertype<EntityX> entity = lua.new_usertype<EntityX>(
-		"Entity");
-	entity["CreateEntity"] = &EntityX::CreateEntity;
-	entity["AddComponent"] = &EntityX::AddComponent;
-	entity["GetComponent"] = &EntityX::GetComponent;
-	entity["HasComponent"] = &EntityX::HasComponent;
-	entity["RemoveComponent"] = &EntityX::RemoveComponent;
-}
-void ScriptingSystem::lua_add_engine()
-{
-	lua["Engine"] = sol::new_table();
-	lua["Engine"]["FindByName"] = [](const char* name) { return GetSingleton()->FindByName(name); };
-	lua["Engine"]["FindByTag"] = [](const char* tag) { return GetSingleton()->FindByTag(tag); };
-	lua["Engine"]["LoadScene"] = [](const char* path) { projectSceneSystem->OpenScene(path); };
 }
 void ScriptingComponent::AddScript(const char* path)
 {
@@ -544,6 +282,24 @@ void EntityX::AddComponent(const char* component_name)
 			ecs->GetComponent<RigidBodyComponent>(entity).CreateActor();
 		}
 	}
+	// START TESTING
+	else if (strcmp(component_name, "BoxColliderComponent") == 0)
+	{
+		if (ecs->HasComponent<PhysicsComponent>(entity))
+		{
+			auto& physicsComponent = ecs->GetComponent<PhysicsComponent>(entity);
+			physicsComponent.AddBoxCollider();
+		}
+	}
+	else if (strcmp(component_name, "SphereColliderComponent") == 0)
+	{
+		if (ecs->HasComponent<PhysicsComponent>(entity))
+		{
+			auto& physicsComponent = ecs->GetComponent<PhysicsComponent>(entity);
+			physicsComponent.AddSphereCollider();
+		}
+	}
+	// END
 	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
 }
 sol::object EntityX::GetComponent(const char* component_name)
@@ -610,6 +366,26 @@ sol::object EntityX::GetComponent(const char* component_name)
 		}
 		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
 	}
+	// START TESTING
+	else if (strcmp(component_name, "BoxColliderComponent") == 0)
+	{
+		if (ecs->HasComponent<PhysicsComponent>(entity))
+		{
+			auto& physicsComponent = ecs->GetComponent<PhysicsComponent>(entity);
+			if (!physicsComponent.GetBoxColliders()->empty())
+				component = sol::make_object(scriptingSystem->GetState(), &physicsComponent.GetBoxColliders()[0]);
+		}
+	}
+	else if (strcmp(component_name, "SphereColliderComponent") == 0)
+	{
+		if (ecs->HasComponent<PhysicsComponent>(entity))
+		{
+			auto& physicsComponent = ecs->GetComponent<PhysicsComponent>(entity);
+			if (!physicsComponent.GetSphereColliders()->empty())
+				component = sol::make_object(scriptingSystem->GetState(), &physicsComponent.GetSphereColliders()[0]);
+		}
+	}
+	// END
 	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
 
 	return component;
@@ -630,6 +406,12 @@ bool EntityX::HasComponent(const char* component_name)
 		return ecs->HasComponent<CameraComponent>(entity);
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
 		return ecs->HasComponent<RigidBodyComponent>(entity);
+	// START TESTING
+	else if (strcmp(component_name, "BoxColliderComponent") == 0)
+		return !ecs->GetComponent<PhysicsComponent>(entity).GetBoxColliders()->empty();
+	else if (strcmp(component_name, "SphereColliderComponent") == 0)
+		return !ecs->GetComponent<PhysicsComponent>(entity).GetSphereColliders()->empty();
+	// END
 	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
 
 	return false;
@@ -650,6 +432,12 @@ void EntityX::RemoveComponent(const char* component_name)
 		ecs->RemoveComponent<CameraComponent>(entity);
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
 		ecs->RemoveComponent<RigidBodyComponent>(entity);
+	// START TESTING
+	else if (strcmp(component_name, "BoxColliderComponent") == 0)
+		ecs->GetComponent<PhysicsComponent>(entity).GetBoxColliders()->clear();
+	else if (strcmp(component_name, "SphereColliderComponent") == 0)
+		ecs->GetComponent<PhysicsComponent>(entity).GetSphereColliders()->clear();
+	// END
 	else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
 }
 
@@ -676,49 +464,54 @@ void ScriptingComponent::DeserializeComponent(YAML::Node& in)
 			if (scriptNode)
 			{
 				AddScript(scriptNode["Path"].as<std::string>().c_str());
+				this->scripts.back().activeComponent = scriptNode["IsActive"].as<bool>();
 			}
 		}
 	}
 }
-
-EntityX ScriptingSystem::FindByName(const char* name)
+void ScriptingComponent::lua_call_late_update()
 {
-	printf("FindByName() %s\n", name);
-	EntityX entityX;
+	lua_add_entity_from_component();
 
-	auto view = ecs->registry.view<GeneralComponent>();
-	for (auto entity : view)
+	for (size_t i = 0; i < scripts.size(); i++)
 	{
-		if (entity == ecs->root) continue; // skip root entity
-		auto& gc = ecs->GetComponent<GeneralComponent>(entity);
+		if (!scripts[i].activeComponent) continue;
+		//if (scripts[i].error) continue;
 
-		if (!gc.GetName().compare(name))
+		std::string buffer = scripts[i].fileName;
+		sol::function function = scriptingSystem->GetState()[buffer.c_str()]["LateUpdate"];
+		if (function)
 		{
-			entityX.entity = entity;
-			return entityX;
+			sol::protected_function_result result = function();
+			if (!result.valid())
+			{
+				sol::error error = result;
+				consoleWindow->AddErrorMessage("%s", error.what());
+				game->StopGame();
+			}
 		}
 	}
-
-	consoleWindow->AddWarningMessage("Failed to find entity by name %s", name);
-	return entityX;
 }
-EntityX ScriptingSystem::FindByTag(const char* tag)
+void ScriptingComponent::lua_call_fixed_update()
 {
-	EntityX entityX;
+	lua_add_entity_from_component();
 
-	auto view = ecs->registry.view<GeneralComponent>();
-	for (auto entity : view)
+	for (size_t i = 0; i < scripts.size(); i++)
 	{
-		if (entity == ecs->root) continue; // skip root entity
-		auto& gc = ecs->GetComponent<GeneralComponent>(entity);
+		if (!scripts[i].activeComponent) continue;
+		//if (scripts[i].error) continue;
 
-		if (!gc.GetTag().compare(tag))
+		std::string buffer = scripts[i].fileName;
+		sol::function function = scriptingSystem->GetState()[buffer.c_str()]["FixedUpdate"];
+		if (function)
 		{
-			entityX.entity = entity;
-			return entityX;
+			sol::protected_function_result result = function();
+			if (!result.valid())
+			{
+				sol::error error = result;
+				consoleWindow->AddErrorMessage("%s", error.what());
+				game->StopGame();
+			}
 		}
 	}
-
-	consoleWindow->AddWarningMessage("Failed to find entity by tag %s", tag);
-	return entityX;
 }

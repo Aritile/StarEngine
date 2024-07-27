@@ -42,6 +42,57 @@ bool Game::StartGame(HWND parent)
     return true;
 }
 
+bool Game::Game1(HWND parent)
+{
+    if (!GameCreateWindow())
+        return false;
+
+    if (!InitInput())
+        return false;
+
+    if (!GameCreateContext(parent))
+        return false;
+
+    return true;
+}
+void Game::Game2()
+{
+    projectSceneSystem->OpenScene("data.scene");
+
+    gameState = GameState::GamePlay;
+
+    /* start frameTime, deltaTime, elapsedTime and frameCount */
+    StartTime();
+
+    auto view = ecs->registry.view<ScriptingComponent>();
+    for (auto entity : view)
+        ecs->registry.get<ScriptingComponent>(entity).lua_call_start();
+}
+void Game::Game3()
+{
+    gameState = GameState::GameNone;
+
+    /* stop frameTime, deltaTime, elapsedTime and frameCount */
+    StopTime();
+    ResetTime();
+
+    ReleaseInput();
+    DestroyWindow(hwnd);
+    UnregisterClass(name.c_str(), *dx->hInstance);
+
+    if (IsCursorHidden()) HideCursor(false);
+    if (IsCursorLocked()) LockCursor(false);
+    //HideCursor(false);
+    //LockCursor(false);
+
+    if (gameSwapChain) gameSwapChain->Release();
+    if (gameRenderTargetView) gameRenderTargetView->Release();
+    if (gameDepthStencilView) gameDepthStencilView->Release();
+
+    PostQuitMessage(0);
+
+    hwnd = NULL;
+}
 LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     Game* game = Game::GetSingleton();
@@ -49,7 +100,11 @@ LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     switch (uMsg)
     {
     case WM_CLOSE:
+#if defined(GAME)
+        game->Game3();
+#else
         game->StopGame();
+#endif
         break;
     case WM_SIZE:
         game->GameResizeBuffer();
@@ -128,8 +183,10 @@ void Game::StopGame()
     DestroyWindow(hwnd);
     UnregisterClass(name.c_str(), *dx->hInstance);
 
-    if (IsCursorHidden()) HideCursor(false);
-    if (IsCursorLocked()) LockCursor(false);
+    //if (IsCursorHidden()) HideCursor(false);
+    //if (IsCursorLocked()) LockCursor(false);
+    HideCursor(false);
+    LockCursor(false);
 
     if (gameSwapChain) gameSwapChain->Release();
     if (gameRenderTargetView) gameRenderTargetView->Release();

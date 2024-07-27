@@ -344,8 +344,16 @@ void EngineUpdate()
 void EngineProcess()
 {
     GamePlayUpdate(); /* update physics, scripts when playing */
-    RenderToMainBuffer(); /* render engine layout */
+    if (game->GetGameState() == GameState::GamePlay)
+    {
+        GamePlayFixedUpdate();
+        physicsSystem->Update(1.0f / 60.0f);
+    }
     UpdateTransform(ecs->root); /* update all entity transforms */
+    GamePlayLateUpdate();
+#if !defined(GAME)
+    RenderToMainBuffer(); /* render engine layout */
+#endif
     RenderEnvironment( /* render sky, models for viewport window */
         viewportWindow->GetPerspectiveProjectionMatrix(),
         viewportWindow->GetPerspectiveViewMatrix(),
@@ -428,11 +436,27 @@ void GamePlayUpdate()
 {
     if (game->GetGameState() == GameState::GamePlay)
     {
-        physicsSystem->Update();
-
         auto view = ecs->registry.view<ScriptingComponent>();
         for (auto entity : view)
             ecs->GetComponent<ScriptingComponent>(entity).lua_call_update();
+    }
+}
+void GamePlayLateUpdate()
+{
+    if (game->GetGameState() == GameState::GamePlay)
+    {
+        auto view = ecs->registry.view<ScriptingComponent>();
+        for (auto entity : view)
+            ecs->GetComponent<ScriptingComponent>(entity).lua_call_late_update();
+    }
+}
+void GamePlayFixedUpdate()
+{
+    if (game->GetGameState() == GameState::GamePlay)
+    {
+        auto view = ecs->registry.view<ScriptingComponent>();
+        for (auto entity : view)
+            ecs->GetComponent<ScriptingComponent>(entity).lua_call_fixed_update();
     }
 }
 

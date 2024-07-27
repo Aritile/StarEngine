@@ -63,6 +63,19 @@ void ViewportWindow::Render()
 						{
 							auto& meshComponent = ecs->GetComponent<MeshComponent>(entity);
 							meshComponent.LoadDiffuseTexture(buffer.c_str());
+
+							if (meshComponent.meshMaterial.name.empty())
+							{
+								if (ecs->HasComponent<GeneralComponent>(entity))
+								{
+									auto& generalComponent = ecs->GetComponent<GeneralComponent>(entity);
+									meshComponent.SetMaterialName(generalComponent.GetName().c_str());
+
+									std::string string = "assets\\" + meshComponent.GetMaterialName() + ".mat";
+									meshComponent.SetMaterialPath(string.c_str());
+									meshComponent.SerializeMaterial(string.c_str());
+								}
+							}
 						}
 					}
 				}

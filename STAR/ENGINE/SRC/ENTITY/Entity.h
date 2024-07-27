@@ -22,6 +22,9 @@ public:
 	void SetRootEntity(entt::entity entity);
 	entt::entity GetRootEntity();
 	entt::registry& GetRegistry();
+	unsigned int GetFreeNameIndex(const char* name);
+	entt::entity FindByName(const char* name, bool print);
+	entt::entity FindByTag(const char* tag, bool print);
 
 public:
 	void CreateEmptyEntity(entt::entity entity);

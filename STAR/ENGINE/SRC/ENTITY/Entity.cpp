@@ -12,6 +12,7 @@
 #include "../SYSTEM/ScriptingSystem.h"
 #include "../SYSTEM/PhysicsSystem.h"
 #include "../MODEL/AssimpLoader.h"
+#include "../EDITOR/WINDOW/Console.h"
 
 #define CUBE_MODEL "data\\model\\cube.obj"
 #define SPHERE_MODEL "data\\model\\sphere.obj"
@@ -25,6 +26,7 @@ Entity* Entity::GetSingleton()
 }
 
 static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
+static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
 
 bool Entity::Init()
 {
@@ -36,20 +38,28 @@ bool Entity::Init()
 
 void Entity::CreateEmptyEntity(entt::entity entity)
 {
-    GetComponent<GeneralComponent>(entity).SetName("Empty");
+    std::string name = "Empty";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreateCubeEntity(entt::entity entity)
 {
-    GetComponent<GeneralComponent>(entity).SetName("Cube");
+    std::string name = "Cube";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
 	AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
     Assimp::Importer importer;
     const aiScene* scene = StarHelpers::OpenModel(&importer, CUBE_MODEL);
     if (scene)
     {
-        // bugtest
-        //printf("bugtest: %s\n", CUBE_MODEL);
         meshComponent.SetModelPath(CUBE_MODEL);
         meshComponent.SetMeshIndex(0);
         meshComponent.LoadMesh(scene);
@@ -57,12 +67,17 @@ void Entity::CreateCubeEntity(entt::entity entity)
     }
 
     meshComponent.SetFileName(CUBE_MODEL);
-    meshComponent.SetMeshName("Cube");
+    meshComponent.SetMeshName(name);
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreateSphereEntity(entt::entity entity)
 {
-    GetComponent<GeneralComponent>(entity).SetName("Sphere");
+    std::string name = "Sphere";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
     AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
     Assimp::Importer importer;
@@ -76,12 +91,17 @@ void Entity::CreateSphereEntity(entt::entity entity)
     }
 
     meshComponent.SetFileName(SPHERE_MODEL);
-    meshComponent.SetMeshName("Sphere");
+    meshComponent.SetMeshName(name);
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreateCapsuleEntity(entt::entity entity)
 {
-    GetComponent<GeneralComponent>(entity).SetName("Capsule");
+    std::string name = "Capsule";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
     AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
     Assimp::Importer importer;
@@ -95,12 +115,17 @@ void Entity::CreateCapsuleEntity(entt::entity entity)
     }
 
     meshComponent.SetFileName(CAPSULE_MODEL);
-    meshComponent.SetMeshName("Capsule");
+    meshComponent.SetMeshName(name);
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreatePlaneEntity(entt::entity entity)
 {
-    GetComponent<GeneralComponent>(entity).SetName("Plane");
+    std::string name = "Plane";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
     AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
     Assimp::Importer importer;
@@ -114,18 +139,28 @@ void Entity::CreatePlaneEntity(entt::entity entity)
     }
 
     meshComponent.SetFileName(PLANE_MODEL);
-    meshComponent.SetMeshName("Plane");
+    meshComponent.SetMeshName(name);
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreateCameraEntity(entt::entity entity)
 {
-    GetComponent<GeneralComponent>(entity).SetName("Camera");
+    std::string name = "Camera";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
     AddComponent<CameraComponent>(entity);
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreateTextMeshEntity(entt::entity entity)
 {
-    GetComponent<GeneralComponent>(entity).SetName("TextMesh");
+    std::string name = "TextMesh";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
     AddComponent<TextMeshComponent>(entity);
     GetComponent<TextMeshComponent>(entity).SetText("hello");
     GetComponent<GeneralComponent>(root).AddChild(entity);
@@ -160,4 +195,64 @@ entt::entity Entity::GetRootEntity()
 entt::registry& Entity::GetRegistry()
 {
     return registry;
+}
+unsigned int Entity::GetFreeNameIndex(const char* name)
+{
+    unsigned int index = 2;
+    bool x = true;
+    auto view = registry.view<GeneralComponent>();
+    for (auto entity : view)
+    {
+        if (x)
+        {
+            // first check for only name without index
+            entt::entity entity = FindByName(name, false);
+            if (entity == entt::null)
+                return 0;
+
+            // entity is not null, no find good name
+            x = false;
+        }
+
+        // start check by index
+        std::string string = name + std::to_string(index);
+        entt::entity entity = FindByName(string.c_str(), false);
+        if (entity == entt::null)
+            return index;
+        index++;
+    }
+
+    return 0;
+}
+entt::entity Entity::FindByName(const char* name, bool print)
+{
+    auto view = registry.view<GeneralComponent>();
+    for (auto entity : view)
+    {
+        if (entity == root) continue; // skip root entity
+        auto& gc = GetComponent<GeneralComponent>(entity);
+
+        if (!gc.GetName().compare(name))
+            return entity;
+    }
+
+    if (print)
+        consoleWindow->AddWarningMessage("Failed to find entity by name %s", name);
+    return entt::null;
+}
+entt::entity Entity::FindByTag(const char* tag, bool print)
+{
+    auto view = registry.view<GeneralComponent>();
+    for (auto entity : view)
+    {
+        if (entity == root) continue; // skip root entity
+        auto& gc = GetComponent<GeneralComponent>(entity);
+
+        if (!gc.GetTag().compare(tag))
+            return entity;
+    }
+
+    if (print)
+        consoleWindow->AddWarningMessage("Failed to find entity by tag %s", tag);
+    return entt::null;
 }

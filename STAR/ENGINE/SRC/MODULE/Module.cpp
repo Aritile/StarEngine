@@ -5,6 +5,7 @@
 
 bool Module::Init()
 {
+	/*
 	HMODULE hDLL = LoadLibrary(L"D:\\repos\\module\\x64\\Release\\module.dll");
 	if (hDLL == NULL)
 	{
@@ -18,6 +19,7 @@ bool Module::Init()
 		StarHelpers::AddLog("[Module] -> Failed to get function address!");
 		return false;
 	}
+	*/
 
 	return true;
 }

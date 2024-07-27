@@ -32,7 +32,7 @@ void AboutWindow::Render()
 		ImGui::Text(
 			"Star Engine\n"
 			"%s\n"
-			"Copyright(c) 2023 Hodak.\n"
+			"Copyright(c) 2022-2024 Hodak.\n"
 			"All rights reserved.",
 			_VersionText.c_str());
 		ImGui::Text("Used third party software:");
@@ -49,7 +49,9 @@ void AboutWindow::Render()
 			ImGui::Text("ImGuizmo https://github.com/CedricGuillemet/ImGuizmo");
 			ImGui::Text("DirectXTex https://github.com/microsoft/DirectXTex");
 			ImGui::Text("STRDX https://github.com/HODAKdev/STRDX");
+			ImGui::Text("IconFontCppHeaders https://github.com/juliettef/IconFontCppHeaders");
 			ImGui::Text("zlib https://zlib.net/");
+			ImGui::Text("LuaSocket https://github.com/lunarmodules/luasocket");
 			ImGui::Text("ACES Filmic https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/");
 			ImGui::Text("Font Awesome https://fontawesome.com/");
 		}

@@ -6,10 +6,12 @@
 #include "../EDITOR/WINDOW/Console.h"
 #include "../ENTITY/COMPONENT/TransformComponent.h"
 #include "../ENTITY/COMPONENT/BoxColliderComponent.h"
+#include "../GAME/Game.h"
 
 static Entity* ecs = Entity::GetSingleton();
 static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
 static DX* dx = DX::GetSingleton();
+static Game* game = Game::GetSingleton();
 
 bool PhysicsSystem::Init()
 {
@@ -60,10 +62,11 @@ bool PhysicsSystem::Init()
 	CreateScene();
 	return true;
 }
-void PhysicsSystem::Update()
+void PhysicsSystem::Update(float deltaTime)
 {
 	//gScene->simulate(1.0f / 60.0f);
-	gScene->simulate(ImGui::GetIO().DeltaTime);
+	//gScene->simulate(ImGui::GetIO().DeltaTime);
+	gScene->simulate(deltaTime);
 	gScene->fetchResults(true);
 }
 void PhysicsSystem::Shutdown()
@@ -107,7 +110,7 @@ void PhysicsComponent::AddBoxCollider()
 			auto& rigidBodyComponent = ecs->registry.get<RigidBodyComponent>(entity);
 			if (rigidBodyComponent.GetRigidBody())
 				rigidBodyComponent.GetRigidBody()->attachShape(*boxColliderBuffer.GetShape());
-			printf("Attaching shape\n");
+			//printf("Attaching shape\n");
 		}
 	}
 	box_colliders.push_back(boxColliderBuffer);
@@ -229,7 +232,7 @@ void PhysicsComponent::AddSphereCollider()
 			auto& rigidBodyComponent = ecs->registry.get<RigidBodyComponent>(entity);
 			if (rigidBodyComponent.GetRigidBody())
 				rigidBodyComponent.GetRigidBody()->attachShape(*sphereColliderBuffer.GetShape());
-			printf("Attaching shape\n");
+			//printf("Attaching shape\n");
 		}
 	}
 	sphere_colliders.push_back(sphereColliderBuffer);

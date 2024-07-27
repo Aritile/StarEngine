@@ -119,7 +119,7 @@ void RigidBodyComponent::CreateActor()
 		physx::PxTransform pxTransform = physx::PxTransform(
 			StarHelpers::Vector3ToPhysics(transformComponent.GetPosition()),
 			StarHelpers::QuatToPhysics(transformComponent.GetRotationQuaternion()));
-		printf("pos %f %f %f\n", transformComponent.GetPosition().x, transformComponent.GetPosition().y, transformComponent.GetPosition().z);
+		//printf("pos %f %f %f\n", transformComponent.GetPosition().x, transformComponent.GetPosition().y, transformComponent.GetPosition().z);
 		pxRigidBody = physicsSystem->GetPhysics()->createRigidDynamic(pxTransform);
 		if (!pxRigidBody) consoleWindow->AddWarningMessage("[RigidBody] -> Failed to create the RigidBody!");
 		physicsSystem->GetScene()->addActor(*pxRigidBody); /*<*>*/
@@ -134,7 +134,7 @@ void RigidBodyComponent::CreateActor()
 					pxRigidBody->attachShape(*index.GetShape());
 				else
 					consoleWindow->AddWarningMessage("[RigidBody] -> Failed to attach shape to the RigidBody!");
-				printf("Attaching shape\n");
+				//printf("Attaching shape\n");
 			}
 			for (size_t i = 0; i < physicsComponent.GetSphereColliders()->size(); i++)
 			{
@@ -143,7 +143,7 @@ void RigidBodyComponent::CreateActor()
 					pxRigidBody->attachShape(*index.GetShape());
 				else
 					consoleWindow->AddWarningMessage("[RigidBody] -> Failed to attach shape to the RigidBody!");
-				printf("Attaching shape\n");
+				//printf("Attaching shape\n");
 			}
 		}
 	}
@@ -167,6 +167,11 @@ void RigidBodyComponent::SetLinearVelocity(Vector3 value)
 	if (!pxRigidBody) return;
 
 	pxRigidBody->setLinearVelocity(StarHelpers::Vector3ToPhysics(value));
+}
+float RigidBodyComponent::GetMagnitude()
+{
+	if (!pxRigidBody) return 0.0f;
+	return pxRigidBody->getLinearVelocity().magnitude();
 }
 Vector3 RigidBodyComponent::GetLinearVelocity()
 {
@@ -433,4 +438,5 @@ void RigidBodyComponent::LuaAdd(sol::state& state)
 	component["AddTorque"] = &RigidBodyComponent::AddTorque;
 	component["ClearForce"] = &RigidBodyComponent::ClearForce;
 	component["ClearTorque"] = &RigidBodyComponent::ClearTorque;
+	component["GetMagnitude"] = &RigidBodyComponent::GetMagnitude;
 }

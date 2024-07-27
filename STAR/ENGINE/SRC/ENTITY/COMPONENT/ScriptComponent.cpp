@@ -20,6 +20,7 @@ void ScriptComponent::SerializeComponent(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
 	out << YAML::Key << "Script" << YAML::Value << YAML::BeginMap;
+	out << YAML::Key << "IsActive" << YAML::Value << activeComponent;
 	out << YAML::Key << "Name" << YAML::Value << fileName.c_str();
 	out << YAML::Key << "Path" << YAML::Value << filePath.c_str();
 	out << YAML::EndMap;

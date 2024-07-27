@@ -32,7 +32,7 @@ class PhysicsSystem
 {
 public:
 	bool Init();
-	void Update();
+	void Update(float deltaTime);
 	void CreateScene();
 	void ClearScene();
 	void Shutdown();

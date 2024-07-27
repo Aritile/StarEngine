@@ -87,8 +87,8 @@ void TransformComponent::SetPosition(Vector3 position)
 void TransformComponent::SetRotationYawPitchRoll(Vector3 rotation)
 {
 	// problem: https://bentleysystems.service-now.com/community?id=kb_article&sysparm_article=KB0054630
-	if (StarHelpers::RadToDeg(rotation.x) > 90.0f) rotation.x = StarHelpers::DegToRad(90.0f);
-	if (StarHelpers::RadToDeg(rotation.x) < -90.0f) rotation.x = StarHelpers::DegToRad(-90.0f);
+	//if (StarHelpers::RadToDeg(rotation.x) > 90.0f) rotation.x = StarHelpers::DegToRad(90.0f);
+	//if (StarHelpers::RadToDeg(rotation.x) < -90.0f) rotation.x = StarHelpers::DegToRad(-90.0f);
 
 	localTransform.rotation = Quaternion::CreateFromYawPitchRoll(rotation.y, rotation.x, rotation.z);
 	UpdateTransformFromPositionRotationScale();

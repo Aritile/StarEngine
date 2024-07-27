@@ -243,6 +243,39 @@
     <ClInclude Include="SRC\ENTITY\COMPONENT\SphereColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaVector2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaVector3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaVector4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaQuaternion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaMatrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaConsole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaBoundingBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\SYSTEM\LUA\LuaEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SRC\MAIN\Main.cpp">
@@ -489,6 +522,39 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\ENTITY\COMPONENT\SphereColliderComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaVector2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaVector3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaVector4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaQuaternion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaMatrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaConsole.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaBoundingBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\SYSTEM\LUA\LuaEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

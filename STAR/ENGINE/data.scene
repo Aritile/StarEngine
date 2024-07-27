@@ -1,5 +1,5 @@
 # do not edit
-# Jul 24 2024 02:18:41
+# Jul 25 2024 23:31:06
 Star:
   Version:
     Major: 1
@@ -27,20 +27,17 @@ Star:
                   Static: false
                 TransformComponent:
                   Position: [0, 0, 0]
-                  Rotation: [0, 0, 0, 1]
+                  Rotation: [-0, 0, -0, 1]
                   Scale: [1, 1, 1]
                   Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
                 MeshComponent:
+                  IsActive: true
                   ModelPath: ..\..\ENGINE\data\model\cube.obj
                   MaterialPath: ""
                   MeshIndex: 0
-                  VerticesSize: 24
-                  IndicesSize: 36
-                  FacesSize: 12
-                Scripts:
-                  - Script:
-                      Name: Cam
-                      Path: ..\..\ENGINE\ASSETS\Cam.lua
+                  VerticesSize: 0
+                  IndicesSize: 0
+                  FacesSize: 0
             - Entity:
                 GeneralComponent:
                   Name: Camera
@@ -49,7 +46,7 @@ Star:
                   Static: false
                 TransformComponent:
                   Position: [0, 0, -5]
-                  Rotation: [0, 0, 0, 1]
+                  Rotation: [-0, 0, -0, 1]
                   Scale: [1, 1, 1]
                   Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -5, 1]
                 CameraComponent:

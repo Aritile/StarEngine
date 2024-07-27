@@ -4,6 +4,7 @@
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../SYSTEM/ModelSystem.h"
+#include "GeneralComponent.h"
 #include <fstream>
 
 static DX* dx = DX::GetSingleton();
@@ -94,7 +95,23 @@ void MeshComponent::Render()
 						if (payload_n.file_type == PNG || payload_n.file_type == JPEG || payload_n.file_type == DDS)
 						{
 							std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
-							LoadTexture(buffer.c_str(), &diffuse_texture);
+							std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
+							std::string x = StarHelpers::GetRelativePath(buffer, exe);
+							LoadTexture(x.c_str(), &diffuse_texture);
+
+							if (meshMaterial.name.empty())
+							{
+								entt::entity entity = entt::to_entity(ecs->registry, *this);
+								if (ecs->HasComponent<GeneralComponent>(entity))
+								{
+									auto& generalComponent = ecs->GetComponent<GeneralComponent>(entity);
+									SetMaterialName(generalComponent.GetName().c_str());
+
+									std::string string = "assets\\" + GetMaterialName() + ".mat";
+									SetMaterialPath(string.c_str());
+									SerializeMaterial(string.c_str());
+								}
+							}
 						}
 					}
 					ImGui::EndDragDropTarget();
@@ -105,6 +122,11 @@ void MeshComponent::Render()
 			ImGui::EndTable();
 		}
 	}
+}
+
+std::string MeshComponent::GetMaterialName()
+{
+	return meshMaterial.name;
 }
 
 void MeshComponent::AddVertices(Vertex add)
@@ -369,9 +391,14 @@ void MeshComponent::AddMeshMaterial(std::string path)
 
 void MeshComponent::SerializeComponent(YAML::Emitter& out)
 {
+	// no texture? no material
+	if (!meshMaterial.diffuse.empty())
+		SerializeMaterial(materialPath.c_str());
+
 	out << YAML::Key << "MeshComponent";
 	out << YAML::BeginMap;
 	{
+		out << YAML::Key << "IsActive" << YAML::Value << IsActive();
 		out << YAML::Key << "ModelPath" << YAML::Value << modelPath;
 		out << YAML::Key << "MaterialPath" << YAML::Value << materialPath;
 		out << YAML::Key << "MeshIndex" << YAML::Value << meshIndex;
@@ -386,6 +413,7 @@ void MeshComponent::DeserializeComponent(YAML::Node& in)
 	YAML::Node meshComponent = in["MeshComponent"];
 	if (meshComponent)
 	{
+		SetActive(meshComponent["IsActive"].as<bool>());
 		modelPath = meshComponent["ModelPath"].as<std::string>();
 		materialPath = meshComponent["MaterialPath"].as<std::string>();
 		meshIndex = meshComponent["MeshIndex"].as<unsigned int>();
@@ -539,7 +567,6 @@ void MeshComponent::SerializeMaterial(const char* path)
 }
 void MeshComponent::DeserializeMaterial(const char* path)
 {
-	//printf("DeserializeMaterial() %s\n", path);
 	YAML::Node in = YAML::LoadFile(path);
 	if (!StarHelpers::CheckSignature(in))
 		return;
@@ -659,4 +686,9 @@ void MeshComponent::LuaAdd(sol::state& state)
 	vertex["position"] = &Vertex::position;
 	vertex["normal"] = &Vertex::normal;
 	vertex["texCoords"] = &Vertex::texCoords;
+}
+
+void MeshComponent::SetMaterialName(const char* name)
+{
+	meshMaterial.name = name;
 }

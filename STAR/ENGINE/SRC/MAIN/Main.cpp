@@ -4,8 +4,6 @@
 #include "../GAME/Game.h"
 #include <iostream>
 
-//#define XGAME
-
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dinput8.lib")
@@ -76,9 +74,11 @@ int StartGame(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine, i
 		return 0;
 
 	{
-		game->StartGame(NULL);
-
+		game->hide_window = true;
+		game->Game1(NULL);
 		EngineStart();
+		game->Game2();
+		game->SetWindowState(SW_NORMAL);
 		EngineUpdate();
 		EngineShutdown();
 	}
@@ -98,14 +98,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	freopen("log.txt", "w", stdout);
 #endif
 
-#if defined(XGAME)
-	return StartGame(hInstance, hPrevInstance, pCmdLine, nCmdShow);
-#else
 #if defined(_DEBUG)
 	HINSTANCE hInstance = GetModuleHandle(NULL);
 	HINSTANCE hPrevInstance = NULL;
 	PWSTR pCmdLine = GetCommandLineW();
 	int nCmdShow = SW_NORMAL;
+#endif
+
+#if defined(GAME)
+	return StartGame(hInstance, hPrevInstance, pCmdLine, nCmdShow);
+#else
+#if defined(_DEBUG)
 #endif
 	return StartEngine(hInstance, hPrevInstance, pCmdLine, nCmdShow);
 #endif

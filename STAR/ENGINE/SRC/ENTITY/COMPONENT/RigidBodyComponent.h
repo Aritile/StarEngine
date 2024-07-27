@@ -51,6 +51,7 @@ public:
 	bool GetAngularLockY();
 	void SetAngularLockZ(bool value);
 	bool GetAngularLockZ();
+	float GetMagnitude();
 
 public:
 	void SetLock(physx::PxRigidDynamicLockFlag::Enum flag, bool value);

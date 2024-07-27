@@ -624,3 +624,11 @@ void StarHelpers::StartCommand(std::string string)
 		printf("StartCommand() failed\n");
 	}
 }
+std::string StarHelpers::SlashesFix(std::string string)
+{
+	std::string output = string;
+	for (char& c : output)
+		if (c == '\\')
+			c = '/';
+	return output;
+}
