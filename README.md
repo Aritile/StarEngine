@@ -350,6 +350,7 @@ DirectXTex https://github.com/microsoft/DirectXTex \
 STRDX https://github.com/HODAKdev/STRDX \
 IconFontCppHeaders https://github.com/juliettef/IconFontCppHeaders \
 zlib https://zlib.net/ \
+LuaSocket https://github.com/lunarmodules/luasocket \
 ACES Filmic https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/ \
 Font Awesome https://fontawesome.com/ \
 ![](/images/entt.png)
