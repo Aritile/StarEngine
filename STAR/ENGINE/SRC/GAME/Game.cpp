@@ -93,6 +93,7 @@ void Game::Game3()
 
     hwnd = NULL;
 }
+static bool focus = true;
 LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     Game* game = Game::GetSingleton();
@@ -105,7 +106,32 @@ LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 #else
         game->StopGame();
 #endif
+        focus = true;
         break;
+    case WM_SETFOCUS:
+    {
+        if (focus)
+        {
+            focus = false;
+        }
+        else
+        {
+            // fix focus
+            game->LockCursor(game->IsCursorLocked());
+            game->HideCursor(game->IsCursorHidden());
+            //printf("focus..\n");
+        }
+        break;
+    }
+    case WM_KILLFOCUS:
+    {
+        if (game->IsCursorLocked())
+            ClipCursor(nullptr);
+        if (game->IsCursorHidden())
+            ShowCursor(true);
+        //printf("lost focus..\n");
+        break;
+    }
     case WM_SIZE:
         game->GameResizeBuffer();
         break;
@@ -491,6 +517,7 @@ unsigned int Game::GetFrameCount()
 void Game::HideCursor(bool value)
 {
     ShowCursor(!value);
+    isCursorHidden = value;
 }
 void Game::LockCursor(bool value)
 {
@@ -511,11 +538,15 @@ void Game::LockCursor(bool value)
 }
 bool Game::IsCursorHidden()
 {
+    return isCursorHidden;
+
+    /*
     CURSORINFO cursorInfo;
     cursorInfo.cbSize = sizeof(CURSORINFO);
     if (GetCursorInfo(&cursorInfo))
         return cursorInfo.flags != CURSOR_SHOWING;
     return false;
+    */
 }
 bool Game::IsCursorLocked()
 {

@@ -22,10 +22,10 @@ class Game
 {
 private:
 	std::wstring name = L"StarGame";
-	//int width = 1280; /* 1920 */
-	//int height = 720; /* 800 */
-	int width = 1600; /* 1920 */
-	int height = 900; /* 800 */
+	int width = 1280; /* 1920 */
+	int height = 720; /* 800 */
+	//int width = 1600; /* 1920 */
+	//int height = 900; /* 800 */
 	//UINT antialiasing = 8;
 
 private:
@@ -69,11 +69,12 @@ private:
 	/**** INPUT ****/
 
 public:
+	void LockCursor(bool value);
 	void HideCursor(bool value);
 	bool isCursorLocked = false;
-	void LockCursor(bool value);
-	bool IsCursorHidden();
+	bool isCursorHidden = false;
 	bool IsCursorLocked();
+	bool IsCursorHidden();
 
 private:
 	LPDIRECTINPUT8 gDirectInput;

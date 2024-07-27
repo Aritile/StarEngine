@@ -52,14 +52,17 @@ public:
 	void SetAngularLockZ(bool value);
 	bool GetAngularLockZ();
 	float GetMagnitude();
+	void SetTransform(Matrix value);
+	Matrix GetTransform();
+	void SetPosition(Vector3 value);
+	Vector3 GetPosition();
+	void SetRotationYawPitchRoll(Vector3 value);
+	void SetRotationQuaternion(Quaternion value);
+	Quaternion GetRotationQuaternion();
 
 public:
 	void SetLock(physx::PxRigidDynamicLockFlag::Enum flag, bool value);
 	bool GetLock(physx::PxRigidDynamicLockFlag::Enum flag);
-
-public:
-	void SetTransform(Matrix value);
-	Matrix GetTransform();
 
 private:
 	physx::PxRigidBody* pxRigidBody = NULL;

@@ -439,4 +439,46 @@ void RigidBodyComponent::LuaAdd(sol::state& state)
 	component["ClearForce"] = &RigidBodyComponent::ClearForce;
 	component["ClearTorque"] = &RigidBodyComponent::ClearTorque;
 	component["GetMagnitude"] = &RigidBodyComponent::GetMagnitude;
+	component["SetPosition"] = &RigidBodyComponent::SetPosition;
+	component["GetPosition"] = &RigidBodyComponent::GetPosition;
+	component["SetRotationYawPitchRoll"] = &RigidBodyComponent::SetRotationYawPitchRoll;
+	component["SetRotationQuaternion"] = &RigidBodyComponent::SetRotationQuaternion;
+	component["GetRotationQuaternion"] = &RigidBodyComponent::GetRotationQuaternion;
+}
+void RigidBodyComponent::SetPosition(Vector3 value)
+{
+	if (!pxRigidBody) return;
+	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for rotation
+	trans.p = StarHelpers::Vector3ToPhysics(value);
+	pxRigidBody->setGlobalPose(trans);
+}
+Vector3 RigidBodyComponent::GetPosition()
+{
+	Vector3 vector;
+	if (!pxRigidBody) return vector;
+	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for rotation
+	vector = StarHelpers::PhysicsToVector3(trans.p);
+	return vector;
+}
+void RigidBodyComponent::SetRotationYawPitchRoll(Vector3 value)
+{
+	if (!pxRigidBody) return;
+	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for position
+	trans.q = StarHelpers::QuatToPhysics(Quaternion::CreateFromYawPitchRoll(value));
+	pxRigidBody->setGlobalPose(trans);
+}
+void RigidBodyComponent::SetRotationQuaternion(Quaternion value)
+{
+	if (!pxRigidBody) return;
+	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for position
+	trans.q = StarHelpers::QuatToPhysics(value);
+	pxRigidBody->setGlobalPose(trans);
+}
+Quaternion RigidBodyComponent::GetRotationQuaternion()
+{
+	Quaternion quaternion;
+	if (!pxRigidBody) return quaternion;
+	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for position
+	quaternion = StarHelpers::PhysicsToQuat(trans.q);
+	return quaternion;
 }

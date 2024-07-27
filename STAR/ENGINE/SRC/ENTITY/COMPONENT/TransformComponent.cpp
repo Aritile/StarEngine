@@ -42,14 +42,32 @@ void TransformComponent::Render()
 				if (ImGui::DragFloat3("##PositionTransformComponent", (float*)&position, viewportWindow->useSnap ? viewportWindow->snap : 0.1f))
 				{
 					SetPosition(position);
-					UpdatePhysics();
+
+					entt::entity entity = entt::to_entity(ecs->registry, *this);
+					if (ecs->IsValid(entity))
+					{
+						if (ecs->HasComponent<RigidBodyComponent>(entity))
+						{
+							auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
+							rigidBodyComponent.SetTransform(GetTransform());
+						}
+					}
 				}
 
 				Vector3 rotation = StarHelpers::ToDegrees(GetLocalTransform().ToEuler());
 				if (ImGui::DragFloat3("##RotationTransformComponent", (float*)&rotation, viewportWindow->useSnap ? viewportWindow->snap : 0.1f))
 				{
 					SetRotationYawPitchRoll(StarHelpers::ToRadians(rotation));
-					UpdatePhysics();
+
+					entt::entity entity = entt::to_entity(ecs->registry, *this);
+					if (ecs->IsValid(entity))
+					{
+						if (ecs->HasComponent<RigidBodyComponent>(entity))
+						{
+							auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
+							rigidBodyComponent.SetTransform(GetTransform());
+						}
+					}
 				}
 
 				Vector3 scale = GetLocalScale();
@@ -335,17 +353,4 @@ void TransformComponent::LuaAdd(sol::state& state)
 	component["GetLocalScale"] = &TransformComponent::GetLocalScale;
 	component["GetLocalTransform"] = &TransformComponent::GetLocalTransform;
 	component["LookAt"] = &TransformComponent::LookAt;
-}
-
-void TransformComponent::UpdatePhysics()
-{
-	entt::entity entity = entt::to_entity(ecs->registry, *this);
-	if (ecs->IsValid(entity))
-	{
-		if (ecs->HasComponent<RigidBodyComponent>(entity))
-		{
-			auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
-			rigidBodyComponent.SetTransform(GetTransform());
-		}
-	}
 }

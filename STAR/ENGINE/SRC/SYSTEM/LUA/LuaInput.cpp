@@ -86,4 +86,7 @@ void LuaInput::LuaAdd(sol::state& state)
 
 	state["Input"]["KeyCode"]["LeftAlt"] = DIK_LALT;
 	state["Input"]["KeyCode"]["RightAlt"] = DIK_RALT;
+
+	state["Input"]["KeyCode"]["Escape"] = DIK_ESCAPE;
+	state["Input"]["KeyCode"]["Back"] = DIK_BACK;
 }

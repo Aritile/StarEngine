@@ -74,10 +74,12 @@ int StartGame(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine, i
 		return 0;
 
 	{
+		splashScreen->ShowSplashScreen();
 		game->hide_window = true;
 		game->Game1(NULL);
 		EngineStart();
 		game->Game2();
+		splashScreen->HideSplashScreen();
 		game->SetWindowState(SW_NORMAL);
 		EngineUpdate();
 		EngineShutdown();

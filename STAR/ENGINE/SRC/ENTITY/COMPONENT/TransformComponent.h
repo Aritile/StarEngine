@@ -79,7 +79,4 @@ public:
 
 public:
 	static void LuaAdd(sol::state& state);
-
-private:
-	void UpdatePhysics();
 };
