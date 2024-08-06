@@ -6,13 +6,6 @@
 class DX
 {
 public:
-	HWND hwnd = NULL;
-public:
-	HINSTANCE* hInstance = NULL;
-	HINSTANCE* hPrevInstance = NULL;
-	PWSTR* pCmdLine = NULL;
-	int* nCmdShow = NULL;
-public:
 	DXGI_FORMAT dxFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	D3D_DRIVER_TYPE dxDriverType = D3D_DRIVER_TYPE_HARDWARE;
 	D3D_FEATURE_LEVEL dxFeatureLevel = D3D_FEATURE_LEVEL_11_1;
@@ -26,4 +19,13 @@ public:
 
 public:
 	static DX* GetSingleton();
+
+public:
+	bool CreateContext(UINT _Width, UINT _Height);
+	bool CreateRenderTargetView();
+	bool CreateDepthStencilView(UINT _Width, UINT _Height);
+	bool ResizeBuffer(UINT _Width, UINT _Height);
+	void Release();
+	void UnbindAll(UINT StartSlot, UINT NumBuffers);
+	void ReportLiveObjects();
 };

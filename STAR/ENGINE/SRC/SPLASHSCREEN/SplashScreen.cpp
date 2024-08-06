@@ -1,17 +1,16 @@
 #include "SplashScreen.h"
 #include "../DX/DX.h"
-#include "../HELPERS/Helpers.h"
+#include "../STAR/Star.h"
+#include "../ENGINE/Engine.h"
 
-static SplashScreen splashScreen;
-
-SplashScreen& SplashScreenClass()
-{
-	return splashScreen;
-}
-
-///////////////////////////////////////////////////////////////
-
+static Engine* engine = Engine::GetSingleton();
 static DX* dx = DX::GetSingleton();
+
+SplashScreen* SplashScreen::GetSingleton()
+{
+	static SplashScreen splashScreen;
+	return &splashScreen;
+}
 
 bool SplashScreen::ShowSplashScreen()
 {
@@ -23,7 +22,7 @@ bool SplashScreen::ShowSplashScreen()
 	wcex.lpfnWndProc = DefWindowProc;
 	wcex.cbClsExtra = NULL;
 	wcex.cbWndExtra = NULL;
-	wcex.hInstance = *dx->hInstance;
+	wcex.hInstance = engine->hInstance;
 	wcex.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wcex.hCursor = NULL;
 	wcex.hbrBackground = NULL;
@@ -34,8 +33,8 @@ bool SplashScreen::ShowSplashScreen()
 	if (!RegisterClassEx(&wcex))
 		return false;
 
-	int x = (StarHelpers::GetDisplayWidth() - width) / 2;
-	int y = (StarHelpers::GetDisplayHeight() - height) / 2;
+	int x = (Star::GetDisplayWidth() - width) / 2;
+	int y = (Star::GetDisplayHeight() - height) / 2;
 
 	hwnd = CreateWindowEx(
 		WS_EX_TOPMOST,
@@ -48,7 +47,7 @@ bool SplashScreen::ShowSplashScreen()
 		height,
 		NULL,
 		NULL,
-		*dx->hInstance,
+		engine->hInstance,
 		NULL);
 
 	if (!hwnd)
@@ -79,5 +78,5 @@ bool SplashScreen::ShowSplashScreen()
 void SplashScreen::HideSplashScreen()
 {
 	DestroyWindow(hwnd);
-	UnregisterClass(name.c_str(), *dx->hInstance);
+	UnregisterClass(name.c_str(), engine->hInstance);
 }

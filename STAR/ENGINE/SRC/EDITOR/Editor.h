@@ -3,7 +3,7 @@
 #include <chrono>
 #include "../DX/DX.h"
 #include "../IMGUI/imgui.h"
-#include "../HELPERS/Helpers.h"
+#include "../STAR/Star.h"
 #include "../IMGUI/imgui_impl_dx11.h"
 #include "../IMGUI/imgui_impl_win32.h"
 #include <IconFontCppHeaders/IconsFontAwesome5.h>
@@ -66,6 +66,7 @@ private:
 
 private:
 	bool startScreen = true;
-};
 
-Editor& EditorClass();
+public:
+	static Editor* GetSingleton();
+};

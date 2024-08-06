@@ -35,6 +35,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SRC\CONSTANTDATA\ConstantData.h" />
+    <ClInclude Include="SRC\MATERIAL\Material.h" />
+    <ClInclude Include="SRC\WINDOW\MainWindow.h" />
+    <ClInclude Include="SRC\STORAGE\MeshStorage.h" />
     <ClInclude Include="SRC\SYSTEM\LUA\LuaEngine.h" />
     <ClInclude Include="SRC\SYSTEM\LUA\LuaBoundingBox.h" />
     <ClInclude Include="SRC\SYSTEM\LUA\LuaConsole.h" />
@@ -74,7 +78,7 @@
     <ClInclude Include="SRC\EDITOR\WINDOW\About.h" />
     <ClInclude Include="SRC\SYSTEM\ModelSystem.h" />
     <ClInclude Include="SRC\SYSTEM\PhysicsSystem.h" />
-    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidBodyComponent.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidbodyComponent.h" />
     <ClInclude Include="SRC\EDITOR\WINDOW\Console.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\CameraComponent.h" />
     <ClInclude Include="SRC\GAME\Game.h" />
@@ -89,7 +93,7 @@
     <ClInclude Include="SRC\ENTITY\Entity.h" />
     <ClInclude Include="SRC\EDITOR\WINDOW\Assets.h" />
     <ClInclude Include="SRC\EDITOR\Editor.h" />
-    <ClInclude Include="SRC\HELPERS\Helpers.h" />
+    <ClInclude Include="SRC\STAR\Star.h" />
     <ClInclude Include="SRC\DX\DX.h" />
     <ClInclude Include="SRC\ENGINE\Engine.h" />
     <ClInclude Include="SRC\IMGUI\imconfig.h" />
@@ -122,8 +126,15 @@
     <ClInclude Include="SRC\SYSTEM\LUA\LuaVector2.h" />
     <ClInclude Include="SRC\SYSTEM\LUA\LuaVector3.h" />
     <ClInclude Include="SRC\SYSTEM\LUA\LuaVector4.h" />
+    <ClInclude Include="SRC\STORAGE\TextureStorage.h" />
+    <ClInclude Include="SRC\USERINPUT\UserInput.h" />
+    <ClInclude Include="SRC\VERTEX\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\CONSTANTDATA\ConstantData.cpp" />
+    <ClCompile Include="SRC\MATERIAL\Material.cpp" />
+    <ClCompile Include="SRC\WINDOW\MainWindow.cpp" />
+    <ClCompile Include="SRC\STORAGE\MeshStorage.cpp" />
     <ClCompile Include="SRC\SYSTEM\LUA\LuaEngine.cpp" />
     <ClCompile Include="SRC\SYSTEM\LUA\LuaBoundingBox.cpp" />
     <ClCompile Include="SRC\SYSTEM\LUA\LuaConsole.cpp" />
@@ -158,7 +169,7 @@
     <ClCompile Include="SRC\EDITOR\WINDOW\About.cpp" />
     <ClCompile Include="SRC\SYSTEM\ModelSystem.cpp" />
     <ClCompile Include="SRC\SYSTEM\PhysicsSystem.cpp" />
-    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidBodyComponent.cpp" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidbodyComponent.cpp" />
     <ClCompile Include="SRC\EDITOR\WINDOW\Console.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\CameraComponent.cpp" />
     <ClCompile Include="SRC\GAME\Game.cpp" />
@@ -173,7 +184,7 @@
     <ClCompile Include="SRC\ENTITY\Entity.cpp" />
     <ClCompile Include="SRC\EDITOR\WINDOW\Assets.cpp" />
     <ClCompile Include="SRC\EDITOR\Editor.cpp" />
-    <ClCompile Include="SRC\HELPERS\Helpers.cpp" />
+    <ClCompile Include="SRC\STAR\Star.cpp" />
     <ClCompile Include="SRC\DX\DX.cpp" />
     <ClCompile Include="SRC\ENGINE\Engine.cpp" />
     <ClCompile Include="SRC\IMGUI\imgui.cpp" />
@@ -217,6 +228,9 @@
     <ClCompile Include="SRC\SYSTEM\LUA\LuaVector2.cpp" />
     <ClCompile Include="SRC\SYSTEM\LUA\LuaVector3.cpp" />
     <ClCompile Include="SRC\SYSTEM\LUA\LuaVector4.cpp" />
+    <ClCompile Include="SRC\STORAGE\TextureStorage.cpp" />
+    <ClCompile Include="SRC\USERINPUT\UserInput.cpp" />
+    <ClCompile Include="SRC\VERTEX\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SRC\XTK\MATH\SimpleMath.inl" />
@@ -395,7 +409,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Debug\\PhysX_64.lib;Debug\\PhysXFoundation_64.lib;Debug\\PhysXCommon_64.lib;Debug\\PhysXPvdSDK_static_64.lib;Debug\\PhysXCooking_64.lib;Debug\\PhysXExtensions_static_64.lib;Debug\\yaml-cppd.lib;Debug\\lua-5.4.4.lib;Debug\\assimp-vc143-mtd.lib;Debug\\zlibd.lib;d3d11.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">
@@ -413,7 +427,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Debug\\PhysX_64.lib;Debug\\PhysXFoundation_64.lib;Debug\\PhysXCommon_64.lib;Debug\\PhysXPvdSDK_static_64.lib;Debug\\PhysXCooking_64.lib;Debug\\PhysXExtensions_static_64.lib;Debug\\yaml-cppd.lib;Debug\\lua-5.4.4.lib;Debug\\assimp-vc143-mtd.lib;Debug\\zlibd.lib;d3d11.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -433,8 +447,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\DX\STAR\ENGINE\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Release\\PhysX_64.lib;Release\\PhysXFoundation_64.lib;Release\\PhysXCommon_64.lib;Release\\PhysXPvdSDK_static_64.lib;Release\\PhysXCooking_64.lib;Release\\PhysXExtensions_static_64.lib;Release\\yaml-cpp.lib;Release\\lua-5.4.4.lib;Release\\assimp-vc143-mt.lib;Release\\zlib.lib;d3d11.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">
@@ -454,8 +468,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\DX\STAR\ENGINE\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Release\\PhysX_64.lib;Release\\PhysXFoundation_64.lib;Release\\PhysXCommon_64.lib;Release\\PhysXPvdSDK_static_64.lib;Release\\PhysXCooking_64.lib;Release\\PhysXExtensions_static_64.lib;Release\\yaml-cpp.lib;Release\\lua-5.4.4.lib;Release\\assimp-vc143-mt.lib;Release\\zlib.lib;d3d11.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,18 +1,24 @@
 #include "Viewport.h"
 
 #include "../../ENTITY/Entity.h"
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include "../../ENTITY/COMPONENT/GeneralComponent.h"
 #include "../../ENTITY/COMPONENT/CameraComponent.h"
 #include "../../ENTITY/COMPONENT/RigidBodyComponent.h"
 #include "../../GAME/Game.h"
 #include "../../SYSTEM/PhysicsSystem.h"
 #include "Assets.h"
+#include "../../WINDOW/MainWindow.h"
+#include "../../USERINPUT/UserInput.h"
+#include "../../STORAGE/TextureStorage.h"
 
 static DX* dx = DX::GetSingleton();
 static Game* game = Game::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
 static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
+static MainWindow* mainWindow = MainWindow::GetSingleton();
+static UserInput* userInput = UserInput::GetSingleton();
+static TextureStorage* textureStorage = TextureStorage::GetSingleton();
 
 ViewportWindow* ViewportWindow::GetSingleton()
 {
@@ -54,6 +60,8 @@ void ViewportWindow::Render()
 			{
 				FILEs payload_n = *(FILEs*)payload->Data;
 				std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
+				std::string exe = Star::GetParent(Star::GetExecutablePath());
+				std::string x = Star::GetRelativePath(buffer, exe);
 				entt::entity entity = RunRay(false);
 				if (ecs->IsValid(entity))
 				{
@@ -62,18 +70,16 @@ void ViewportWindow::Render()
 						if (ecs->HasComponent<MeshComponent>(entity))
 						{
 							auto& meshComponent = ecs->GetComponent<MeshComponent>(entity);
-							meshComponent.LoadDiffuseTexture(buffer.c_str());
-
-							if (meshComponent.meshMaterial.name.empty())
+							if (meshComponent.meshStorageBuffer)
 							{
+								textureStorage->LoadTexture(x.c_str(), &meshComponent.meshStorageBuffer->material.diffuseTexture);
+								meshComponent.meshStorageBuffer->material.diffuse = x;
+
 								if (ecs->HasComponent<GeneralComponent>(entity))
 								{
 									auto& generalComponent = ecs->GetComponent<GeneralComponent>(entity);
-									meshComponent.SetMaterialName(generalComponent.GetName().c_str());
-
-									std::string string = "assets\\" + meshComponent.GetMaterialName() + ".mat";
-									meshComponent.SetMaterialPath(string.c_str());
-									meshComponent.SerializeMaterial(string.c_str());
+									if (meshComponent.meshStorageBuffer->material.name.empty())
+										meshComponent.meshStorageBuffer->material.name = generalComponent.GetName();
 								}
 							}
 						}
@@ -245,7 +251,7 @@ void ViewportWindow::UpdateMovement()
 
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && cursorOnWindow)
 	{
-		RECT clip = StarHelpers::GetClientRect();
+		RECT clip = mainWindow->GetClientRect();
 
 		clip.left = (long)clip.left + (long)(windowPos.x + windowSize.x / 2);
 		clip.top = (long)clip.top + (long)(windowPos.y + windowSize.y / 2);
@@ -256,7 +262,7 @@ void ViewportWindow::UpdateMovement()
 		GetCursorPos(&cursorPosition);
 		ShowCursor(false);
 		ClipCursor(&clip);
-		StarHelpers::InputGetMouse();
+		userInput->GetMouse(); // idk?
 	}
 	else if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && cursorOnWindow)
 	{
@@ -268,28 +274,28 @@ void ViewportWindow::UpdateMovement()
 	else if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && cursorOnWindow)
 	{
 		float delta = ImGui::GetIO().DeltaTime;
-		float speed = (StarHelpers::InputGetKey(DIK_LSHIFT) ? camBoostSpeed : camSpeed) * delta;
+		float speed = (userInput->GetKey(DIK_LSHIFT) ? camBoostSpeed : camSpeed) * delta;
 
-		if (StarHelpers::InputGetKey(DIK_S))
+		if (userInput->GetKey(DIK_S))
 		{
 			Vector3 forward = Vector3::Transform(Vector3::Forward, rot);
 			forward.Normalize();
 			sPos += forward * speed;
 		}
-		if (StarHelpers::InputGetKey(DIK_W))
+		if (userInput->GetKey(DIK_W))
 		{
 			Vector3 backward = Vector3::Transform(Vector3::Backward, rot);
 			backward.Normalize();
 			sPos += backward * speed;
 		}
-		if (StarHelpers::InputGetKey(DIK_A))
+		if (userInput->GetKey(DIK_A))
 		{
 			Vector3 left = Vector3::Transform(Vector3::Left, rot);
 			left.y = 0.0f;
 			left.Normalize();
 			sPos += left * speed;
 		}
-		if (StarHelpers::InputGetKey(DIK_D))
+		if (userInput->GetKey(DIK_D))
 		{
 			Vector3 right = Vector3::Transform(Vector3::Right, rot);
 			right.y = 0.0f;
@@ -297,7 +303,7 @@ void ViewportWindow::UpdateMovement()
 			sPos += right * speed;
 		}
 
-		Vector2 current = StarHelpers::InputGetMouse();
+		Vector2 current = userInput->GetMouse();
 		float yaw = current.x * camSensitivity;
 		float pitch = current.y * camSensitivity;
 		Quaternion deltaRotation = Quaternion::CreateFromYawPitchRoll(yaw, pitch, 0.0f);
@@ -487,7 +493,7 @@ entt::entity ViewportWindow::RunRay(bool select)
 
 	POINT mousePos;
 	GetCursorPos(&mousePos);
-	ScreenToClient(dx->hwnd, &mousePos);
+	ScreenToClient(mainWindow->GetHandle(), &mousePos);
 
 	float mousex = mousePos.x - windowPos.x;
 	float mousey = mousePos.y - (windowPos.y + windowCursorPos.y);
@@ -501,9 +507,9 @@ entt::entity ViewportWindow::RunRay(bool select)
 	auto view = ecs->registry.view<MeshComponent>();
 	for (auto entity : view)
 	{
-		auto& transComp = ecs->GetComponent<TransformComponent>(entity);
-		auto& meshComp = ecs->GetComponent<MeshComponent>(entity);
-		tempDist = PickMesh(prwsPos, prwsDir, meshComp.GetVertices(), meshComp.GetIndices(), transComp.GetTransform());
+		auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
+		auto& meshComponent = ecs->GetComponent<MeshComponent>(entity);
+		tempDist = PickMesh(prwsPos, prwsDir, meshComponent.meshStorageBuffer->vertices, meshComponent.meshStorageBuffer->indices, transformComponent.GetTransform());
 		if (tempDist < closestDist && ecs->GetComponent<GeneralComponent>(entity).IsActive() && ecs->GetComponent<MeshComponent>(entity).IsActive())
 		{
 			closestDist = tempDist;
@@ -553,9 +559,9 @@ void ViewportWindow::RenderManipulateWidget(TransformComponent& transformCompone
 		entt::entity entity = entt::to_entity(ecs->registry, transformComponent);
 		if (ecs->IsValid(entity))
 		{
-			if (ecs->HasComponent<RigidBodyComponent>(entity))
+			if (ecs->HasComponent<RigidbodyComponent>(entity))
 			{
-				auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
+				auto& rigidBodyComponent = ecs->GetComponent<RigidbodyComponent>(entity);
 				rigidBodyComponent.SetTransform(transformComponent.GetTransform());
 			}
 		}
@@ -593,6 +599,8 @@ void ViewportWindow::SetDefaultCam()
 {
 	pos = Vector3(0, 0, -5);
 	sPos = Vector3(0, 0, -5);
+	rot = Quaternion::Identity;
+	sRot = Quaternion::Identity;
 }
 
 float ViewportWindow::GetNear()
@@ -670,7 +678,7 @@ void ViewportWindow::SetRenderState(RenderState _RenderState)
 	{
 		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	}
-	else if (renderState == RenderState::Pos)
+	else if (renderState == RenderState::Position)
 	{
 		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
@@ -697,7 +705,7 @@ void ViewportWindow::RefreshRenderState()
 	{
 		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	}
-	else if (renderState == RenderState::Pos)
+	else if (renderState == RenderState::Position)
 	{
 		dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}

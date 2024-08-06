@@ -8,7 +8,7 @@
 
 static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
-static AssimpLoader* assimpLoader = &AssimpLoaderClass();
+static AssimpLoader* assimpLoader = AssimpLoader::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 
 HierarchyWindow* HierarchyWindow::GetSingleton()
@@ -45,7 +45,10 @@ void HierarchyWindow::Render()
 
 void HierarchyWindow::RenderTree(entt::entity entity)
 {
-	auto& genComp = ecs->registry.get<GeneralComponent>(entity);
+	if (!ecs->IsValid(entity))
+		return;
+
+	auto& generalComponent = ecs->registry.get<GeneralComponent>(entity);
 
 	///////////////////////////////////////////////////////////
 
@@ -56,7 +59,7 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 
 	///////////////////////////////////////////////////////////
 
-	if (genComp.HasChildren())
+	if (generalComponent.HasChildren())
 		tree_flags |= ImGuiTreeNodeFlags_Leaf;
 
 	if (ecs->selected == entity)
@@ -64,12 +67,12 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 
 	///////////////////////////////////////////////////////////
 
-	if (!genComp.IsActive())
+	if (!generalComponent.IsActive())
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
 
-	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)entity, tree_flags, genComp.GetName().c_str());
+	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)entity, tree_flags, generalComponent.GetName().c_str());
 
-	if (!genComp.IsActive())
+	if (!generalComponent.IsActive())
 		ImGui::PopStyleColor(1);
 
 	///////////////////////////////////////////////////////////
@@ -80,7 +83,7 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 	{
 		ImGui::SetDragDropPayload(type, &entity, sizeof(entt::entity));
-		ImGui::Text(genComp.GetName().c_str());
+		ImGui::Text(generalComponent.GetName().c_str());
 		ImGui::EndDragDropSource();
 	}
 
@@ -90,7 +93,7 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(type))
 		{
 			entt::entity payload_n = *(entt::entity*)payload->Data;
-			genComp.AddChild(payload_n);
+			generalComponent.AddChild(payload_n);
 		}
 		ImGui::EndDragDropTarget();
 	}
@@ -101,15 +104,13 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
 		{
 			FILEs payload_n = *(FILEs*)payload->Data;
-			std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
 			if (payload_n.file_type == OBJ || payload_n.file_type == FBX)
 			{
-				// old
-				//consoleWindow->AddDebugMessage("Loading mesh... %s", buffer.c_str());
-				//assimpLoader->LoadModel(buffer, entity);
+				std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
+				std::string exe = Star::GetParent(Star::GetExecutablePath());
+				std::string x = Star::GetRelativePath(buffer, exe);
 
-				// new
-				assimpLoader->LoadModel(buffer.c_str(), entity);
+				assimpLoader->LoadModel(x.c_str(), entity);
 			}
 		}
 		ImGui::EndDragDropTarget();
@@ -128,8 +129,8 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 
 	if (node_open)
 	{
-		for (size_t i = 0; i < genComp.GetChildren().size(); i++)
-			RenderTree(genComp.GetChildren()[i]);
+		for (size_t i = 0; i < generalComponent.GetChildren().size(); i++)
+			RenderTree(generalComponent.GetChildren()[i]);
 		ImGui::TreePop();
 	}
 }

@@ -75,6 +75,7 @@ public:
 	bool isCursorHidden = false;
 	bool IsCursorLocked();
 	bool IsCursorHidden();
+	bool focus = true;
 
 private:
 	LPDIRECTINPUT8 gDirectInput;

@@ -4,7 +4,7 @@
 #include "entt/entt.hpp"
 #include "../../IMGUI/imgui.h"
 #include "../../ENTITY/Entity.h"
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include "../../IMGUI/imgui_stdlib.h"
 #include <yaml-cpp/yaml.h>
 #include <sol/sol.hpp>
@@ -28,8 +28,6 @@ public:
 	void SetActive(bool _Active);
 	void SetStatic(bool _Static);
 	void AddChild(entt::entity _Child);
-	void Destroy();
-	void DestroyChildren();
 
 public:
 	bool HasChildren();
@@ -38,13 +36,12 @@ public:
 	bool IsActive();
 	bool IsStatic();
 	entt::entity GetParent();
-	std::vector<entt::entity> GetChildren();
+	std::vector<entt::entity>& GetChildren();
 
 private:
 	void EntitySkip(entt::entity _Entity, int& _Skip);
 	void SetActiveAll(entt::entity _Entity, bool _Active);
 	void SetStaticAll(entt::entity _Entity, bool _Static);
-	void DestroyAll(entt::entity _Entity);
 
 public:
 	void MoveUp();

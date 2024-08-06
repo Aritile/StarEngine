@@ -86,10 +86,6 @@ public:
 	std::string GetNowDirPath();
 
 public:
-	void SaveMaterialFile(std::string path, const Material& buffer);
-	void OpenMaterialFile(std::string path, Material& buffer);
-
-public:
 	ID3D11ShaderResourceView* folderTexture = nullptr;
 	ID3D11ShaderResourceView* imageTexture = nullptr;
 	ID3D11ShaderResourceView* fileTexture = nullptr;

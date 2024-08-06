@@ -4,7 +4,7 @@
 #include "../../SYSTEM/PhysicsSystem.h"
 #include "../../STRDX/Widgets.h"
 #include <fstream>
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include <filesystem>
 
 static PlayerPrefs* playerPrefs = PlayerPrefs::GetSingleton();
@@ -144,13 +144,13 @@ void SettingsWindow::RenderCamera()
 				viewportWindow->SetFar(_far);
 			if (ImGui::DragFloat("##FovCamera", &_fov, 1.0f, 1.0f, 180.0f))
 				viewportWindow->SetFov(_fov);
-			if (ImGui::DragFloat("##SpeedCamera", &_speed))
+			if (ImGui::DragFloat("##SpeedCamera", &_speed, 1.0f, 0.0f, FLT_MAX))
 				viewportWindow->SetSpeed(_speed);
-			if (ImGui::DragFloat("##BoostSpeedCamera", &_boostSpeed))
+			if (ImGui::DragFloat("##BoostSpeedCamera", &_boostSpeed, 1.0f, 0.0f, FLT_MAX))
 				viewportWindow->SetBoostSpeed(_boostSpeed);
-			if (ImGui::DragFloat("##PosLerpCamera", &_posLerp))
+			if (ImGui::DragFloat("##PosLerpCamera", &_posLerp, 1.0f, 0.0f, FLT_MAX))
 				viewportWindow->SetPosLerp(_posLerp);
-			if (ImGui::DragFloat("##RotLerpCamera", &_rotLerp))
+			if (ImGui::DragFloat("##RotLerpCamera", &_rotLerp, 1.0f, 0.0f, FLT_MAX))
 				viewportWindow->SetRotLerp(_rotLerp);
 		}
 		ImGui::PopItemWidth();
@@ -220,7 +220,7 @@ void SettingsWindow::Save()
 {
 	YAML::Emitter out;
 
-	StarHelpers::BeginFormat(out);
+	Star::BeginFormat(out);
 	{
 		out << YAML::Key << "Settings" << YAML::Value << YAML::BeginMap;
 		{
@@ -231,7 +231,7 @@ void SettingsWindow::Save()
 				int setSize = widgets->GetGridSize();
 
 				out << YAML::Key << "Render" << YAML::Value << render;
-				out << YAML::Key << "Position"; StarHelpers::SerializeVector3(out, setPos);
+				out << YAML::Key << "Position"; Star::SerializeVector3(out, setPos);
 				out << YAML::Key << "Size" << YAML::Value << setSize;
 			}
 			out << YAML::EndMap;
@@ -276,7 +276,7 @@ void SettingsWindow::Save()
 		}
 		out << YAML::EndMap;
 	}
-	StarHelpers::EndFormat(out);
+	Star::EndFormat(out);
 
 	if (!out.good())
 		return;
@@ -290,7 +290,7 @@ void SettingsWindow::Load()
 		return;
 
 	YAML::Node in = YAML::LoadFile(filename);
-	if (!StarHelpers::CheckSignature(in))
+	if (!Star::CheckSignature(in))
 		return;
 
 	YAML::Node settings = in["Star"]["Data"]["Settings"];
@@ -300,7 +300,7 @@ void SettingsWindow::Load()
 		YAML::Node grid = settings["Grid"];
 		widgets->SetRenderGrid(grid["Render"].as<bool>());
 		auto position = grid["Position"];
-		widgets->SetGridPos(StarHelpers::DeserializeVector3(position));
+		widgets->SetGridPos(Star::DeserializeVector3(position));
 		widgets->SetGridSize(grid["Size"].as<int>());
 	}
 

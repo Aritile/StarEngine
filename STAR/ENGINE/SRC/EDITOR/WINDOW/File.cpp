@@ -10,7 +10,7 @@ FileWindow* FileWindow::GetSingleton()
 ///////////////////////////////////////////////////////////////
 
 static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
-static Sky* sky = &SkyClass();
+static Sky* sky = Sky::GetSingleton();
 
 void FileWindow::Render()
 {

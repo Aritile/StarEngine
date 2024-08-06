@@ -10,52 +10,29 @@
 #include "PhysicsSystem.h"
 #include "ScriptingSystem.h"
 
-// save last opened models
-struct ModelX
-{
-	ModelX(Assimp::Importer* importer, std::string path) : importer(importer), path(path) {}
-	Assimp::Importer* importer;
-	std::string path;
-};
-static std::vector<ModelX> models;
-bool FindModel(std::string path)
-{
-	for (size_t i = 0; i < models.size(); ++i)
-		if (models[i].path == path)
-			return true;
-	return false;
-}
-ModelX* GetModel(std::string path)
-{
-	for (size_t i = 0; i < models.size(); ++i)
-		if (models[i].path == path)
-			return &models[i];
-	return NULL;
-}
-
 ProjectSceneSystem* ProjectSceneSystem::GetSingleton()
 {
 	static ProjectSceneSystem projectSceneSystem;
 	return &projectSceneSystem;
 }
 
-/* ----------------------------------- */
-
 static Entity* ecs = Entity::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 static PhysicsSystem* physicsSystem = PhysicsSystem::GetSingleton();
+static MeshStorage* meshStorage = MeshStorage::GetSingleton();
+static TextureStorage* textureStorage = TextureStorage::GetSingleton();
 
 void ProjectSceneSystem::ClearScene()
 {
 	ecs->selected = entt::null;
-	auto& generalComponent = ecs->GetComponent<GeneralComponent>(ecs->root);
-	generalComponent.DestroyChildren();
+	ecs->DestroyChildren(ecs->root);
 
 	physicsSystem->ClearScene();
 }
 void ProjectSceneSystem::NewScene()
 {
 	ClearScene();
+	viewportWindow->SetDefaultCam();
 
 	entt::entity cube = ecs->CreateEntity();
 	ecs->CreateCubeEntity(cube);
@@ -64,21 +41,19 @@ void ProjectSceneSystem::NewScene()
 	entt::entity camera = ecs->CreateEntity();
 	ecs->CreateCameraEntity(camera);
 	ecs->GetComponent<TransformComponent>(camera).SetPosition(Vector3(0.0f, 0.0f, -5.0f));
-
-	viewportWindow->SetDefaultCam();
 }
 
 void ProjectSceneSystem::SaveScene()
 {
-	StarHelpers::AddLog("[Scene] -> Saving Scene...");
+	Star::AddLog("[Scene] -> Saving Scene...");
 
 	YAML::Emitter out;
 
-	StarHelpers::BeginFormat(out);
+	Star::BeginFormat(out);
 	{
 		SerializeHierarchy(out);
 	}
-	StarHelpers::EndFormat(out);
+	Star::EndFormat(out);
 
 	std::string path = "data.scene";
 	printf("[Scene] -> Saving to %s\n", path.c_str());
@@ -87,14 +62,14 @@ void ProjectSceneSystem::SaveScene()
 
 void ProjectSceneSystem::OpenScene(const char* path)
 {
-	StarHelpers::AddLog("[Scene] -> Opening Scene...");
+	Star::AddLog("[Scene] -> Opening Scene...");
 
-	//StarHelpers::OpenFileDialog(L"C:\\", L"*.scene\0", L"Open");
+	//Star::OpenFileDialog(L"C:\\", L"*.scene\0", L"Open");
 
 	ClearScene();
 
 	YAML::Node in = YAML::LoadFile(path);
-	if (!StarHelpers::CheckSignature(in))
+	if (!Star::CheckSignature(in))
 		return;
 
 	DeserializeHierarchy(in);
@@ -116,8 +91,8 @@ void ProjectSceneSystem::SerializeEntity(YAML::Emitter& out, entt::entity entity
 				ecs->GetComponent<MeshComponent>(entity).SerializeComponent(out);
 			if (ecs->HasComponent<CameraComponent>(entity))
 				ecs->GetComponent<CameraComponent>(entity).SerializeComponent(out);
-			if (ecs->HasComponent<RigidBodyComponent>(entity))
-				ecs->GetComponent<RigidBodyComponent>(entity).SerializeComponent(out);
+			if (ecs->HasComponent<RigidbodyComponent>(entity))
+				ecs->GetComponent<RigidbodyComponent>(entity).SerializeComponent(out);
 			if (ecs->HasComponent<PhysicsComponent>(entity))
 				ecs->GetComponent<PhysicsComponent>(entity).SerializeComponent(out);
 			if (ecs->HasComponent<ScriptingComponent>(entity))
@@ -150,9 +125,9 @@ void ProjectSceneSystem::SerializeHierarchy(YAML::Emitter& out)
 
 void ProjectSceneSystem::SaveFile(YAML::Emitter& out, const char* filename)
 {
-	StarHelpers::AddLog("[Scene] -> Saving File...");
+	Star::AddLog("[Scene] -> Saving File...");
 	if (!out.good())
-		StarHelpers::AddLog("[YAML] -> %s", out.GetLastError().c_str());
+		Star::AddLog("[YAML] -> %s", out.GetLastError().c_str());
 	std::ofstream stream(filename);
 	stream << out.c_str();
 	stream.close();
@@ -160,7 +135,7 @@ void ProjectSceneSystem::SaveFile(YAML::Emitter& out, const char* filename)
 
 void ProjectSceneSystem::SaveAsScene()
 {
-	const char* path = StarHelpers::SaveFileDialog(L"C:\\", L"*.scene\0", L"Save As");
+	const char* path = Star::SaveFileDialog(L"C:\\", L"*.scene\0", L"Save As");
 
 	if (strlen(path) == 0)
 		return;
@@ -177,11 +152,7 @@ void ProjectSceneSystem::DeserializeHierarchy(YAML::Node& in)
 			DeserializeEntity(entityNode, ecs->root);
 		}
 	}
-
-	// free memory
-	for (size_t i = 0; i < models.size(); ++i)
-		models[i].importer->FreeScene();
-	models.clear();
+	meshStorage->CloseAllOpenedModels();
 }
 void ProjectSceneSystem::DeserializeEntity(YAML::Node& in, entt::entity parent)
 {
@@ -210,45 +181,7 @@ void ProjectSceneSystem::DeserializeEntity(YAML::Node& in, entt::entity parent)
 					if (childNode["MeshComponent"])
 					{
 						ecs->AddComponent<MeshComponent>(entity);
-						auto& meshComponent = ecs->GetComponent<MeshComponent>(entity);
-						{
-							meshComponent.DeserializeComponent(childNode);
-							const char* path = meshComponent.modelPath.c_str();
-
-							const aiScene* scene = NULL;
-							if (FindModel(meshComponent.modelPath))
-							{
-								//printf("load old %s\n", path);
-								scene = GetModel(path)->importer->GetScene();
-								if (scene)
-								{
-									meshComponent.LoadMesh(scene);
-									meshComponent.SetupMesh();
-									if (!meshComponent.materialPath.empty())
-									{
-										meshComponent.DeserializeMaterial(meshComponent.materialPath.c_str());
-										meshComponent.SetupDiffuseTexture();
-									}
-								}
-							}
-							else
-							{
-								//printf("load new %s\n", path);
-								Assimp::Importer* importer = new Assimp::Importer();
-								scene = StarHelpers::OpenModel(importer, path);
-								if (scene)
-								{
-									meshComponent.LoadMesh(scene);
-									meshComponent.SetupMesh();
-									if (!meshComponent.materialPath.empty())
-									{
-										meshComponent.DeserializeMaterial(meshComponent.materialPath.c_str());
-										meshComponent.SetupDiffuseTexture();
-									}
-								}
-								models.push_back(ModelX(importer, path));
-							}
-						}
+						ecs->GetComponent<MeshComponent>(entity).DeserializeComponent(childNode);
 					}
 				}
 				
@@ -258,11 +191,11 @@ void ProjectSceneSystem::DeserializeEntity(YAML::Node& in, entt::entity parent)
 					ecs->GetComponent<CameraComponent>(entity).DeserializeComponent(childNode);
 				}
 				
-				if (childNode["RigidBodyComponent"])
+				if (childNode["RigidbodyComponent"])
 				{
-					ecs->AddComponent<RigidBodyComponent>(entity);
-					ecs->GetComponent<RigidBodyComponent>(entity).CreateActor(); // !
-					ecs->GetComponent<RigidBodyComponent>(entity).DeserializeComponent(childNode);
+					ecs->AddComponent<RigidbodyComponent>(entity);
+					ecs->GetComponent<RigidbodyComponent>(entity).CreateActor(); // !
+					ecs->GetComponent<RigidbodyComponent>(entity).DeserializeComponent(childNode);
 				}
 				
 				if (childNode["Colliders"])

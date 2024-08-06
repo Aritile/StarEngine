@@ -1,6 +1,6 @@
 #include "PlayerPrefs.h"
 #include <fstream>
-#include "../HELPERS/Helpers.h"
+#include "../STAR/Star.h"
 
 #define READ_MODE "rb" // read binary
 #define WRITE_MODE "wb" // write binary

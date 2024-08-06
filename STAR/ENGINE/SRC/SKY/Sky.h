@@ -79,16 +79,15 @@ private:
 private:
 	DirectX::ScratchImage sphere_image;
 	ID3D11ShaderResourceView* sphere_texture = nullptr;
-	ID3D11Buffer* sphereVertexBuffer = nullptr;
-	ID3D11Buffer* sphereIndexBuffer = nullptr;
-	std::vector<Mesh> sphereModel;
+	ModelStorageBuffer* modelStorageBuffer = nullptr;
+	MeshStorageBuffer* meshStorageBuffer = nullptr;
 
 public:
 	float exposure = 1.0f;
+
+	static Sky* GetSingleton();
 
 private:
 	void OutCore(SkyFile sky);
 	bool outCore = true;
 };
-
-Sky& SkyClass();

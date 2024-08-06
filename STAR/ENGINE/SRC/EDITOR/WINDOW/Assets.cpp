@@ -15,10 +15,10 @@ AssetsWindow* AssetsWindow::GetSingleton()
 ///////////////////////////////////////////////////////////////
 
 static DX* dx = DX::GetSingleton();
-static Sky* sky = &SkyClass();
-static Editor* editor = &EditorClass();
+static Sky* sky = Sky::GetSingleton();
+static Editor* editor = Editor::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
-static AssimpLoader* assimpLoader = &AssimpLoaderClass();
+static AssimpLoader* assimpLoader = AssimpLoader::GetSingleton();
 static SettingsWindow* settingsWindow = SettingsWindow::GetSingleton();
 
 #define FOLDER_ICON_PATH   L"data\\icon\\folder.dds"   /**/
@@ -38,63 +38,63 @@ void AssetsWindow::Init()
 		FOLDER_ICON_PATH,
 		nullptr,
 		&folderTexture)))
-		StarHelpers::AddLog("[Assets] -> Failed to load texture from file!");
+		Star::AddLog("[Assets] -> Failed to load texture from file!");
 
 	if (FAILED(DirectX::CreateDDSTextureFromFile(
 		dx->dxDevice,
 		IMAGE_ICON_PATH,
 		nullptr,
 		&imageTexture)))
-		StarHelpers::AddLog("[Assets] -> Failed to load texture from file!");
+		Star::AddLog("[Assets] -> Failed to load texture from file!");
 
 	if (FAILED(DirectX::CreateDDSTextureFromFile(
 		dx->dxDevice,
 		FILE_ICON_PATH,
 		nullptr,
 		&fileTexture)))
-		StarHelpers::AddLog("[Assets] -> Failed to load texture from file!");
+		Star::AddLog("[Assets] -> Failed to load texture from file!");
 
 	if (FAILED(DirectX::CreateDDSTextureFromFile(
 		dx->dxDevice,
 		LUA_ICON_PATH,
 		nullptr,
 		&luaTexture)))
-		StarHelpers::AddLog("[Assets] -> Failed to load texture from file!");
+		Star::AddLog("[Assets] -> Failed to load texture from file!");
 
 	if (FAILED(DirectX::CreateDDSTextureFromFile(
 		dx->dxDevice,
 		MODEL_ICON_PATH,
 		nullptr,
 		&modelTexture)))
-		StarHelpers::AddLog("[Assets] -> Failed to load texture from file!");
+		Star::AddLog("[Assets] -> Failed to load texture from file!");
 
 	if (FAILED(DirectX::CreateDDSTextureFromFile(
 		dx->dxDevice,
 		FONT_ICON_PATH,
 		nullptr,
 		&ttfTexture)))
-		StarHelpers::AddLog("[Assets] -> Failed to load texture from file!");
+		Star::AddLog("[Assets] -> Failed to load texture from file!");
 
 	if (FAILED(DirectX::CreateDDSTextureFromFile(
 		dx->dxDevice,
 		AUDIO_ICON_PATH,
 		nullptr,
 		&audioTexture)))
-		StarHelpers::AddLog("[Assets] -> Failed to load texture from file!");
+		Star::AddLog("[Assets] -> Failed to load texture from file!");
 
 	if (DirectX::CreateDDSTextureFromFile(
 		dx->dxDevice,
 		SKY_ICON_PATH,
 		nullptr,
 		&skyTexture))
-		StarHelpers::AddLog("[Assets] -> Failed to load texture from file!");
+		Star::AddLog("[Assets] -> Failed to load texture from file!");
 
 	if (FAILED(DirectX::CreateDDSTextureFromFile(
 		dx->dxDevice,
 		MATERIAL_ICON_PATH,
 		nullptr,
 		&materialTexture)))
-		StarHelpers::AddLog("[Assets] -> Failed to load texture from file!");
+		Star::AddLog("[Assets] -> Failed to load texture from file!");
 
 	//////////////////////////////////////////////////////////////
 
@@ -345,15 +345,17 @@ void AssetsWindow::Render()
 											}
 
 											std::string type = nowDirPath + "\\" + files[i].file_name;
-											type = StarHelpers::GetFileExtensionFromPath(type);
+											type = Star::GetFileExtensionFromPath(type);
 											std::string buffer = nowDirPath + "\\" + files[i].file_name;
+											std::string exe = Star::GetParent(Star::GetExecutablePath());
+											std::string x = Star::GetRelativePath(buffer, exe);
 
 											if (type.compare(OBJ) == 0 || type.compare(FBX) == 0)
 											{
 												if (ecs->selected != entt::null)
-													assimpLoader->LoadModel(buffer.c_str(), ecs->selected);
+													assimpLoader->LoadModel(x.c_str(), ecs->selected);
 												else
-													assimpLoader->LoadModel(buffer.c_str(), ecs->root);
+													assimpLoader->LoadModel(x.c_str(), ecs->root);
 											}
 
 											if (type.compare(LUA) == 0)
@@ -362,19 +364,19 @@ void AssetsWindow::Render()
 												{
 													// text editor
 													std::string comm = "notepad " + buffer;
-													StarHelpers::StartCommand(comm);
+													Star::StartCommand(comm);
 												}
 												else if (settingsWindow->GetEditorProgram() == 1)
 												{
 													// visual studio
 													std::string comm = "start devenv " + buffer + " /Edit";
-													StarHelpers::StartCommand(comm);
+													Star::StartCommand(comm);
 												}
 												else if (settingsWindow->GetEditorProgram() == 2)
 												{
 													// visual studio code
 													std::string comm = "code " + buffer;
-													StarHelpers::StartCommand(comm);
+													Star::StartCommand(comm);
 												}
 											}
 										}
@@ -548,7 +550,7 @@ void AssetsWindow::OutCore(std::string path)
 				if (files[i].file_type == PNG || files[i].file_type == JPEG)
 				{
 					if (FAILED(LoadFromWICFile(
-						StarHelpers::ConvertString(buffer).c_str(),
+						Star::ConvertString(buffer).c_str(),
 						WIC_FLAGS_IGNORE_SRGB,
 						nullptr,
 						normal_image)))
@@ -560,7 +562,7 @@ void AssetsWindow::OutCore(std::string path)
 				if (files[i].file_type == DDS)
 				{
 					if (FAILED(LoadFromDDSFile(
-						StarHelpers::ConvertString(buffer).c_str(),
+						Star::ConvertString(buffer).c_str(),
 						DDS_FLAGS_NONE,
 						nullptr,
 						normal_image)))
@@ -708,56 +710,6 @@ unsigned int AssetsWindow::GetSafeName(std::string path, std::string type)
 		i++;
 	}
 	return i;
-}
-
-void AssetsWindow::SaveMaterialFile(std::string path, const Material& buffer)
-{
-	// yeah this is old, coming soon fix
-
-	YAML::Emitter out;
-
-	out << YAML::BeginMap;
-	{
-		out << YAML::Key << "STAR" << YAML::Value << YAML::BeginMap;
-		{
-			out << YAML::Key << "VERSION" << YAML::Value << YAML::BeginMap;
-			{
-				out << YAML::Key << "MAJOR" << YAML::Value << MAJOR;
-				out << YAML::Key << "MINOR" << YAML::Value << MINOR;
-				out << YAML::Key << "PATCH" << YAML::Value << PATCH;
-			}
-			out << YAML::EndMap;
-			out << YAML::Key << "DATA" << YAML::Value << YAML::BeginMap;
-			{
-				out << YAML::Key << "DIFFUSE" << YAML::Value << YAML::BeginMap;
-				{
-					out << YAML::Key << "TEXTURE_PATH" << YAML::Value << buffer.diffuse;
-				}
-				out << YAML::EndMap;
-			}
-			out << YAML::EndMap;
-		}
-		out << YAML::EndMap;
-	}
-	out << YAML::EndMap;
-
-	if (!out.good())
-		StarHelpers::AddLog("%s", out.GetLastError().c_str());
-
-	std::ofstream stream(std::string(path + MAT));
-	stream << out.c_str();
-	stream.close();
-}
-
-void AssetsWindow::OpenMaterialFile(std::string path, Material& buffer)
-{
-	YAML::Node data = YAML::LoadFile(path.c_str());
-
-	if (!data["STAR"])
-		return;
-
-	std::string DiffusePath = data["STAR"]["DATA"]["DIFFUSE"]["TEXTURE_PATH"].as<std::string>();
-	buffer.diffuse = DiffusePath;
 }
 
 void AssetsWindow::GetFileNameFromProjectDir(std::string path, std::string extension, std::vector<std::pair<std::string, std::string>>& data)

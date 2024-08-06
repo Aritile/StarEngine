@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../IMGUI/imgui.h"
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include <sol/sol.hpp>
 
 #define MIN_FOV 1.0f

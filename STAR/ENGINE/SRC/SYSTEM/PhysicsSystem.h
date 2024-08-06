@@ -69,6 +69,8 @@ public:
 	void Render();
 	void AddBoxCollider();
 	void AddSphereCollider();
+	void ReleaseAllBoxColliders();
+	void ReleaseAllSphereColliders();
 
 public:
 	void SerializeComponent(YAML::Emitter& out);

@@ -129,50 +129,47 @@ void Widgets::RenderBoundingBoxWidget()
 		auto& meshComponent = ecs->GetComponent<MeshComponent>(ecs->selected);
 		if (meshComponent.IsActive())
 		{
-			if (meshComponent.GetState())
+			if (boundingBoxShader)
 			{
-				if (boundingBoxShader)
-				{
-					context->Set(boundingBoxShader);
-					context->SetVertexConstantBuffer(constantBuffer, 0);
+				context->Set(boundingBoxShader);
+				context->SetVertexConstantBuffer(constantBuffer, 0);
 
-					DirectX::XMMATRIX view = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveViewMatrix());
-					DirectX::XMMATRIX proj = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveProjectionMatrix());
+				DirectX::XMMATRIX view = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveViewMatrix());
+				DirectX::XMMATRIX proj = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveProjectionMatrix());
 
-					cb.SetProjection(proj);
-					cb.SetView(view);
-					cb.SetWorld(matrix);
-					constantBuffer->Update(&cb);
+				cb.SetProjection(proj);
+				cb.SetView(view);
+				cb.SetWorld(matrix);
+				constantBuffer->Update(&cb);
 
-					std::vector<POS> vertices;
-					vertices.push_back(POS(min.x, min.y, min.z));
-					vertices.push_back(POS(max.x, min.y, min.z));
-					vertices.push_back(POS(min.x, min.y, min.z));
-					vertices.push_back(POS(min.x, max.y, min.z));
-					vertices.push_back(POS(min.x, min.y, min.z));
-					vertices.push_back(POS(min.x, min.y, max.z));
-					vertices.push_back(POS(min.x, max.y, min.z));
-					vertices.push_back(POS(max.x, max.y, min.z));
-					vertices.push_back(POS(max.x, max.y, min.z));
-					vertices.push_back(POS(max.x, min.y, min.z));
-					vertices.push_back(POS(max.x, min.y, min.z));
-					vertices.push_back(POS(max.x, min.y, max.z));
-					vertices.push_back(POS(max.x, max.y, min.z));
-					vertices.push_back(POS(max.x, max.y, max.z));
-					vertices.push_back(POS(min.x, max.y, min.z));
-					vertices.push_back(POS(min.x, max.y, max.z));
-					vertices.push_back(POS(min.x, max.y, max.z));
-					vertices.push_back(POS(max.x, max.y, max.z));
-					vertices.push_back(POS(min.x, max.y, max.z));
-					vertices.push_back(POS(min.x, min.y, max.z));
-					vertices.push_back(POS(min.x, min.y, max.z));
-					vertices.push_back(POS(max.x, min.y, max.z));
-					vertices.push_back(POS(max.x, max.y, max.z));
-					vertices.push_back(POS(max.x, min.y, max.z));
+				std::vector<POS> vertices;
+				vertices.push_back(POS(min.x, min.y, min.z));
+				vertices.push_back(POS(max.x, min.y, min.z));
+				vertices.push_back(POS(min.x, min.y, min.z));
+				vertices.push_back(POS(min.x, max.y, min.z));
+				vertices.push_back(POS(min.x, min.y, min.z));
+				vertices.push_back(POS(min.x, min.y, max.z));
+				vertices.push_back(POS(min.x, max.y, min.z));
+				vertices.push_back(POS(max.x, max.y, min.z));
+				vertices.push_back(POS(max.x, max.y, min.z));
+				vertices.push_back(POS(max.x, min.y, min.z));
+				vertices.push_back(POS(max.x, min.y, min.z));
+				vertices.push_back(POS(max.x, min.y, max.z));
+				vertices.push_back(POS(max.x, max.y, min.z));
+				vertices.push_back(POS(max.x, max.y, max.z));
+				vertices.push_back(POS(min.x, max.y, min.z));
+				vertices.push_back(POS(min.x, max.y, max.z));
+				vertices.push_back(POS(min.x, max.y, max.z));
+				vertices.push_back(POS(max.x, max.y, max.z));
+				vertices.push_back(POS(min.x, max.y, max.z));
+				vertices.push_back(POS(min.x, min.y, max.z));
+				vertices.push_back(POS(min.x, min.y, max.z));
+				vertices.push_back(POS(max.x, min.y, max.z));
+				vertices.push_back(POS(max.x, max.y, max.z));
+				vertices.push_back(POS(max.x, min.y, max.z));
 
-					context->UpdateVertexBuffer<POS>(boundingBoxShader, vertices);
-					context->Draw(boundingBoxShader);
-				}
+				context->UpdateVertexBuffer<POS>(boundingBoxShader, vertices);
+				context->Draw(boundingBoxShader);
 			}
 		}
 	}

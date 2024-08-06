@@ -6,18 +6,16 @@
 #include "../EDITOR/WINDOW/Assets.h"
 #include "../EDITOR/WINDOW/Viewport.h"
 
-static Sky sky;
-
-Sky& SkyClass()
+Sky* Sky::GetSingleton()
 {
-	return sky;
+	static Sky sky;
+	return &sky;
 }
 
-///////////////////////////////////////////////////////////////
-
 static DX* dx = DX::GetSingleton();
-static AssimpLoader* assimpLoader = &AssimpLoaderClass();
+static AssimpLoader* assimpLoader = AssimpLoader::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
+static MeshStorage* meshStorage = MeshStorage::GetSingleton();
 
 struct ConstantBuffer
 {
@@ -29,9 +27,9 @@ static ConstantBuffer cb;
 
 bool Sky::Init()
 {
-	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\shader\\sky\\vertex.hlsl", "main", VS_VERSION, &VS)))
+	if (FAILED(Star::CompileShaderFromFile(L"data\\shader\\sky\\vertex.hlsl", "main", VS_VERSION, &VS)))
 		return false;
-	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\shader\\sky\\pixel.hlsl", "main", PS_VERSION, &PS)))
+	if (FAILED(Star::CompileShaderFromFile(L"data\\shader\\sky\\pixel.hlsl", "main", PS_VERSION, &PS)))
 		return false;
 	if (FAILED(dx->dxDevice->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &pVS)))
 		return false;
@@ -41,7 +39,7 @@ bool Sky::Init()
 	D3D11_INPUT_ELEMENT_DESC idx[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, (UINT)IM_OFFSETOF(Vertex, texCoords), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, (UINT)IM_OFFSETOF(Vertex, textureCoord), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	if (FAILED(dx->dxDevice->CreateInputLayout(idx, ARRAYSIZE(idx), VS->GetBufferPointer(), VS->GetBufferSize(), &pLayout)))
@@ -94,38 +92,8 @@ bool Sky::Init()
 			return false;
 	}
 
-	sphereModel = assimpLoader->LoadRawModel("data\\model\\sphere.obj");
-
-	{
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = static_cast<UINT>(sizeof(Vertex) * sphereModel[0].vertices.size());
-		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.CPUAccessFlags = 0;
-
-		D3D11_SUBRESOURCE_DATA data;
-		ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
-		data.pSysMem = &sphereModel[0].vertices[0];
-		if (FAILED(dx->dxDevice->CreateBuffer(&desc, &data, &sphereVertexBuffer)))
-			return false;
-	}
-
-	{
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = static_cast<UINT>(sizeof(UINT) * sphereModel[0].indices.size());
-		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		desc.CPUAccessFlags = 0;
-
-		D3D11_SUBRESOURCE_DATA data;
-		ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
-		data.pSysMem = &sphereModel[0].indices[0];
-		if (FAILED(dx->dxDevice->CreateBuffer(&desc, &data, &sphereIndexBuffer)))
-			return false;
-	}
-
+	meshStorage->LoadModel("data\\model\\sphere.obj", &modelStorageBuffer);
+	modelStorageBuffer->LoadMesh(0, &meshStorageBuffer);
 	return true;
 }
 
@@ -154,13 +122,15 @@ void Sky::Render(DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 
 			dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			{
-				dx->dxDeviceContext->IASetVertexBuffers(0, 1, &sphereVertexBuffer, &stride, &offset);
-				dx->dxDeviceContext->IASetIndexBuffer(sphereIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+				dx->dxDeviceContext->IASetVertexBuffers(0, 1, &meshStorageBuffer->vertexBuffer, &stride, &offset);
+				dx->dxDeviceContext->IASetIndexBuffer(meshStorageBuffer->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 				dx->dxDeviceContext->PSSetShaderResources(0, 1, &sphere_texture);
-				dx->dxDeviceContext->DrawIndexed((UINT)sphereModel[0].indices.size(), 0, 0);
+				dx->dxDeviceContext->DrawIndexed((UINT)meshStorageBuffer->indices.size(), 0, 0);
 			}
 			viewportWindow->RefreshRenderState();
 		}
+
+		dx->UnbindAll(0, 1);
 	}
 }
 
@@ -173,10 +143,7 @@ void Sky::Shutdown()
 	if (pCullNone)       pCullNone->Release();
 	if (pLessEqual)      pLessEqual->Release();
 	if (pSamplerState)   pSamplerState->Release();
-
 	if (sphere_texture)     sphere_texture->Release();
-	if (sphereVertexBuffer) sphereVertexBuffer->Release();
-	if (sphereIndexBuffer)  sphereIndexBuffer->Release();
 }
 
 bool Sky::SetSky(SkyFile sky)
@@ -206,7 +173,7 @@ void Sky::OutCore(SkyFile sky)
 		{
 			if (sphere_texture) sphere_texture->Release();
 
-			StarHelpers::AddLog("[Sky] -> Loading... %s", sky.GetSpherePath().c_str());
+			Star::AddLog("[Sky] -> Loading.. %s", sky.GetSpherePath().c_str());
 
 			size_t pos = sky.GetSpherePath().find_last_of(".");
 			std::string buffer = sky.GetSpherePath().substr(pos);
@@ -215,7 +182,7 @@ void Sky::OutCore(SkyFile sky)
 			if (buffer == DDS)
 			{
 				if (FAILED(DirectX::LoadFromDDSFile(
-					StarHelpers::ConvertString(sky.GetSpherePath()).c_str(),
+					Star::ConvertString(sky.GetSpherePath()).c_str(),
 					DirectX::DDS_FLAGS_NONE,
 					nullptr,
 					sphere_image)))
@@ -227,7 +194,7 @@ void Sky::OutCore(SkyFile sky)
 			{
 				DirectX::TexMetadata data;
 				if (FAILED(DirectX::LoadFromHDRFile(
-					StarHelpers::ConvertString(sky.GetSpherePath()).c_str(), &data, sphere_image)))
+					Star::ConvertString(sky.GetSpherePath()).c_str(), &data, sphere_image)))
 					return;
 
 				if (FAILED(DirectX::CreateShaderResourceView(
@@ -242,5 +209,5 @@ void Sky::OutCore(SkyFile sky)
 	}
 
 	type = sky.GetType();
-	StarHelpers::AddLog("[Sky] -> Successfully loaded");
+	Star::AddLog("[Sky] -> Successfully loaded.");
 }

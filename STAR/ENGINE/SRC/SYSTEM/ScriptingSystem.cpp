@@ -1,5 +1,5 @@
 #include "ScriptingSystem.h"
-#include "../HELPERS/Helpers.h"
+#include "../STAR/Star.h"
 #include "../EDITOR/WINDOW/Console.h"
 #include <fstream>
 #include <filesystem>
@@ -60,12 +60,12 @@ bool ScriptingSystem::Init()
 	lua.open_libraries(sol::lib::io);
 
 #if defined INCLUDE_LUASOCKET
-	std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
+	std::string exe = Star::GetParent(Star::GetExecutablePath());
 	std::string path = R"(package.path = package.path .. ';)" + exe + R"(/data/lua/luasocket/LDIR/?.lua')";
 	std::string cpath = R"(package.cpath = package.cpath .. ';)" + exe + R"(/data/lua/luasocket/CDIR/?.dll')";
 
-	path = StarHelpers::SlashesFix(path);
-	cpath = StarHelpers::SlashesFix(cpath);
+	path = Star::SlashesFix(path);
+	cpath = Star::SlashesFix(cpath);
 
 	lua.script(path);
 	lua.script(cpath);
@@ -86,7 +86,7 @@ bool ScriptingSystem::Init()
 	GeneralComponent::LuaAdd(lua);
 	TransformComponent::LuaAdd(lua);
 	CameraComponent::LuaAdd(lua);
-	RigidBodyComponent::LuaAdd(lua);
+	RigidbodyComponent::LuaAdd(lua);
 	MeshComponent::LuaAdd(lua);
 	TextMeshComponent::LuaAdd(lua);
 	PlayerPrefs::LuaAdd(lua);
@@ -107,16 +107,16 @@ void ScriptingComponent::AddScript(const char* path)
 	ScriptComponent scriptComponent;
 
 	{
-		scriptComponent.checksum = StarHelpers::GetChecksum(path);
+		scriptComponent.checksum = Star::GetChecksum(path);
 
 		// old
 		//scriptBuffer.filePath = path;
 
 		// new
-		std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
-		std::string model = StarHelpers::GetParent(path);
-		std::string dir = StarHelpers::GetRelativePath(model, exe);
-		std::string full = dir + "\\" + StarHelpers::GetFileNameFromPath(path) + StarHelpers::GetFileExtensionFromPath(path);
+		std::string exe = Star::GetParent(Star::GetExecutablePath());
+		std::string model = Star::GetParent(path);
+		std::string dir = Star::GetRelativePath(model, exe);
+		std::string full = dir + "\\" + Star::GetFileNameFromPath(path) + Star::GetFileExtensionFromPath(path);
 		scriptComponent.filePath = full;
 
 		scriptComponent.fileName = file.stem().string();
@@ -276,10 +276,10 @@ void EntityX::AddComponent(const char* component_name)
 	}
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
 	{
-		if (!ecs->HasComponent<RigidBodyComponent>(entity))
+		if (!ecs->HasComponent<RigidbodyComponent>(entity))
 		{
-			ecs->AddComponent<RigidBodyComponent>(entity);
-			ecs->GetComponent<RigidBodyComponent>(entity).CreateActor();
+			ecs->AddComponent<RigidbodyComponent>(entity);
+			ecs->GetComponent<RigidbodyComponent>(entity).CreateActor();
 		}
 	}
 	// START TESTING
@@ -359,9 +359,9 @@ sol::object EntityX::GetComponent(const char* component_name)
 	}
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
 	{
-		if (ecs->HasComponent<RigidBodyComponent>(entity))
+		if (ecs->HasComponent<RigidbodyComponent>(entity))
 		{
-			auto& entt_comp = ecs->GetComponent<RigidBodyComponent>(entity);
+			auto& entt_comp = ecs->GetComponent<RigidbodyComponent>(entity);
 			component = sol::make_object(scriptingSystem->GetState(), &entt_comp);
 		}
 		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
@@ -405,7 +405,7 @@ bool EntityX::HasComponent(const char* component_name)
 	else if (strcmp(component_name, "CameraComponent") == 0)
 		return ecs->HasComponent<CameraComponent>(entity);
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
-		return ecs->HasComponent<RigidBodyComponent>(entity);
+		return ecs->HasComponent<RigidbodyComponent>(entity);
 	// START TESTING
 	else if (strcmp(component_name, "BoxColliderComponent") == 0)
 		return !ecs->GetComponent<PhysicsComponent>(entity).GetBoxColliders()->empty();
@@ -431,7 +431,7 @@ void EntityX::RemoveComponent(const char* component_name)
 	else if (strcmp(component_name, "CameraComponent") == 0)
 		ecs->RemoveComponent<CameraComponent>(entity);
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
-		ecs->RemoveComponent<RigidBodyComponent>(entity);
+		ecs->RemoveComponent<RigidbodyComponent>(entity);
 	// START TESTING
 	else if (strcmp(component_name, "BoxColliderComponent") == 0)
 		ecs->GetComponent<PhysicsComponent>(entity).GetBoxColliders()->clear();

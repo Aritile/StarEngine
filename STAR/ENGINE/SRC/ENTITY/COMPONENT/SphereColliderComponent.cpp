@@ -1,5 +1,5 @@
 #include "SphereColliderComponent.h"
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include "../../ENTITY/Entity.h"
 #include "../../SYSTEM/PhysicsSystem.h"
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
@@ -37,19 +37,19 @@ void SphereColliderComponent::CreateShape(float _Radius)
 	physicsMaterialComponent.CreateMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
 
 	pxShape = physicsSystem->GetPhysics()->createShape(physx::PxSphereGeometry(
-		StarHelpers::FloatToPhysics(_Radius)),
+		Star::FloatToPhysics(_Radius)),
 		*physicsMaterialComponent.GetMaterial(),
 		true);
 
 	if (!pxShape)
-		StarHelpers::AddLog("[PhysX] -> Failed to create sphere shape!");
+		Star::AddLog("[PhysX] -> Failed to create sphere shape!");
 }
 void SphereColliderComponent::Update()
 {
 	if (pxShape)
 	{
 		physx::PxSphereGeometry geometry;
-		geometry.radius = StarHelpers::FloatToPhysics(lastExtent + lastRadius - 1.0f);
+		geometry.radius = Star::FloatToPhysics(lastExtent + lastRadius - 1.0f);
 		pxShape->setGeometry(geometry);
 		//printf("update()\n");
 	}
@@ -60,7 +60,7 @@ void SphereColliderComponent::SerializeComponent(YAML::Emitter& out)
 	out << YAML::BeginMap;
 	out << YAML::Key << "SphereCollider" << YAML::Value << YAML::BeginMap;
 	out << YAML::Key << "Active" << YAML::Value << activeComponent;
-	out << YAML::Key << "Center"; StarHelpers::SerializeVector3(out, GetCenter());
+	out << YAML::Key << "Center"; Star::SerializeVector3(out, GetCenter());
 	out << YAML::Key << "Radius" << YAML::Value << GetRadius();
 	out << YAML::Key << "Material" << YAML::Value << YAML::BeginMap;
 	out << YAML::Key << "StaticFriction" << YAML::Value << physicsMaterialComponent.GetStaticFriction();
@@ -74,7 +74,7 @@ void SphereColliderComponent::DeserializeComponent(YAML::Node& in)
 {
 	activeComponent = in["Active"].as<bool>();
 	auto center = in["Center"];
-	SetCenter(StarHelpers::DeserializeVector3(center));
+	SetCenter(Star::DeserializeVector3(center));
 	SetRadius(in["Radius"].as<float>());
 	auto material = in["Material"];
 	physicsMaterialComponent.SetStaticFriction(material["StaticFriction"].as<float>());
@@ -102,8 +102,8 @@ void SphereColliderComponent::Render(std::vector<SphereColliderComponent>* bcc, 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Remove"))
 			{
-				if (ecs->registry.any_of<RigidBodyComponent>(ecs->selected))
-					ecs->registry.get<RigidBodyComponent>(ecs->selected).GetRigidBody()->detachShape(*GetShape());
+				if (ecs->registry.any_of<RigidbodyComponent>(ecs->selected))
+					ecs->registry.get<RigidbodyComponent>(ecs->selected).GetRigidBody()->detachShape(*GetShape());
 				Release();
 				bcc->erase(bcc->begin() + index);
 				ImGui::EndPopup();

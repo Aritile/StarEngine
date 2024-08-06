@@ -1,7 +1,7 @@
 #include "About.h"
 #include "../../DX/DX.h"
 #include "../../MAIN/Main.h"
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include "../../XTK/TEX/DirectXTex.h"
 #include "../../XTK/WICTextureLoader11.h"
 
@@ -71,14 +71,14 @@ void AboutWindow::Init()
 		DirectX::WIC_FLAGS_NONE,
 		NULL,
 		scratchImage)))
-		StarHelpers::AddLog("[About] -> Failed to load texture from file!");
+		Star::AddLog("[About] -> Failed to load texture from file!");
 
 	if (FAILED(DirectX::CreateShaderResourceView(dx->dxDevice,
 		scratchImage.GetImages(),
 		scratchImage.GetImageCount(),
 		scratchImage.GetMetadata(),
 		&_StarBanner)))
-		StarHelpers::AddLog("[About] -> Failed to create shader resource view from scratch image!");
+		Star::AddLog("[About] -> Failed to create shader resource view from scratch image!");
 
 	scratchImage.Release();
 

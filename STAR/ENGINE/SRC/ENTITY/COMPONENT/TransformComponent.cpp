@@ -46,25 +46,25 @@ void TransformComponent::Render()
 					entt::entity entity = entt::to_entity(ecs->registry, *this);
 					if (ecs->IsValid(entity))
 					{
-						if (ecs->HasComponent<RigidBodyComponent>(entity))
+						if (ecs->HasComponent<RigidbodyComponent>(entity))
 						{
-							auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
+							auto& rigidBodyComponent = ecs->GetComponent<RigidbodyComponent>(entity);
 							rigidBodyComponent.SetTransform(GetTransform());
 						}
 					}
 				}
 
-				Vector3 rotation = StarHelpers::ToDegrees(GetLocalTransform().ToEuler());
+				Vector3 rotation = Star::ToDegrees(GetLocalTransform().ToEuler());
 				if (ImGui::DragFloat3("##RotationTransformComponent", (float*)&rotation, viewportWindow->useSnap ? viewportWindow->snap : 0.1f))
 				{
-					SetRotationYawPitchRoll(StarHelpers::ToRadians(rotation));
+					SetRotationYawPitchRoll(Star::ToRadians(rotation));
 
 					entt::entity entity = entt::to_entity(ecs->registry, *this);
 					if (ecs->IsValid(entity))
 					{
-						if (ecs->HasComponent<RigidBodyComponent>(entity))
+						if (ecs->HasComponent<RigidbodyComponent>(entity))
 						{
-							auto& rigidBodyComponent = ecs->GetComponent<RigidBodyComponent>(entity);
+							auto& rigidBodyComponent = ecs->GetComponent<RigidbodyComponent>(entity);
 							rigidBodyComponent.SetTransform(GetTransform());
 						}
 					}
@@ -105,8 +105,8 @@ void TransformComponent::SetPosition(Vector3 position)
 void TransformComponent::SetRotationYawPitchRoll(Vector3 rotation)
 {
 	// problem: https://bentleysystems.service-now.com/community?id=kb_article&sysparm_article=KB0054630
-	//if (StarHelpers::RadToDeg(rotation.x) > 90.0f) rotation.x = StarHelpers::DegToRad(90.0f);
-	//if (StarHelpers::RadToDeg(rotation.x) < -90.0f) rotation.x = StarHelpers::DegToRad(-90.0f);
+	//if (Star::RadToDeg(rotation.x) > 90.0f) rotation.x = Star::DegToRad(90.0f);
+	//if (Star::RadToDeg(rotation.x) < -90.0f) rotation.x = Star::DegToRad(-90.0f);
 
 	localTransform.rotation = Quaternion::CreateFromYawPitchRoll(rotation.y, rotation.x, rotation.z);
 	UpdateTransformFromPositionRotationScale();
@@ -283,10 +283,10 @@ void TransformComponent::SerializeComponent(YAML::Emitter& out)
 	out << YAML::Key << "TransformComponent";
 	out << YAML::BeginMap;
 	{
-		out << YAML::Key << "Position"; StarHelpers::SerializeVector3(out, GetLocalPosition());
-		out << YAML::Key << "Rotation"; StarHelpers::SerializeQuaternion(out, GetLocalRotationQuaternion());
-		out << YAML::Key << "Scale"; StarHelpers::SerializeVector3(out, GetLocalScale());
-		out << YAML::Key << "Matrix"; StarHelpers::SerializeMatrix(out, GetLocalTransform());
+		out << YAML::Key << "Position"; Star::SerializeVector3(out, GetLocalPosition());
+		out << YAML::Key << "Rotation"; Star::SerializeQuaternion(out, GetLocalRotationQuaternion());
+		out << YAML::Key << "Scale"; Star::SerializeVector3(out, GetLocalScale());
+		out << YAML::Key << "Matrix"; Star::SerializeMatrix(out, GetLocalTransform());
 	}
 	out << YAML::EndMap;
 }
@@ -296,13 +296,13 @@ void TransformComponent::DeserializeComponent(YAML::Node& in)
 	if (transformComponent)
 	{
 		auto position = transformComponent["Position"];
-		SetPosition(StarHelpers::DeserializeVector3(position));
+		SetPosition(Star::DeserializeVector3(position));
 		auto rotation = transformComponent["Rotation"];
-		SetRotationQuaternion(StarHelpers::DeserializeQuaternion(rotation));
+		SetRotationQuaternion(Star::DeserializeQuaternion(rotation));
 		auto scale = transformComponent["Scale"];
-		SetScale(StarHelpers::DeserializeVector3(scale));
+		SetScale(Star::DeserializeVector3(scale));
 		auto matrix = transformComponent["Matrix"];
-		SetTransform(StarHelpers::DeserializeMatrix(matrix));
+		SetTransform(Star::DeserializeMatrix(matrix));
 	}
 }
 

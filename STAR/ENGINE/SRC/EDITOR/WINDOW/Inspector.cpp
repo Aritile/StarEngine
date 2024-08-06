@@ -35,7 +35,7 @@ void InspectorWindow::Render()
 			RenderComponent<MeshComponent>(ecs->selected);
 			RenderComponent<CameraComponent>(ecs->selected);
 			RenderComponent<TextMeshComponent>(ecs->selected);
-			RenderComponent<RigidBodyComponent>(ecs->selected);
+			RenderComponent<RigidbodyComponent>(ecs->selected);
 			RenderComponent<ScriptingComponent>(ecs->selected);
 			RenderComponent<PhysicsComponent>(ecs->selected);
 			RenderAdd();
@@ -70,12 +70,12 @@ void InspectorWindow::RenderAdd()
 				ecs->AddComponent<CameraComponent>(ecs->selected);
 		}
 		ImGui::Separator();
-		if (ImGui::Selectable("RigidBodyComponent"))
+		if (ImGui::Selectable("RigidbodyComponent"))
 		{
-			if (!ecs->HasComponent<RigidBodyComponent>(ecs->selected))
+			if (!ecs->HasComponent<RigidbodyComponent>(ecs->selected))
 			{
-				ecs->AddComponent<RigidBodyComponent>(ecs->selected);
-				ecs->GetComponent<RigidBodyComponent>(ecs->selected).CreateActor();
+				ecs->AddComponent<RigidbodyComponent>(ecs->selected);
+				ecs->GetComponent<RigidbodyComponent>(ecs->selected).CreateActor();
 			}
 		}
 

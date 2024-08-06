@@ -3,37 +3,13 @@
 #include <thread>
 #include "../GAME/Game.h"
 #include <iostream>
-
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "dinput8.lib")
-
-#if defined(_DEBUG)
-#pragma comment(lib, "Debug\\PhysX_64.lib")
-#pragma comment(lib, "Debug\\PhysXFoundation_64.lib")
-#pragma comment(lib, "Debug\\PhysXCommon_64.lib")
-#pragma comment(lib, "Debug\\PhysXPvdSDK_static_64.lib")
-#pragma comment(lib, "Debug\\PhysXCooking_64.lib")
-#pragma comment(lib, "Debug\\PhysXExtensions_static_64.lib")
-#pragma comment(lib, "Debug\\yaml-cppd.lib")
-#pragma comment(lib, "Debug\\lua-5.4.4.lib")
-#pragma comment(lib, "Debug\\assimp-vc143-mtd.lib")
-#pragma comment(lib, "Debug\\zlibd.lib")
-#else
-#pragma comment(lib, "Release\\PhysX_64.lib")
-#pragma comment(lib, "Release\\PhysXFoundation_64.lib")
-#pragma comment(lib, "Release\\PhysXCommon_64.lib")
-#pragma comment(lib, "Release\\PhysXPvdSDK_static_64.lib")
-#pragma comment(lib, "Release\\PhysXCooking_64.lib")
-#pragma comment(lib, "Release\\PhysXExtensions_static_64.lib")
-#pragma comment(lib, "Release\\yaml-cpp.lib")
-#pragma comment(lib, "Release\\lua-5.4.4.lib")
-#pragma comment(lib, "Release\\assimp-vc143-mt.lib")
-#pragma comment(lib, "Release\\zlib.lib")
-#endif
+#include "../WINDOW/MainWindow.h"
 
 static Game* game = Game::GetSingleton();
-static SplashScreen* splashScreen = &SplashScreenClass();
+static SplashScreen* splashScreen = SplashScreen::GetSingleton();
+static DX* dx = DX::GetSingleton();
+static Engine* engine = Engine::GetSingleton();
+static MainWindow* mainWindow = MainWindow::GetSingleton();
 
 int StartEngine(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine, int& nCmdShow)
 {
@@ -41,26 +17,28 @@ int StartEngine(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	DX11SetReference(hInstance, hPrevInstance, pCmdLine, nCmdShow);
+	engine->SetReference(hInstance, hPrevInstance, pCmdLine, nCmdShow);
 
 	if (!splashScreen->ShowSplashScreen())
 		return 0;
 
-	if (!DX11CreateWindow(L"StarEngine", 1280, 720))
+	if (!mainWindow->CreateMainWindow(L"StarEngine", 1280, 720))
 		return 0;
-
-	if (!DX11CreateContext())
+	
+	UINT width = mainWindow->GetContextWidth();
+	UINT height = mainWindow->GetContextHeight();
+	if (!dx->CreateContext(width, height))
 		return 0;
 
 	if (FAILED(CoInitializeEx(NULL, COINIT_MULTITHREADED)))
 		return 0;
 
-	EngineStart();
+	engine->EngineStart();
 
 	splashScreen->HideSplashScreen();
 
-	EngineUpdate();
-	EngineShutdown();
+	engine->EngineUpdate();
+	engine->EngineShutdown();
 	CoUninitialize();
 
 	return 0;
@@ -68,7 +46,7 @@ int StartEngine(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine,
 
 int StartGame(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine, int& nCmdShow)
 {
-	DX11SetReference(hInstance, hPrevInstance, pCmdLine, nCmdShow);
+	engine->SetReference(hInstance, hPrevInstance, pCmdLine, nCmdShow);
 
 	if (FAILED(CoInitializeEx(NULL, COINIT_MULTITHREADED)))
 		return 0;
@@ -77,12 +55,12 @@ int StartGame(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine, i
 		splashScreen->ShowSplashScreen();
 		game->hide_window = true;
 		game->Game1(NULL);
-		EngineStart();
+		engine->EngineStart();
 		game->Game2();
 		splashScreen->HideSplashScreen();
 		game->SetWindowState(SW_NORMAL);
-		EngineUpdate();
-		EngineShutdown();
+		engine->EngineUpdate();
+		engine->EngineShutdown();
 	}
 
 	CoUninitialize();

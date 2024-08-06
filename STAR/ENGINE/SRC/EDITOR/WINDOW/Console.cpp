@@ -14,7 +14,7 @@ ConsoleWindow* ConsoleWindow::GetSingleton()
 
 ///////////////////////////////////////////////////////////////
 
-static Editor* editor = &EditorClass();
+static Editor* editor = Editor::GetSingleton();
 
 void ConsoleWindow::Init()
 {

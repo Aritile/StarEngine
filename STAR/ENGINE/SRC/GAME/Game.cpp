@@ -1,9 +1,10 @@
 #include "Game.h"
-#include "../HELPERS/Helpers.h"
+#include "../STAR/Star.h"
 #include "../DX/DX.h"
 #include "../ENTITY/Entity.h"
 #include "../SYSTEM/ScriptingSystem.h"
 #include "../SYSTEM/ProjectSceneSystem.h"
+#include "../ENGINE/Engine.h"
 
 Game* Game::GetSingleton()
 {
@@ -15,6 +16,7 @@ Game* Game::GetSingleton()
 
 static DX* dx = DX::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
+static Engine* engine = Engine::GetSingleton();
 static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
 
 bool Game::StartGame(HWND parent)
@@ -78,7 +80,7 @@ void Game::Game3()
 
     ReleaseInput();
     DestroyWindow(hwnd);
-    UnregisterClass(name.c_str(), *dx->hInstance);
+    UnregisterClass(name.c_str(), engine->hInstance);
 
     if (IsCursorHidden()) HideCursor(false);
     if (IsCursorLocked()) LockCursor(false);
@@ -93,7 +95,6 @@ void Game::Game3()
 
     hwnd = NULL;
 }
-static bool focus = true;
 LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     Game* game = Game::GetSingleton();
@@ -101,18 +102,20 @@ LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     switch (uMsg)
     {
     case WM_CLOSE:
+    {
 #if defined(GAME)
         game->Game3();
 #else
         game->StopGame();
 #endif
-        focus = true;
+        game->focus = true;
         break;
+    }
     case WM_SETFOCUS:
     {
-        if (focus)
+        if (game->focus)
         {
-            focus = false;
+            game->focus = false;
         }
         else
         {
@@ -133,8 +136,10 @@ LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         break;
     }
     case WM_SIZE:
+    {
         game->GameResizeBuffer();
         break;
+    }
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
@@ -152,7 +157,7 @@ bool Game::GameCreateWindow()
     wcex.lpfnWndProc = GameWindowProc;
     wcex.cbClsExtra = NULL;
     wcex.cbWndExtra = NULL;
-    wcex.hInstance = *dx->hInstance;
+    wcex.hInstance = engine->hInstance;
     wcex.hIcon = LoadIcon(NULL, IDI_APPLICATION);
     wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(46, 46, 46));
@@ -165,8 +170,8 @@ bool Game::GameCreateWindow()
 
     ///////////////////////////////////////////////////////////
 
-    int x = (StarHelpers::GetDisplayWidth() - width) / 2;
-    int y = (StarHelpers::GetDisplayHeight() - height) / 2;
+    int x = (Star::GetDisplayWidth() - width) / 2;
+    int y = (Star::GetDisplayHeight() - height) / 2;
 
     DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 
@@ -179,7 +184,7 @@ bool Game::GameCreateWindow()
         width, height,
         NULL,
         NULL,
-        *dx->hInstance,
+        engine->hInstance,
         NULL
     );
 
@@ -207,7 +212,7 @@ void Game::StopGame()
 
     ReleaseInput();
     DestroyWindow(hwnd);
-    UnregisterClass(name.c_str(), *dx->hInstance);
+    UnregisterClass(name.c_str(), engine->hInstance);
 
     //if (IsCursorHidden()) HideCursor(false);
     //if (IsCursorLocked()) LockCursor(false);
@@ -240,6 +245,7 @@ bool Game::GameCreateContext(HWND parent)
         sd.SampleDesc.Quality = 0;
         sd.Windowed = TRUE;
         sd.SwapEffect = dx->dxSwapEffect;
+        sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
         UINT flags = 0;
 
@@ -277,6 +283,7 @@ bool Game::GameCreateContext(HWND parent)
         sd.SampleDesc.Quality = 0;
         sd.Windowed = TRUE;
         sd.SwapEffect = dx->dxSwapEffect;
+        sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
         UINT flags = 0;
 
@@ -398,7 +405,7 @@ UINT Game::GameGetContextHeight()
 
 bool Game::InitInput()
 {
-    if (FAILED(DirectInput8Create(*dx->hInstance,
+    if (FAILED(DirectInput8Create(engine->hInstance,
         DIRECTINPUT_VERSION,
         IID_IDirectInput8,
         (void**)&gDirectInput,

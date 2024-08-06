@@ -1,5 +1,5 @@
 #include "BoxColliderComponent.h"
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include "../../ENTITY/Entity.h"
 #include "../../SYSTEM/PhysicsSystem.h"
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
@@ -37,19 +37,19 @@ void BoxColliderComponent::CreateShape(Vector3 _Size)
 	physicsMaterialComponent.CreateMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
 
 	pxShape = physicsSystem->GetPhysics()->createShape(physx::PxBoxGeometry(
-		StarHelpers::Vector3ToPhysics(_Size)),
+		Star::Vector3ToPhysics(_Size)),
 		*physicsMaterialComponent.GetMaterial(),
 		true);
 
 	if (!pxShape)
-		StarHelpers::AddLog("[PhysX] -> Failed to create box shape!");
+		Star::AddLog("[PhysX] -> Failed to create box shape!");
 }
 void BoxColliderComponent::Update()
 {
 	if (pxShape)
 	{
 		physx::PxBoxGeometry geometry;
-		geometry.halfExtents = StarHelpers::Vector3ToPhysics(lastExtents + lastSize - Vector3(1, 1, 1));
+		geometry.halfExtents = Star::Vector3ToPhysics(lastExtents + lastSize - Vector3(1, 1, 1));
 		pxShape->setGeometry(geometry);
 		//printf("update()\n");
 	}
@@ -60,8 +60,8 @@ void BoxColliderComponent::SerializeComponent(YAML::Emitter& out)
 	out << YAML::BeginMap;
 	out << YAML::Key << "BoxCollider" << YAML::Value << YAML::BeginMap;
 	out << YAML::Key << "Active" << YAML::Value << activeComponent;
-	out << YAML::Key << "Center"; StarHelpers::SerializeVector3(out, GetCenter());
-	out << YAML::Key << "Size"; StarHelpers::SerializeVector3(out, GetSize());
+	out << YAML::Key << "Center"; Star::SerializeVector3(out, GetCenter());
+	out << YAML::Key << "Size"; Star::SerializeVector3(out, GetSize());
 	out << YAML::Key << "Material" << YAML::Value << YAML::BeginMap;
 	out << YAML::Key << "StaticFriction" << YAML::Value << physicsMaterialComponent.GetStaticFriction();
 	out << YAML::Key << "DynamicFriction" << YAML::Value << physicsMaterialComponent.GetDynamicFriction();
@@ -74,9 +74,9 @@ void BoxColliderComponent::DeserializeComponent(YAML::Node& in)
 {
 	activeComponent = in["Active"].as<bool>();
 	auto center = in["Center"];
-	SetCenter(StarHelpers::DeserializeVector3(center));
+	SetCenter(Star::DeserializeVector3(center));
 	auto size = in["Size"];
-	SetSize(StarHelpers::DeserializeVector3(size));
+	SetSize(Star::DeserializeVector3(size));
 	auto material = in["Material"];
 	physicsMaterialComponent.SetStaticFriction(material["StaticFriction"].as<float>());
 	physicsMaterialComponent.SetDynamicFriction(material["DynamicFriction"].as<float>());
@@ -103,8 +103,8 @@ void BoxColliderComponent::Render(std::vector<BoxColliderComponent>* bcc, size_t
 			ImGui::Separator();
 			if (ImGui::MenuItem("Remove"))
 			{
-				if (ecs->registry.any_of<RigidBodyComponent>(ecs->selected))
-					ecs->registry.get<RigidBodyComponent>(ecs->selected).GetRigidBody()->detachShape(*GetShape());
+				if (ecs->registry.any_of<RigidbodyComponent>(ecs->selected))
+					ecs->registry.get<RigidbodyComponent>(ecs->selected).GetRigidBody()->detachShape(*GetShape());
 				Release();
 				bcc->erase(bcc->begin() + index);
 				ImGui::EndPopup();

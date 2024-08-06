@@ -2,7 +2,7 @@
 #include "../IMGUI/imgui.h"
 #include "../ENTITY/Entity.h"
 #include "../ENTITY/COMPONENT/RigidbodyComponent.h"
-#include "../HELPERS/Helpers.h"
+#include "../STAR/Star.h"
 #include "../EDITOR/WINDOW/Console.h"
 #include "../ENTITY/COMPONENT/TransformComponent.h"
 #include "../ENTITY/COMPONENT/BoxColliderComponent.h"
@@ -22,7 +22,7 @@ bool PhysicsSystem::Init()
 #if defined(_DEBUG)
 	transport = physx::PxDefaultPvdSocketTransportCreate(PVD_HOST, PVD_PORT, 10);
 	if (!gPvd->connect(*transport, physx::PxPvdInstrumentationFlag::eALL))
-		StarHelpers::AddLog("[PhysX] -> PhysX Visual Debugger is not connected!\n[PhysX] -> Host %s Port %i", PVD_HOST, PVD_PORT);
+		Star::AddLog("[PhysX] -> PhysX Visual Debugger is not connected!\n[PhysX] -> Host %s Port %i", PVD_HOST, PVD_PORT);
 #endif
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, physx::PxTolerancesScale(), true, gPvd);
@@ -40,7 +40,7 @@ bool PhysicsSystem::Init()
 		cudaContextManagerDesc.interopMode = physx::PxCudaInteropMode::D3D11_INTEROP;
 		cudaContextManagerDesc.graphicsDevice = dx->dxDevice;
 		gCudaContextManager = PxCreateCudaContextManager(*gFoundation, cudaContextManagerDesc);
-		if (gCudaContextManager) if (!gCudaContextManager->contextIsValid()) StarHelpers::AddLog("[PhysX] -> Cuda Context Manager Error!");
+		if (gCudaContextManager) if (!gCudaContextManager->contextIsValid()) Star::AddLog("[PhysX] -> Cuda Context Manager Error!");
 
 		gDispatcher = physx::PxDefaultCpuDispatcherCreate(4);
 		sceneDesc->gpuDispatcher = gCudaContextManager->getGpuDispatcher();
@@ -53,7 +53,7 @@ bool PhysicsSystem::Init()
 	}
 	else
 	{
-		StarHelpers::AddLog("[PhysX] -> Processor Error!");
+		Star::AddLog("[PhysX] -> Processor Error!");
 	}
 
 	sceneDesc->cpuDispatcher = gDispatcher;
@@ -105,9 +105,9 @@ void PhysicsComponent::AddBoxCollider()
 			boxColliderBuffer.CreateShape(transformComponent.GetScale());
 		}
 
-		if (ecs->registry.any_of<RigidBodyComponent>(entity))
+		if (ecs->registry.any_of<RigidbodyComponent>(entity))
 		{
-			auto& rigidBodyComponent = ecs->registry.get<RigidBodyComponent>(entity);
+			auto& rigidBodyComponent = ecs->registry.get<RigidbodyComponent>(entity);
 			if (rigidBodyComponent.GetRigidBody())
 				rigidBodyComponent.GetRigidBody()->attachShape(*boxColliderBuffer.GetShape());
 			//printf("Attaching shape\n");
@@ -227,13 +227,23 @@ void PhysicsComponent::AddSphereCollider()
 			sphereColliderBuffer.CreateShape(extent); // fixed! static? what about this? (1.0f, 1.0f, 1.0f) / 3
 		}
 
-		if (ecs->registry.any_of<RigidBodyComponent>(entity))
+		if (ecs->registry.any_of<RigidbodyComponent>(entity))
 		{
-			auto& rigidBodyComponent = ecs->registry.get<RigidBodyComponent>(entity);
+			auto& rigidBodyComponent = ecs->registry.get<RigidbodyComponent>(entity);
 			if (rigidBodyComponent.GetRigidBody())
 				rigidBodyComponent.GetRigidBody()->attachShape(*sphereColliderBuffer.GetShape());
 			//printf("Attaching shape\n");
 		}
 	}
 	sphere_colliders.push_back(sphereColliderBuffer);
+}
+void PhysicsComponent::ReleaseAllBoxColliders()
+{
+	for (size_t i = 0; i < box_colliders.size(); i++)
+		box_colliders[i].Release();
+}
+void PhysicsComponent::ReleaseAllSphereColliders()
+{
+	for (size_t i = 0; i < sphere_colliders.size(); i++)
+		sphere_colliders[i].Release();
 }

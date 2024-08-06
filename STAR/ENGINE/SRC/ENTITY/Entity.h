@@ -25,6 +25,14 @@ public:
 	unsigned int GetFreeNameIndex(const char* name);
 	entt::entity FindByName(const char* name, bool print);
 	entt::entity FindByTag(const char* tag, bool print);
+	void Destroy(entt::entity entity);
+	void DestroyChildren(entt::entity entity);
+
+private:
+	void DestroyAll(entt::entity entity, std::vector<entt::entity>& bin);
+
+public:
+	void Cleanup(entt::entity entity);
 
 public:
 	void CreateEmptyEntity(entt::entity entity);

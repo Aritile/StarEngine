@@ -1,17 +1,20 @@
 #include "MeshComponent.h"
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include "../../EDITOR/WINDOW/Viewport.h"
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../SYSTEM/ModelSystem.h"
 #include "GeneralComponent.h"
 #include <fstream>
+#include "../../STORAGE/TextureStorage.h"
 
 static DX* dx = DX::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 static ModelSystem* modelSystem = &ModelSystemClass();
+static TextureStorage* textureStorage = TextureStorage::GetSingleton();
+static MeshStorage* meshStorage = MeshStorage::GetSingleton();
 
 void MeshComponent::Render()
 {
@@ -27,9 +30,9 @@ void MeshComponent::Render()
 			ImGui::Separator();
 			if (ImGui::MenuItem("Remove"))
 			{
-				entt::entity entity = entt::to_entity(ecs->registry, *this);
-				ecs->registry.get<MeshComponent>(entity).ClearCache();
-				ecs->registry.remove<MeshComponent>(entity);
+				//entt::entity entity = entt::to_entity(ecs->registry, *this);
+				//ecs->registry.get<MeshComponent>(entity).ClearCache();
+				//ecs->registry.remove<MeshComponent>(entity);
 			}
 			ImGui::EndPopup();
 		}
@@ -56,37 +59,40 @@ void MeshComponent::Render()
 				ImGui::Text("%u", GetNumVertices());
 
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
-				ImGui::Text("%u", indices.size());
+				ImGui::Text("%u", GetNumIndices());
 
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
 				ImGui::Text("%u", GetNumFaces());
 
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
-				if (meshMaterial.name.empty())
-					ImGui::Button("None");
-				else
-					ImGui::Button(meshMaterial.name.c_str());
-				/*
-				if (ImGui::BeginDragDropTarget())
+
+				if (meshStorageBuffer)
 				{
-					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
-					{
-						FILEs payload_n = *(FILEs*)payload->Data;
-						if (payload_n.file_type == MAT)
-						{
-							std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
-							AddMeshMaterial(buffer);
-						}
-					}
-					ImGui::EndDragDropTarget();
+					if (meshStorageBuffer->material.name.empty())
+						ImGui::Button("None");
+					else
+						ImGui::Button(meshStorageBuffer->material.name.c_str());
 				}
-				*/
+				else
+					ImGui::Button("None");
 
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
-				if (diffuse_texture)
-					ImGui::Image((void*)diffuse_texture, ImVec2(100, 100));
-				else
+
+				bool render = true;
+				if (meshStorageBuffer)
+				{
+					if (meshStorageBuffer->material.diffuseTexture)
+					{
+						if (meshStorageBuffer->material.diffuseTexture->texture)
+						{
+							ImGui::Image((void*)meshStorageBuffer->material.diffuseTexture->texture, ImVec2(100, 100));
+							render = false;
+						}
+					}
+				}
+				if (render)
 					ImGui::ImageButton((void*)assetsWindow->imageTexture, ImVec2(50, 50));
+
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
@@ -94,118 +100,50 @@ void MeshComponent::Render()
 						FILEs payload_n = *(FILEs*)payload->Data;
 						if (payload_n.file_type == PNG || payload_n.file_type == JPEG || payload_n.file_type == DDS)
 						{
+							entt::entity entity = entt::to_entity(ecs->registry, *this);
 							std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
-							std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
-							std::string x = StarHelpers::GetRelativePath(buffer, exe);
-							LoadTexture(x.c_str(), &diffuse_texture);
+							std::string exe = Star::GetParent(Star::GetExecutablePath());
+							std::string x = Star::GetRelativePath(buffer, exe);
 
-							if (meshMaterial.name.empty())
+							if (meshStorageBuffer)
 							{
-								entt::entity entity = entt::to_entity(ecs->registry, *this);
+								textureStorage->LoadTexture(x.c_str(), &meshStorageBuffer->material.diffuseTexture);
+								meshStorageBuffer->material.diffuse = x;
+
 								if (ecs->HasComponent<GeneralComponent>(entity))
 								{
 									auto& generalComponent = ecs->GetComponent<GeneralComponent>(entity);
-									SetMaterialName(generalComponent.GetName().c_str());
-
-									std::string string = "assets\\" + GetMaterialName() + ".mat";
-									SetMaterialPath(string.c_str());
-									SerializeMaterial(string.c_str());
+									if (meshStorageBuffer->material.name.empty())
+										meshStorageBuffer->material.name = generalComponent.GetName();
 								}
 							}
 						}
 					}
 					ImGui::EndDragDropTarget();
 				}
-				if (!meshMaterial.diffuse.empty())
-					ImGui::Text(StarHelpers::GetFileNameFromPath(meshMaterial.diffuse).c_str());
+				if (meshStorageBuffer)
+					if (!meshStorageBuffer->material.diffuse.empty())
+						ImGui::Text(Star::GetFileNameFromPath(meshStorageBuffer->material.diffuse).c_str());
 			}
 			ImGui::EndTable();
 		}
 	}
 }
 
-std::string MeshComponent::GetMaterialName()
-{
-	return meshMaterial.name;
-}
-
-void MeshComponent::AddVertices(Vertex add)
-{
-	vertices.push_back(add);
-}
-void MeshComponent::AddIndices(UINT add)
-{
-	indices.push_back(add);
-}
-UINT MeshComponent::GetNumVertices()
-{
-	return (UINT)vertices.size();
-}
-UINT MeshComponent::GetNumFaces()
-{
-	return (UINT)indices.size() / 3;
-}
-void MeshComponent::ClearCache()
-{
-	vertexBuffer.Reset();
-	indexBuffer.Reset();
-}
-
-bool MeshComponent::SetupMesh()
-{
-	CreateBoundingBox();
-
-	{
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = static_cast<UINT>(sizeof(Vertex) * vertices.size());
-		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
-
-		D3D11_SUBRESOURCE_DATA data;
-		ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
-		data.pSysMem = &vertices[0];
-
-		if (FAILED(dx->dxDevice->CreateBuffer(&desc, &data, vertexBuffer.GetAddressOf())))
-			return false;
-	}
-
-	//////////////////////////////////////////////////////////////
-
-	{
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = static_cast<UINT>(sizeof(UINT) * indices.size());
-		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
-
-		D3D11_SUBRESOURCE_DATA data;
-		ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
-		data.pSysMem = &indices[0];
-
-		if (FAILED(dx->dxDevice->CreateBuffer(&desc, &data, indexBuffer.GetAddressOf())))
-			return false;
-	}
-
-	//////////////////////////////////////////////////////////////
-
-	return true;
-}
-
 void MeshComponent::DrawMesh(DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 {
+	if (!meshStorageBuffer)
+	{
+		return;
+	}
 	if (!modelSystem->pVS)
 	{
-		printf("pVS is null\n");
+		printf("VS is null\n");
 		return;
 	}
 	if (!modelSystem->pPS)
 	{
-		printf("pPS is null\n");
+		printf("PS is null\n");
 		return;
 	}
 
@@ -217,14 +155,15 @@ void MeshComponent::DrawMesh(DirectX::XMMATRIX view, DirectX::XMMATRIX projectio
 		cb.sProjection = DirectX::XMMatrixTranspose(projection);
 		cb.sView = DirectX::XMMatrixTranspose(view);
 		cb.sModel = DirectX::XMMatrixTranspose(transComp.GetTransform());
-		if (viewportWindow->GetRenderState() == RenderState::Pos)
+		if (viewportWindow->GetRenderState() == RenderState::Position)
 			cb.renderState = 3;
 		else if (viewportWindow->GetRenderState() == RenderState::Normal)
 			cb.renderState = 4;
 		else
 			cb.renderState = 0;
 
-		if (diffuse_texture) cb.hasTexture = true;
+		if (meshStorageBuffer->material.diffuseTexture)
+			if (meshStorageBuffer->material.diffuseTexture->texture) cb.hasTexture = true;
 		else cb.hasTexture = false;
 
 		dx->dxDeviceContext->UpdateSubresource(modelSystem->pConstantBuffer, 0, nullptr, &cb, 0, 0);
@@ -238,11 +177,14 @@ void MeshComponent::DrawMesh(DirectX::XMMATRIX view, DirectX::XMMATRIX projectio
 		UINT offset = 0;
 
 		dx->dxDeviceContext->IASetInputLayout(modelSystem->pLayout);
-		dx->dxDeviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
-		dx->dxDeviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		dx->dxDeviceContext->PSSetShaderResources(0, 1, &diffuse_texture);
+		dx->dxDeviceContext->IASetVertexBuffers(0, 1, &meshStorageBuffer->vertexBuffer, &stride, &offset);
+		dx->dxDeviceContext->IASetIndexBuffer(meshStorageBuffer->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		if (meshStorageBuffer->material.diffuseTexture)
+			if (meshStorageBuffer->material.diffuseTexture->texture)
+				dx->dxDeviceContext->PSSetShaderResources(0, 1, &meshStorageBuffer->material.diffuseTexture->texture);
+		dx->dxDeviceContext->DrawIndexed((UINT)meshStorageBuffer->indices.size(), 0, 0);
 
-		dx->dxDeviceContext->DrawIndexed((UINT)indices.size(), 0, 0);
+		dx->UnbindAll(0, 1);
 	}
 }
 
@@ -257,43 +199,40 @@ bool MeshComponent::IsActive()
 
 ///////////////////////////////////////////////////////////////
 
-const std::vector<Vertex>& MeshComponent::GetVertices()
-{
-	return vertices;
-}
-const std::vector<UINT>& MeshComponent::GetIndices()
-{
-	return indices;
-}
-
 void MeshComponent::CreateBoundingBox()
 {
+	if (!meshStorageBuffer)
+	{
+		Star::AddLog("Mesh Storage Buffer is null.");
+		return;
+	}
+
 	float min_x = 0.0f; float min_y = 0.0f; float min_z = 0.0f;
 	float max_x = 0.0f; float max_y = 0.0f; float max_z = 0.0f;
 
-	min_x = max_x = vertices.at(0).position.x;
-	min_y = max_y = vertices.at(0).position.y;
-	min_z = max_z = vertices.at(0).position.z;
+	min_x = max_x = meshStorageBuffer->vertices.at(0).position.x;
+	min_y = max_y = meshStorageBuffer->vertices.at(0).position.y;
+	min_z = max_z = meshStorageBuffer->vertices.at(0).position.z;
 
-	for (size_t i = 0; i < vertices.size(); i++)
+	for (size_t i = 0; i < meshStorageBuffer->vertices.size(); i++)
 	{
 		// x-axis
-		if (vertices.at(i).position.x < min_x)
-			min_x = vertices.at(i).position.x;
-		if (vertices.at(i).position.x > max_x)
-			max_x = vertices.at(i).position.x;
+		if (meshStorageBuffer->vertices.at(i).position.x < min_x)
+			min_x = meshStorageBuffer->vertices.at(i).position.x;
+		if (meshStorageBuffer->vertices.at(i).position.x > max_x)
+			max_x = meshStorageBuffer->vertices.at(i).position.x;
 
 		// y-axis
-		if (vertices.at(i).position.y < min_y)
-			min_y = vertices.at(i).position.y;
-		if (vertices.at(i).position.y > max_y)
-			max_y = vertices.at(i).position.y;
+		if (meshStorageBuffer->vertices.at(i).position.y < min_y)
+			min_y = meshStorageBuffer->vertices.at(i).position.y;
+		if (meshStorageBuffer->vertices.at(i).position.y > max_y)
+			max_y = meshStorageBuffer->vertices.at(i).position.y;
 
 		// z-axis
-		if (vertices.at(i).position.z < min_z)
-			min_z = vertices.at(i).position.z;
-		if (vertices.at(i).position.z > max_z)
-			max_z = vertices.at(i).position.z;
+		if (meshStorageBuffer->vertices.at(i).position.z < min_z)
+			min_z = meshStorageBuffer->vertices.at(i).position.z;
+		if (meshStorageBuffer->vertices.at(i).position.z > max_z)
+			max_z = meshStorageBuffer->vertices.at(i).position.z;
 	}
 
 	entt::entity entity = entt::to_entity(ecs->registry, *this);
@@ -312,98 +251,24 @@ void MeshComponent::CreateBoundingBox()
 	}
 }
 
-bool MeshComponent::GetState()
-{
-	if (vertexBuffer.Get() && indexBuffer.Get()) return true; return false;
-}
-
-/*
-void MeshComponent::AddMeshMaterial(std::string path)
-{
-	// how this works? i forgot
-	Material mat_buff;
-	assetsWindow->OpenMaterialFile(path, mat_buff);
-	material_name = std::filesystem::path(path).stem().string();
-	path = std::filesystem::path(path).parent_path().string();
-
-	while (true)
-	{
-		std::size_t found = mat_buff.diffuse.find("..\\");
-		if (found != std::string::npos)
-		{
-			mat_buff.diffuse.erase(0, 3);
-			path = std::filesystem::path(path).parent_path().string();
-		}
-		else
-		{
-			std::size_t found = mat_buff.diffuse.find("\\");
-			if (found != std::string::npos)
-			{
-				std::string dir = mat_buff.diffuse;
-				dir.resize(found);
-				path.append("\\");
-				path.append(dir);
-				mat_buff.diffuse.erase(0, (found + 1));
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
-
-	path.append("\\");
-	path.append(mat_buff.diffuse);
-
-	size_t pos = path.find_last_of(".");
-	if (pos != -1)
-	{
-		std::string buffer = path.substr(pos);
-
-		if (buffer == PNG || buffer == JPEG)
-		{
-			if (diffuse_texture) diffuse_texture->Release();
-			DirectX::CreateWICTextureFromFile(
-				dx->dxDevice,
-				dx->dxDeviceContext,
-				StarHelpers::ConvertString(path).c_str(),
-				nullptr,
-				&diffuse_texture);
-		}
-
-		if (buffer == DDS)
-		{
-			if (diffuse_texture) diffuse_texture->Release();
-			DirectX::CreateDDSTextureFromFile(
-				dx->dxDevice,
-				dx->dxDeviceContext,
-				StarHelpers::ConvertString(path).c_str(),
-				nullptr,
-				&diffuse_texture);
-		}
-	}
-	else
-	{
-		StarHelpers::AddLog("Error!");
-	}
-}
-*/
-
 void MeshComponent::SerializeComponent(YAML::Emitter& out)
 {
+	if (!meshStorageBuffer)
+		return;
+
 	// no texture? no material
-	if (!meshMaterial.diffuse.empty())
-		SerializeMaterial(materialPath.c_str());
+	if (!meshStorageBuffer->material.diffuse.empty())
+		meshStorageBuffer->material.SerializeMaterial(GetMaterialPath().c_str());
 
 	out << YAML::Key << "MeshComponent";
 	out << YAML::BeginMap;
 	{
 		out << YAML::Key << "IsActive" << YAML::Value << IsActive();
-		out << YAML::Key << "ModelPath" << YAML::Value << modelPath;
-		out << YAML::Key << "MaterialPath" << YAML::Value << materialPath;
-		out << YAML::Key << "MeshIndex" << YAML::Value << meshIndex;
-		out << YAML::Key << "VerticesSize" << YAML::Value << vertices.size();
-		out << YAML::Key << "IndicesSize" << YAML::Value << indices.size();
+		out << YAML::Key << "ModelPath" << YAML::Value << modelStorageBuffer->path;
+		out << YAML::Key << "MaterialPath" << YAML::Value << GetMaterialPath().c_str();
+		out << YAML::Key << "MeshIndex" << YAML::Value << meshStorageBuffer->index;
+		out << YAML::Key << "VerticesSize" << YAML::Value << meshStorageBuffer->vertices.size();
+		out << YAML::Key << "IndicesSize" << YAML::Value << meshStorageBuffer->indices.size();
 		out << YAML::Key << "FacesSize" << YAML::Value << GetNumFaces();
 	}
 	out << YAML::EndMap;
@@ -414,261 +279,29 @@ void MeshComponent::DeserializeComponent(YAML::Node& in)
 	if (meshComponent)
 	{
 		SetActive(meshComponent["IsActive"].as<bool>());
-		modelPath = meshComponent["ModelPath"].as<std::string>();
-		materialPath = meshComponent["MaterialPath"].as<std::string>();
-		meshIndex = meshComponent["MeshIndex"].as<unsigned int>();
-		//vertices.resize(meshComponent["VerticesSize"].as<size_t>());
-		//indices.resize(meshComponent["IndicesSize"].as<size_t>());
+		std::string path = meshComponent["ModelPath"].as<std::string>();
+		UINT index = meshComponent["MeshIndex"].as<UINT>();
+		std::string mat = meshComponent["MaterialPath"].as<std::string>();
+
+		// load model
+		ModelStorageBuffer* modelStorageBuffer = nullptr;
+		meshStorage->LoadModel(path.c_str(), &modelStorageBuffer);
+
+		// load mesh
+		MeshStorageBuffer* meshStorageBuffer = nullptr;
+		modelStorageBuffer->LoadMesh(index, &meshStorageBuffer);
+
+		// load material
+		meshStorageBuffer->material.DeserializeMaterial(mat.c_str());
+
+		// load texture
+		TextureStorageBuffer* textureStorageBuffer = nullptr;
+		textureStorage->LoadTexture(meshStorageBuffer->material.diffuse.c_str(), &textureStorageBuffer);
+		meshStorageBuffer->material.diffuseTexture = textureStorageBuffer;
+
+		ApplyModel(modelStorageBuffer);
+		ApplyMesh(meshStorageBuffer);
 	}
-}
-
-void MeshComponent::SetFileName(std::string name)
-{
-	fileName = name;
-}
-std::string MeshComponent::GetFileName()
-{
-	return fileName;
-}
-void MeshComponent::SetMeshName(std::string name)
-{
-	meshName = name;
-}
-std::string MeshComponent::GetMeshName()
-{
-	return meshName;
-}
-
-bool MeshComponent::LoadMesh(const aiScene* scene)
-{
-	if (scene->mNumMeshes <= meshIndex)
-	{
-		printf("out of range\n");
-		return false;
-	}
-
-	aiMesh* mesh = scene->mMeshes[meshIndex];
-
-	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-	{
-		Vertex vertex;
-
-		// positions
-		vertex.position.x = mesh->mVertices[i].x;
-		vertex.position.y = mesh->mVertices[i].y;
-		vertex.position.z = mesh->mVertices[i].z;
-
-		// normals
-		if (mesh->HasNormals())
-		{
-			vertex.normal.x = mesh->mNormals[i].x;
-			vertex.normal.y = mesh->mNormals[i].y;
-			vertex.normal.z = mesh->mNormals[i].z;
-		}
-
-		// texture coordinates
-		if (mesh->mTextureCoords[0])
-		{
-			vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
-			vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
-		}
-		else
-		{
-			vertex.texCoords = Vector2(0.0f, 0.0f);
-		}
-		
-		AddVertices(vertex);
-	}
-
-	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-	{
-		aiFace face = mesh->mFaces[i];
-		for (unsigned int j = 0; j < face.mNumIndices; j++)
-			AddIndices(face.mIndices[j]);
-	}
-
-	return true;
-}
-bool MeshComponent::LoadMaterial(const aiScene* scene)
-{
-	if (scene->mNumMeshes <= meshIndex)
-	{
-		printf("out of range\n");
-		return false;
-	}
-
-	aiMesh* mesh = scene->mMeshes[meshIndex];
-	unsigned int materialIndex = mesh->mMaterialIndex;
-
-	if (materialIndex >= scene->mNumMaterials)
-	{
-		printf("out of range\n");
-		return false;
-	}
-
-	aiMaterial* material = scene->mMaterials[materialIndex];
-	if (material)
-	{
-		aiString name;
-		aiString diffuse;
-		material->Get(AI_MATKEY_NAME, name);
-		material->GetTexture(aiTextureType_DIFFUSE, NULL, &diffuse);
-
-		meshMaterial.name = name.C_Str();
-		meshMaterial.diffuse = diffuse.C_Str();
-	}
-
-	return true;
-}
-std::string MeshComponent::GetName(const aiScene* scene)
-{
-	if (!scene)
-	{
-		printf("scene is null\n");
-		return "";
-	}
-	if (scene->mNumMeshes <= meshIndex)
-	{
-		printf("is out of range\n");
-		return "";
-	}
-
-	aiMesh* mesh = scene->mMeshes[meshIndex];
-	if (mesh)
-		return mesh->mName.C_Str();
-	else
-		return "";
-}
-void MeshComponent::SerializeMaterial(const char* path)
-{
-	YAML::Emitter out;
-
-	StarHelpers::BeginFormat(out);
-	{
-		out << YAML::Key << "Material" << YAML::Value << YAML::BeginMap;
-		{
-			out << YAML::Key << "Name" << YAML::Value << meshMaterial.name;
-			out << YAML::Key << "Diffuse" << YAML::Value << YAML::BeginMap;
-			{
-				out << YAML::Key << "Path" << YAML::Value << meshMaterial.diffuse;
-			}
-			out << YAML::EndMap;
-		}
-		out << YAML::EndMap;
-	}
-	StarHelpers::EndFormat(out);
-
-	if (!out.good())
-		StarHelpers::AddLog("%s", out.GetLastError().c_str());
-
-	std::ofstream stream(path);
-	stream << out.c_str();
-	stream.close();
-}
-void MeshComponent::DeserializeMaterial(const char* path)
-{
-	YAML::Node in = YAML::LoadFile(path);
-	if (!StarHelpers::CheckSignature(in))
-		return;
-
-	YAML::Node _Material = in["Star"]["Data"]["Material"];
-	meshMaterial.name = _Material["Name"].as<std::string>();
-	YAML::Node _Diffuse = _Material["Diffuse"];
-	meshMaterial.diffuse = _Diffuse["Path"].as<std::string>();
-}
-bool MeshComponent::SetupMaterial(const char* path)
-{
-	std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
-	std::string model = StarHelpers::GetParent(path);
-	std::string dir = StarHelpers::GetRelativePath(model, exe);
-	std::string full = dir + "\\" + meshMaterial.diffuse;
-	meshMaterial.diffuse = full;
-	
-	LoadTexture(meshMaterial.diffuse.c_str(), &diffuse_texture);
-
-	return true;
-}
-bool MeshComponent::LoadTexture(const char* path, ID3D11ShaderResourceView** shaderResourceView)
-{
-	std::string extension = StarHelpers::GetFileExtensionFromPath(path);
-
-	if (extension.compare(PNG) == 0 || extension.compare(JPEG) == 0)
-	{
-		if (*shaderResourceView)
-			(*shaderResourceView)->Release();
-
-		if (FAILED(DirectX::CreateWICTextureFromFile(
-			dx->dxDevice,
-			dx->dxDeviceContext,
-			StarHelpers::ConvertString(path).c_str(),
-			nullptr,
-			shaderResourceView)))
-		{
-			printf("failed to load texture\n");
-			return false;
-		}
-		else
-		{
-			meshMaterial.diffuse = path;
-			return true;
-		}
-	}
-	else if (extension.compare(DDS) == 0)
-	{
-		if (*shaderResourceView)
-			(*shaderResourceView)->Release();
-
-		if (FAILED(DirectX::CreateDDSTextureFromFile(
-			dx->dxDevice,
-			dx->dxDeviceContext,
-			StarHelpers::ConvertString(path).c_str(),
-			nullptr,
-			shaderResourceView)))
-		{
-			printf("failed to load texture\n");
-			return false;
-		}
-		else
-		{
-			meshMaterial.diffuse = path;
-			return true;
-		}
-	}
-
-	printf("wrong texture format\n");
-	return false;
-}
-void MeshComponent::SetMeshIndex(unsigned int index)
-{
-	meshIndex = index;
-}
-void MeshComponent::SetModelPath(const char* path)
-{
-	std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
-	std::string model = path;
-	modelPath = StarHelpers::GetRelativePath(model, exe);
-}
-void MeshComponent::SetupDiffuseTexture()
-{
-	std::string path = meshMaterial.diffuse;
-	if (!path.empty())
-		LoadTexture(meshMaterial.diffuse.c_str(), &diffuse_texture);
-}
-void MeshComponent::SetMaterialPath(const char* path)
-{
-	materialPath = path;
-}
-void MeshComponent::LoadDiffuseTexture(const char* path)
-{
-	if (!path)
-		return;
-
-	std::string exe = StarHelpers::GetParent(StarHelpers::GetExecutablePath());
-	std::string model = StarHelpers::GetParent(path);
-	std::string dir = StarHelpers::GetRelativePath(model, exe);
-	std::string full = dir + "\\" + StarHelpers::GetFileNameFromPath(path) + StarHelpers::GetFileExtensionFromPath(path);
-
-	LoadTexture(full.c_str(), &diffuse_texture);
 }
 
 void MeshComponent::LuaAdd(sol::state& state)
@@ -676,19 +309,62 @@ void MeshComponent::LuaAdd(sol::state& state)
 	sol::usertype<MeshComponent> component = state.new_usertype<MeshComponent>(
 		"MeshComponent");
 	component["GetNumVertices"] = &MeshComponent::GetNumVertices;
+	component["GetNumIndices"] = &MeshComponent::GetNumIndices;
 	component["GetNumFaces"] = &MeshComponent::GetNumFaces;
-	component["AddVertices"] = &MeshComponent::AddVertices;
-	component["AddIndices"] = &MeshComponent::AddIndices;
-	component["SetupMesh"] = &MeshComponent::SetupMesh;
 
 	sol::usertype<Vertex> vertex = state.new_usertype<Vertex>(
 		"Vertex");
 	vertex["position"] = &Vertex::position;
 	vertex["normal"] = &Vertex::normal;
-	vertex["texCoords"] = &Vertex::texCoords;
+	vertex["textureCoord"] = &Vertex::textureCoord;
 }
-
-void MeshComponent::SetMaterialName(const char* name)
+void MeshComponent::ApplyModel(ModelStorageBuffer* _ModelStorageBuffer)
 {
-	meshMaterial.name = name;
+	modelStorageBuffer = _ModelStorageBuffer;
+}
+void MeshComponent::ApplyMesh(MeshStorageBuffer* _MeshStorageBuffer)
+{
+	meshStorageBuffer = _MeshStorageBuffer;
+}
+UINT MeshComponent::GetNumVertices()
+{
+	if (meshStorageBuffer)
+		return (UINT)meshStorageBuffer->vertices.size();
+
+	return 0;
+}
+UINT MeshComponent::GetNumIndices()
+{
+	if (meshStorageBuffer)
+		return (UINT)meshStorageBuffer->indices.size();
+
+	return 0;
+}
+UINT MeshComponent::GetNumFaces()
+{
+	if (meshStorageBuffer)
+		return (UINT)(meshStorageBuffer->indices.size() / 3);
+
+	return 0;
+}
+std::string MeshComponent::GetMaterialPath()
+{
+	if (!modelStorageBuffer)
+		return "";
+
+	entt::entity entity = entt::to_entity(ecs->registry, *this);
+	if (ecs->HasComponent<GeneralComponent>(entity))
+	{
+		auto& generalComponent = ecs->GetComponent<GeneralComponent>(entity);
+		std::string path;
+		path += Star::GetParent(modelStorageBuffer->path);
+		path += "\\";
+		path += Star::GetFileNameFromPath(modelStorageBuffer->path);
+		path += "\\";
+		path += generalComponent.GetName();
+		path += ".mat";
+		return path;
+	}
+
+	return "";
 }

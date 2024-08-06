@@ -1,5 +1,4 @@
 #include "Editor.h"
-
 #include "WINDOW/File.h"
 #include "WINDOW/Assets.h"
 #include "WINDOW/Viewport.h"
@@ -17,12 +16,12 @@
 #include "WINDOW/Project.h"
 #include "../SYSTEM/PlayerPrefs.h"
 #include "WINDOW/Settings.h"
+#include "../WINDOW/MainWindow.h"
 
-static Editor editor;
-
-Editor& EditorClass()
+Editor* Editor::GetSingleton()
 {
-	return editor;
+	static Editor editor;
+	return &editor;
 }
 
 ///////////////////////////////////////////////////////////////
@@ -43,6 +42,7 @@ static Module*             module = Module::GetSingleton();
 static ProjectWindow*      projectWindow = ProjectWindow::GetSingleton();
 static PlayerPrefs*        playerPrefs = PlayerPrefs::GetSingleton();
 static SettingsWindow*     settingsWindow = SettingsWindow::GetSingleton();
+static MainWindow*         mainWindow = MainWindow::GetSingleton();
 
 static ImVec2 mainMenuBarSize = ImVec2(NULL, NULL);
 
@@ -51,7 +51,7 @@ bool Editor::Init()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	if (!ImGui_ImplWin32_Init(dx->hwnd)) return false;
+	if (!ImGui_ImplWin32_Init(mainWindow->GetHandle())) return false;
 	if (!ImGui_ImplDX11_Init(dx->dxDevice, dx->dxDeviceContext)) return false;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	SetStyle();
@@ -188,8 +188,8 @@ void Editor::RenderDownBar()
 		| ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
 		| ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
 
-	ImGui::SetNextWindowPos(ImVec2(0.0f, (float)StarHelpers::GetContextHeight() - WINDOW_DOWN));
-	ImGui::SetNextWindowSize(ImVec2((float)StarHelpers::GetContextWidth(), WINDOW_DOWN));
+	ImGui::SetNextWindowPos(ImVec2(0.0f, (float)mainWindow->GetContextHeight() - WINDOW_DOWN));
+	ImGui::SetNextWindowSize(ImVec2((float)mainWindow->GetContextWidth(), WINDOW_DOWN));
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
@@ -236,7 +236,7 @@ void Editor::RenderUpBar()
 		| ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
 
 	ImGui::SetNextWindowPos(ImVec2(0.f, mainMenuBarSize.y));
-	ImGui::SetNextWindowSize(ImVec2((float)StarHelpers::GetContextWidth(), WINDOW_DOWN));
+	ImGui::SetNextWindowSize(ImVec2((float)mainWindow->GetContextWidth(), WINDOW_DOWN));
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
@@ -372,9 +372,9 @@ void Editor::RenderUpBar()
 			}
 			else if (viewportWindow->GetRenderState() == RenderState::Point)
 			{
-				viewportWindow->SetRenderState(RenderState::Pos);
+				viewportWindow->SetRenderState(RenderState::Position);
 			}
-			else if (viewportWindow->GetRenderState() == RenderState::Pos)
+			else if (viewportWindow->GetRenderState() == RenderState::Position)
 			{
 				viewportWindow->SetRenderState(RenderState::Normal);
 			}
@@ -393,7 +393,7 @@ void Editor::RenderUpBar()
 
 			DirectX::ScratchImage image;
 			if (FAILED(CaptureTexture(dx->dxDevice, dx->dxDeviceContext, pResource, image)))
-				StarHelpers::AddLog("Failed to capture texture!");
+				Star::AddLog("Failed to capture texture!");
 
 			if (pResource) pResource->Release();
 
@@ -403,7 +403,7 @@ void Editor::RenderUpBar()
 				DirectX::WIC_FLAGS_NONE,
 				GUID_ContainerFormatBmp,
 				L"texture.bmp", &GUID_WICPixelFormat24bppBGR)))
-				StarHelpers::AddLog("Failed to save texture file!");
+				Star::AddLog("Failed to save texture file!");
 
 			image.Release();
 			*/
@@ -443,7 +443,7 @@ void Editor::RenderUpBar()
 		else
 		{
 			if (ImGui::Button(ICON_FA_PLAY, size))
-				game->StartGame(dx->hwnd);
+				game->StartGame(mainWindow->GetHandle());
 		}
 
 		///////////////////////////////////////////////////////
@@ -803,7 +803,8 @@ void Editor::RenderEntityMenuBar()
 			ImGui::Separator();
 			if (ImGui::MenuItem("Remove"))
 			{
-				ecs->GetComponent<GeneralComponent>(ecs->selected).Destroy();
+				ecs->Destroy(ecs->selected);
+				ecs->selected = entt::null;
 			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Up"))

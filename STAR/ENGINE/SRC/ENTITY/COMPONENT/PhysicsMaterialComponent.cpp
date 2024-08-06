@@ -1,5 +1,5 @@
 #include "PhysicsMaterialComponent.h"
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include "../../SYSTEM/PhysicsSystem.h"
 #include "../../IMGUI/imgui.h"
 
@@ -15,7 +15,7 @@ void PhysicsMaterialComponent::CreateMaterial(float StaticFriction, float Dynami
 		Restitution);
 
 	if (!pxMaterial)
-		StarHelpers::AddLog("[PhysX] -> Failed to create material!");
+		Star::AddLog("[PhysX] -> Failed to create material!");
 }
 void PhysicsMaterialComponent::ReleaseMaterial()
 {

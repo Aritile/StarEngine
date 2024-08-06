@@ -1,5 +1,5 @@
 #include "ScriptComponent.h"
-#include "../../HELPERS/Helpers.h"
+#include "../../STAR/Star.h"
 #include "../../SYSTEM/ScriptingSystem.h"
 #include "../../IMGUI/imgui.h"
 
@@ -9,11 +9,11 @@ void ScriptComponent::RecompileScript()
 {
 	const char* path = filePath.c_str();
 	if (scriptingSystem->CompileScript(path))
-		checksum = StarHelpers::GetChecksum(path);
+		checksum = Star::GetChecksum(path);
 }
 void ScriptComponent::RecompileScriptsChecksum()
 {
-	if (StarHelpers::GetChecksum(filePath.c_str()) != checksum)
+	if (Star::GetChecksum(filePath.c_str()) != checksum)
 		RecompileScript();
 }
 void ScriptComponent::SerializeComponent(YAML::Emitter& out)

@@ -1,6 +1,7 @@
 #include "ModelSystem.h"
-#include "../HELPERS/Helpers.h"
+#include "../STAR/Star.h"
 #include "../DX/DX.h"
+#include "../CONSTANTDATA/ConstantData.h"
 
 static ModelSystem modelSystem;
 
@@ -13,23 +14,14 @@ ModelSystem& ModelSystemClass()
 
 static DX* dx = DX::GetSingleton();
 
-struct ConstantBuffer
-{
-	DirectX::XMMATRIX sProjection;
-	DirectX::XMMATRIX sView;
-	DirectX::XMMATRIX sModel;
-	bool hasTexture = false;
-	int renderState = 0;
-};
-
 bool ModelSystem::Init()
 {
 	ID3DBlob* VS = nullptr;
 	ID3DBlob* PS = nullptr;
 
-	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\shader\\model\\vertex.hlsl", ENTRY_POINT, VS_VERSION, &VS)))
+	if (FAILED(Star::CompileShaderFromFile(L"data\\shader\\model\\vertex.hlsl", ENTRY_POINT, VS_VERSION, &VS)))
 		return false;
-	if (FAILED(StarHelpers::CompileShaderFromFile(L"data\\shader\\model\\pixel.hlsl", ENTRY_POINT, PS_VERSION, &PS)))
+	if (FAILED(Star::CompileShaderFromFile(L"data\\shader\\model\\pixel.hlsl", ENTRY_POINT, PS_VERSION, &PS)))
 		return false;
 	if (FAILED(dx->dxDevice->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &pVS)))
 		return false;
@@ -51,7 +43,7 @@ bool ModelSystem::Init()
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstantBuffer);
+	bd.ByteWidth = sizeof(ConstantData);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
 	if (FAILED(dx->dxDevice->CreateBuffer(&bd, nullptr, &pConstantBuffer)))

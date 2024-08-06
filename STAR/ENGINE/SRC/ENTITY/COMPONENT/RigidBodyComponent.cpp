@@ -1,4 +1,4 @@
-#include "RigidBodyComponent.h"
+#include "RigidbodyComponent.h"
 #include "../../IMGUI/imgui.h"
 #include <entt/entt.hpp>
 #include "../../ENTITY/Entity.h"
@@ -10,7 +10,7 @@ static Entity* ecs = Entity::GetSingleton();
 static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
 static PhysicsSystem* physicsSystem = PhysicsSystem::GetSingleton();
 
-void RigidBodyComponent::Render()
+void RigidbodyComponent::Render()
 {
 	if (ImGui::CollapsingHeader("RIGIDBODY", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -93,7 +93,7 @@ void RigidBodyComponent::Render()
 	}
 }
 
-void RigidBodyComponent::UpdateActor()
+void RigidbodyComponent::UpdateActor()
 {
 	entt::entity entity = entt::to_entity(ecs->registry, *this);
 
@@ -103,13 +103,13 @@ void RigidBodyComponent::UpdateActor()
 		{
 			physx::PxTransform pxTransform = pxRigidBody->getGlobalPose();
 			auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
-			transformComponent.SetPosition(StarHelpers::PhysicsToVector3(pxTransform.p));
-			transformComponent.SetRotationQuaternion(StarHelpers::PhysicsToQuat(pxTransform.q));
+			transformComponent.SetPosition(Star::PhysicsToVector3(pxTransform.p));
+			transformComponent.SetRotationQuaternion(Star::PhysicsToQuat(pxTransform.q));
 		}
 	}
 }
 
-void RigidBodyComponent::CreateActor()
+void RigidbodyComponent::CreateActor()
 {
 	if (pxRigidBody) pxRigidBody->release();
 	entt::entity entity = entt::to_entity(ecs->registry, *this);
@@ -117,8 +117,8 @@ void RigidBodyComponent::CreateActor()
 	{
 		auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
 		physx::PxTransform pxTransform = physx::PxTransform(
-			StarHelpers::Vector3ToPhysics(transformComponent.GetPosition()),
-			StarHelpers::QuatToPhysics(transformComponent.GetRotationQuaternion()));
+			Star::Vector3ToPhysics(transformComponent.GetPosition()),
+			Star::QuatToPhysics(transformComponent.GetRotationQuaternion()));
 		//printf("pos %f %f %f\n", transformComponent.GetPosition().x, transformComponent.GetPosition().y, transformComponent.GetPosition().z);
 		pxRigidBody = physicsSystem->GetPhysics()->createRigidDynamic(pxTransform);
 		if (!pxRigidBody) consoleWindow->AddWarningMessage("[RigidBody] -> Failed to create the RigidBody!");
@@ -149,189 +149,189 @@ void RigidBodyComponent::CreateActor()
 	}
 }
 
-void RigidBodyComponent::SetMass(float value)
+void RigidbodyComponent::SetMass(float value)
 {
 	if (value < 0.0f) return;
 	if (!pxRigidBody) return;
 
 	pxRigidBody->setMass(value);
 }
-float RigidBodyComponent::GetMass()
+float RigidbodyComponent::GetMass()
 {
 	if (!pxRigidBody) return 0.0f;
 
 	return pxRigidBody->getMass();
 }
-void RigidBodyComponent::SetLinearVelocity(Vector3 value)
+void RigidbodyComponent::SetLinearVelocity(Vector3 value)
 {
 	if (!pxRigidBody) return;
 
-	pxRigidBody->setLinearVelocity(StarHelpers::Vector3ToPhysics(value));
+	pxRigidBody->setLinearVelocity(Star::Vector3ToPhysics(value));
 }
-float RigidBodyComponent::GetMagnitude()
+float RigidbodyComponent::GetMagnitude()
 {
 	if (!pxRigidBody) return 0.0f;
 	return pxRigidBody->getLinearVelocity().magnitude();
 }
-Vector3 RigidBodyComponent::GetLinearVelocity()
+Vector3 RigidbodyComponent::GetLinearVelocity()
 {
 	if (!pxRigidBody) return Vector3();
 
-	return StarHelpers::PhysicsToVector3(pxRigidBody->getLinearVelocity());
+	return Star::PhysicsToVector3(pxRigidBody->getLinearVelocity());
 }
-void RigidBodyComponent::SetLinearDamping(float value)
+void RigidbodyComponent::SetLinearDamping(float value)
 {
 	if (value < 0.0f) return;
 	if (!pxRigidBody) return;
 
 	pxRigidBody->setLinearDamping(value);
 }
-float RigidBodyComponent::GetLinearDamping()
+float RigidbodyComponent::GetLinearDamping()
 {
 	if (!pxRigidBody) return 0.0f;
 
 	return pxRigidBody->getLinearDamping();
 }
-void RigidBodyComponent::SetAngularDamping(float value)
+void RigidbodyComponent::SetAngularDamping(float value)
 {
 	if (value < 0.0f) return;
 	if (!pxRigidBody) return;
 
 	pxRigidBody->setAngularDamping(value);
 }
-float RigidBodyComponent::GetAngularDamping()
+float RigidbodyComponent::GetAngularDamping()
 {
 	if (!pxRigidBody) return 0.0f;
 
 	return pxRigidBody->getAngularDamping();
 }
-void RigidBodyComponent::SetAngularVelocity(Vector3 value)
+void RigidbodyComponent::SetAngularVelocity(Vector3 value)
 {
 	if (!pxRigidBody) return;
 
-	pxRigidBody->setAngularVelocity(StarHelpers::Vector3ToPhysics(value));
+	pxRigidBody->setAngularVelocity(Star::Vector3ToPhysics(value));
 }
-Vector3 RigidBodyComponent::GetAngularVelocity()
+Vector3 RigidbodyComponent::GetAngularVelocity()
 {
 	if (!pxRigidBody) return Vector3();
 
-	return StarHelpers::PhysicsToVector3(pxRigidBody->getAngularVelocity());
+	return Star::PhysicsToVector3(pxRigidBody->getAngularVelocity());
 }
-void RigidBodyComponent::UseGravity(bool value)
+void RigidbodyComponent::UseGravity(bool value)
 {
 	if (!pxRigidBody) return;
 
 	pxRigidBody->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !value);
 }
-bool RigidBodyComponent::HasUseGravity()
+bool RigidbodyComponent::HasUseGravity()
 {
 	if (!pxRigidBody) return false;
 
 	return !pxRigidBody->getActorFlags().isSet(physx::PxActorFlag::eDISABLE_GRAVITY);
 }
-void RigidBodyComponent::SetKinematic(bool value)
+void RigidbodyComponent::SetKinematic(bool value)
 {
 	if (!pxRigidBody) return;
 
 	pxRigidBody->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, value);
 }
-bool RigidBodyComponent::GetKinematic()
+bool RigidbodyComponent::GetKinematic()
 {
 	if (!pxRigidBody) return false;
 
 	return pxRigidBody->getRigidBodyFlags().isSet(physx::PxRigidBodyFlag::eKINEMATIC);
 }
-void RigidBodyComponent::AddForce(Vector3 value)
+void RigidbodyComponent::AddForce(Vector3 value)
 {
 	if (!pxRigidBody) return;
 
-	pxRigidBody->addForce(StarHelpers::Vector3ToPhysics(value));
+	pxRigidBody->addForce(Star::Vector3ToPhysics(value));
 }
-void RigidBodyComponent::AddTorque(Vector3 value)
+void RigidbodyComponent::AddTorque(Vector3 value)
 {
 	if (!pxRigidBody) return;
 
-	pxRigidBody->addTorque(StarHelpers::Vector3ToPhysics(value));
+	pxRigidBody->addTorque(Star::Vector3ToPhysics(value));
 }
-void RigidBodyComponent::ClearForce()
+void RigidbodyComponent::ClearForce()
 {
 	if (!pxRigidBody) return;
 
 	pxRigidBody->clearForce();
 }
-void RigidBodyComponent::ClearTorque()
+void RigidbodyComponent::ClearTorque()
 {
 	if (!pxRigidBody) return;
 
 	pxRigidBody->clearTorque();
 }
-void RigidBodyComponent::SetLinearLockX(bool value)
+void RigidbodyComponent::SetLinearLockX(bool value)
 {
 	SetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_LINEAR_X, value);
 }
-bool RigidBodyComponent::GetLinearLockX()
+bool RigidbodyComponent::GetLinearLockX()
 {
 	return GetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_LINEAR_X);
 }
-void RigidBodyComponent::SetLinearLockY(bool value)
+void RigidbodyComponent::SetLinearLockY(bool value)
 {
 	SetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_LINEAR_Y, value);
 }
-bool RigidBodyComponent::GetLinearLockY()
+bool RigidbodyComponent::GetLinearLockY()
 {
 	return GetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_LINEAR_Y);
 }
-void RigidBodyComponent::SetLinearLockZ(bool value)
+void RigidbodyComponent::SetLinearLockZ(bool value)
 {
 	SetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_LINEAR_Z, value);
 }
-bool RigidBodyComponent::GetLinearLockZ()
+bool RigidbodyComponent::GetLinearLockZ()
 {
 	return GetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_LINEAR_Z);
 }
-void RigidBodyComponent::SetAngularLockX(bool value)
+void RigidbodyComponent::SetAngularLockX(bool value)
 {
 	SetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_X, value);
 }
-bool RigidBodyComponent::GetAngularLockX()
+bool RigidbodyComponent::GetAngularLockX()
 {
 	return GetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_X);
 }
-void RigidBodyComponent::SetAngularLockY(bool value)
+void RigidbodyComponent::SetAngularLockY(bool value)
 {
 	SetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_Y, value);
 }
-bool RigidBodyComponent::GetAngularLockY()
+bool RigidbodyComponent::GetAngularLockY()
 {
 	return GetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_Y);
 }
-void RigidBodyComponent::SetAngularLockZ(bool value)
+void RigidbodyComponent::SetAngularLockZ(bool value)
 {
 	SetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_Z, value);
 }
-bool RigidBodyComponent::GetAngularLockZ()
+bool RigidbodyComponent::GetAngularLockZ()
 {
 	return GetLock(physx::PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_Z);
 }
-void RigidBodyComponent::SetLock(physx::PxRigidDynamicLockFlag::Enum flag, bool value)
+void RigidbodyComponent::SetLock(physx::PxRigidDynamicLockFlag::Enum flag, bool value)
 {
 	// missing code
 	return;
 }
-bool RigidBodyComponent::GetLock(physx::PxRigidDynamicLockFlag::Enum flag)
+bool RigidbodyComponent::GetLock(physx::PxRigidDynamicLockFlag::Enum flag)
 {
 	// missing code
 	return false;
 }
-void RigidBodyComponent::SetTransform(Matrix value)
+void RigidbodyComponent::SetTransform(Matrix value)
 {
 	if (!pxRigidBody)
 		return;
 
-	physx::PxTransform trans(StarHelpers::MatrixToPhysics(value));
+	physx::PxTransform trans(Star::MatrixToPhysics(value));
 	pxRigidBody->setGlobalPose(trans);
 }
-Matrix RigidBodyComponent::GetTransform()
+Matrix RigidbodyComponent::GetTransform()
 {
 	Matrix matrix;
 
@@ -339,25 +339,25 @@ Matrix RigidBodyComponent::GetTransform()
 		return matrix;
 
 	physx::PxTransform trans(pxRigidBody->getGlobalPose());
-	matrix = StarHelpers::PhysicsToMatrix(trans);
+	matrix = Star::PhysicsToMatrix(trans);
 	return matrix;
 }
-void RigidBodyComponent::ReleaseActor()
+void RigidbodyComponent::ReleaseActor()
 {
 	if (!pxRigidBody) return;
 
 	if (pxRigidBody) pxRigidBody->release();
 }
-physx::PxRigidBody* RigidBodyComponent::GetRigidBody()
+physx::PxRigidBody* RigidbodyComponent::GetRigidBody()
 {
 	if (!pxRigidBody) return NULL;
 
 	return pxRigidBody;
 }
 
-void RigidBodyComponent::SerializeComponent(YAML::Emitter& out)
+void RigidbodyComponent::SerializeComponent(YAML::Emitter& out)
 {
-	out << YAML::Key << "RigidBodyComponent";
+	out << YAML::Key << "RigidbodyComponent";
 	out << YAML::BeginMap;
 	{
 		out << YAML::Key << "Mass" << YAML::Value << GetMass();
@@ -379,9 +379,9 @@ void RigidBodyComponent::SerializeComponent(YAML::Emitter& out)
 	}
 	out << YAML::EndMap;
 }
-void RigidBodyComponent::DeserializeComponent(YAML::Node& in)
+void RigidbodyComponent::DeserializeComponent(YAML::Node& in)
 {
-	YAML::Node rigidBodyComponent = in["RigidBodyComponent"];
+	YAML::Node rigidBodyComponent = in["RigidbodyComponent"];
 	if (rigidBodyComponent)
 	{
 		SetMass(rigidBodyComponent["Mass"].as<float>());
@@ -416,69 +416,69 @@ void RigidBodyComponent::DeserializeComponent(YAML::Node& in)
 	}
 }
 
-void RigidBodyComponent::LuaAdd(sol::state& state)
+void RigidbodyComponent::LuaAdd(sol::state& state)
 {
-	sol::usertype<RigidBodyComponent> component = state.new_usertype<RigidBodyComponent>(
+	sol::usertype<RigidbodyComponent> component = state.new_usertype<RigidbodyComponent>(
 		"RigidbodyComponent");
-	component["SetMass"] = &RigidBodyComponent::SetMass;
-	component["GetMass"] = &RigidBodyComponent::GetMass;
-	component["SetLinearVelocity"] = &RigidBodyComponent::SetLinearVelocity;
-	component["GetLinearVelocity"] = &RigidBodyComponent::GetLinearVelocity;
-	component["SetAngularVelocity"] = &RigidBodyComponent::SetAngularVelocity;
-	component["GetAngularVelocity"] = &RigidBodyComponent::GetAngularVelocity;
-	component["SetLinearDamping"] = &RigidBodyComponent::SetLinearDamping;
-	component["GetLinearDamping"] = &RigidBodyComponent::GetLinearDamping;
-	component["SetAngularDamping"] = &RigidBodyComponent::SetAngularDamping;
-	component["GetAngularDamping"] = &RigidBodyComponent::GetAngularDamping;
-	component["SetGravity"] = &RigidBodyComponent::UseGravity;
-	component["GetGravity"] = &RigidBodyComponent::HasUseGravity;
-	component["SetKinematic"] = &RigidBodyComponent::SetKinematic;
-	component["GetKinematic"] = &RigidBodyComponent::GetKinematic;
-	component["AddForce"] = &RigidBodyComponent::AddForce;
-	component["AddTorque"] = &RigidBodyComponent::AddTorque;
-	component["ClearForce"] = &RigidBodyComponent::ClearForce;
-	component["ClearTorque"] = &RigidBodyComponent::ClearTorque;
-	component["GetMagnitude"] = &RigidBodyComponent::GetMagnitude;
-	component["SetPosition"] = &RigidBodyComponent::SetPosition;
-	component["GetPosition"] = &RigidBodyComponent::GetPosition;
-	component["SetRotationYawPitchRoll"] = &RigidBodyComponent::SetRotationYawPitchRoll;
-	component["SetRotationQuaternion"] = &RigidBodyComponent::SetRotationQuaternion;
-	component["GetRotationQuaternion"] = &RigidBodyComponent::GetRotationQuaternion;
+	component["SetMass"] = &RigidbodyComponent::SetMass;
+	component["GetMass"] = &RigidbodyComponent::GetMass;
+	component["SetLinearVelocity"] = &RigidbodyComponent::SetLinearVelocity;
+	component["GetLinearVelocity"] = &RigidbodyComponent::GetLinearVelocity;
+	component["SetAngularVelocity"] = &RigidbodyComponent::SetAngularVelocity;
+	component["GetAngularVelocity"] = &RigidbodyComponent::GetAngularVelocity;
+	component["SetLinearDamping"] = &RigidbodyComponent::SetLinearDamping;
+	component["GetLinearDamping"] = &RigidbodyComponent::GetLinearDamping;
+	component["SetAngularDamping"] = &RigidbodyComponent::SetAngularDamping;
+	component["GetAngularDamping"] = &RigidbodyComponent::GetAngularDamping;
+	component["SetGravity"] = &RigidbodyComponent::UseGravity;
+	component["GetGravity"] = &RigidbodyComponent::HasUseGravity;
+	component["SetKinematic"] = &RigidbodyComponent::SetKinematic;
+	component["GetKinematic"] = &RigidbodyComponent::GetKinematic;
+	component["AddForce"] = &RigidbodyComponent::AddForce;
+	component["AddTorque"] = &RigidbodyComponent::AddTorque;
+	component["ClearForce"] = &RigidbodyComponent::ClearForce;
+	component["ClearTorque"] = &RigidbodyComponent::ClearTorque;
+	component["GetMagnitude"] = &RigidbodyComponent::GetMagnitude;
+	component["SetPosition"] = &RigidbodyComponent::SetPosition;
+	component["GetPosition"] = &RigidbodyComponent::GetPosition;
+	component["SetRotationYawPitchRoll"] = &RigidbodyComponent::SetRotationYawPitchRoll;
+	component["SetRotationQuaternion"] = &RigidbodyComponent::SetRotationQuaternion;
+	component["GetRotationQuaternion"] = &RigidbodyComponent::GetRotationQuaternion;
 }
-void RigidBodyComponent::SetPosition(Vector3 value)
+void RigidbodyComponent::SetPosition(Vector3 value)
 {
 	if (!pxRigidBody) return;
 	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for rotation
-	trans.p = StarHelpers::Vector3ToPhysics(value);
+	trans.p = Star::Vector3ToPhysics(value);
 	pxRigidBody->setGlobalPose(trans);
 }
-Vector3 RigidBodyComponent::GetPosition()
+Vector3 RigidbodyComponent::GetPosition()
 {
 	Vector3 vector;
 	if (!pxRigidBody) return vector;
 	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for rotation
-	vector = StarHelpers::PhysicsToVector3(trans.p);
+	vector = Star::PhysicsToVector3(trans.p);
 	return vector;
 }
-void RigidBodyComponent::SetRotationYawPitchRoll(Vector3 value)
+void RigidbodyComponent::SetRotationYawPitchRoll(Vector3 value)
 {
 	if (!pxRigidBody) return;
 	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for position
-	trans.q = StarHelpers::QuatToPhysics(Quaternion::CreateFromYawPitchRoll(value));
+	trans.q = Star::QuatToPhysics(Quaternion::CreateFromYawPitchRoll(value));
 	pxRigidBody->setGlobalPose(trans);
 }
-void RigidBodyComponent::SetRotationQuaternion(Quaternion value)
+void RigidbodyComponent::SetRotationQuaternion(Quaternion value)
 {
 	if (!pxRigidBody) return;
 	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for position
-	trans.q = StarHelpers::QuatToPhysics(value);
+	trans.q = Star::QuatToPhysics(value);
 	pxRigidBody->setGlobalPose(trans);
 }
-Quaternion RigidBodyComponent::GetRotationQuaternion()
+Quaternion RigidbodyComponent::GetRotationQuaternion()
 {
 	Quaternion quaternion;
 	if (!pxRigidBody) return quaternion;
 	physx::PxTransform trans(pxRigidBody->getGlobalPose()); // for position
-	quaternion = StarHelpers::PhysicsToQuat(trans.q);
+	quaternion = Star::PhysicsToQuat(trans.q);
 	return quaternion;
 }

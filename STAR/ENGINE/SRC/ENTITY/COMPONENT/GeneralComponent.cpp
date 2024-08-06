@@ -1,5 +1,6 @@
 #include "GeneralComponent.h"
 #include "../../ENTITY/COMPONENT/MeshComponent.h"
+#include "../../ENTITY/COMPONENT/TransformComponent.h"
 
 static Entity* ecs = Entity::GetSingleton();
 
@@ -38,7 +39,7 @@ void GeneralComponent::Render()
 					if (_Active) SetActive(true); else SetActive(false);
 
 				//ImVec2 size = ImGui::GetItemRectSize();
-				//StarHelpers::AddLog("%f", size.y);
+				//Star::AddLog("%f", size.y);
 
 				std::string _Name = GetName();
 				if (ImGui::InputText("##NameGeneralComponent", &_Name, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -72,7 +73,7 @@ void GeneralComponent::SetTag(std::string _Tag)
 
 	tagEntity = _Tag;
 }
-std::vector<entt::entity> GeneralComponent::GetChildren()
+std::vector<entt::entity>& GeneralComponent::GetChildren()
 {
 	return childrenEntity;
 }
@@ -181,58 +182,6 @@ void GeneralComponent::AddChild(entt::entity _Entity)
 			childrenEntity.push_back(_Entity);
 		}
 	}
-}
-
-void GeneralComponent::Destroy()
-{
-	ecs->selected = entt::null;
-	entt::entity entity = entt::to_entity(ecs->registry, *this);
-
-	///////////////////////////////////////////////////////////////
-
-	auto& parent = ecs->registry.get<GeneralComponent>(parentEntity);
-	std::vector<entt::entity>::iterator old = std::find(parent.childrenEntity.begin(), parent.childrenEntity.end(), entity);
-
-	///////////////////////////////////////////////////////////////
-
-	DestroyAll(entity);
-
-	for (size_t i = 0; i < toDestroy.size(); i++)
-		ecs->registry.destroy(toDestroy[i]);
-
-	toDestroy.clear();
-
-	///////////////////////////////////////////////////////////////
-
-	if (old != parent.childrenEntity.end())
-	{
-		auto index = std::distance(parent.childrenEntity.begin(), old);
-		parent.childrenEntity.erase(parent.childrenEntity.begin() + index);
-	}
-}
-
-void GeneralComponent::DestroyAll(entt::entity _Entity)
-{
-	auto& generalComp = ecs->registry.get<GeneralComponent>(_Entity);
-
-	toDestroy.push_back(_Entity);
-
-	for (size_t i = 0; i < generalComp.childrenEntity.size(); i++)
-		DestroyAll(generalComp.childrenEntity[i]);
-}
-
-void GeneralComponent::DestroyChildren()
-{
-	entt::entity entity = entt::to_entity(ecs->registry, *this);
-	DestroyAll(entity);
-
-	toDestroy.erase(toDestroy.begin());
-
-	for (size_t i = 0; i < toDestroy.size(); i++)
-		ecs->registry.destroy(toDestroy[i]);
-
-	toDestroy.clear();
-	childrenEntity.clear();
 }
 
 void GeneralComponent::MoveUp()

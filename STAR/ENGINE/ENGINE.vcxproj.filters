@@ -24,7 +24,7 @@
     <ClInclude Include="SRC\DX\DX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SRC\HELPERS\Helpers.h">
+    <ClInclude Include="SRC\STAR\Star.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SRC\EDITOR\Editor.h">
@@ -144,7 +144,7 @@
     <ClInclude Include="SRC\EDITOR\WINDOW\Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidBodyComponent.h">
+    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidbodyComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SRC\SYSTEM\PhysicsSystem.h">
@@ -276,6 +276,27 @@
     <ClInclude Include="SRC\SYSTEM\LUA\LuaEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\STORAGE\TextureStorage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\STORAGE\MeshStorage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\WINDOW\MainWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\USERINPUT\UserInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\MATERIAL\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\VERTEX\Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\CONSTANTDATA\ConstantData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SRC\MAIN\Main.cpp">
@@ -287,7 +308,7 @@
     <ClCompile Include="SRC\DX\DX.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SRC\HELPERS\Helpers.cpp">
+    <ClCompile Include="SRC\STAR\Star.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\EDITOR\Editor.cpp">
@@ -440,7 +461,7 @@
     <ClCompile Include="SRC\EDITOR\WINDOW\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidBodyComponent.cpp">
+    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidbodyComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\SYSTEM\PhysicsSystem.cpp">
@@ -555,6 +576,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\SYSTEM\LUA\LuaEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\STORAGE\TextureStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\STORAGE\MeshStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\WINDOW\MainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\USERINPUT\UserInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\MATERIAL\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\VERTEX\Vertex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\CONSTANTDATA\ConstantData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

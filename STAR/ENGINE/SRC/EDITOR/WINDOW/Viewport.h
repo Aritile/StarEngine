@@ -14,7 +14,7 @@ enum RenderState
 	Triangle,
 	Line,
 	Point,
-	Pos,
+	Position,
 	Normal
 };
 

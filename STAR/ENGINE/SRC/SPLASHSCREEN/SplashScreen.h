@@ -6,6 +6,9 @@
 class SplashScreen
 {
 public:
+	static SplashScreen* GetSingleton();
+
+public:
 	bool ShowSplashScreen();
 	void HideSplashScreen();
 
@@ -16,5 +19,3 @@ private:
 	UINT height = 300;
 	std::wstring path = L"data\\image\\splashscreen.bmp";
 };
-
-SplashScreen& SplashScreenClass();

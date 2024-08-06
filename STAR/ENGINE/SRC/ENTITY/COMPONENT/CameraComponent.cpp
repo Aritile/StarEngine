@@ -248,7 +248,7 @@ void CameraComponent::SerializeComponent(YAML::Emitter& out)
 		out << YAML::Key << "Near" << YAML::Value << GetNear();
 		out << YAML::Key << "Far" << YAML::Value << GetFar();
 		out << YAML::Key << "AutomaticAspect" << YAML::Value << automaticAspect;
-		out << YAML::Key << "Aspect"; StarHelpers::SerializeVector2(out, GetAspect());
+		out << YAML::Key << "Aspect"; Star::SerializeVector2(out, GetAspect());
 	}
 	out << YAML::EndMap;
 }
@@ -274,7 +274,7 @@ void CameraComponent::DeserializeComponent(YAML::Node& in)
 		SetFar(cameraComponent["Far"].as<float>());
 		automaticAspect = cameraComponent["AutomaticAspect"].as<bool>();
 		auto aspect = cameraComponent["Aspect"];
-		SetAspect(StarHelpers::DeserializeVector2(aspect));
+		SetAspect(Star::DeserializeVector2(aspect));
 	}
 }
 

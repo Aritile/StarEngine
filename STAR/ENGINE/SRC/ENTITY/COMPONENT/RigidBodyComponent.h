@@ -7,7 +7,7 @@
 
 using namespace DirectX::SimpleMath;
 
-struct RigidBodyComponent
+struct RigidbodyComponent
 {
 public:
 	void Render();

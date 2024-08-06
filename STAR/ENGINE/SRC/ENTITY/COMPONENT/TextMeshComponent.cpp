@@ -9,11 +9,13 @@
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../EDITOR/WINDOW/Console.h"
 #include "../../MAIN/Main.h"
+#include "../../STORAGE/MeshStorage.h"
 
 static Entity* ecs = Entity::GetSingleton();
-static Editor* editor = &EditorClass();
+static Editor* editor = Editor::GetSingleton();
 static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
+static MeshStorage* meshStorage = MeshStorage::GetSingleton();
 
 void TextMeshComponent::Render()
 {
@@ -172,7 +174,7 @@ void TextMeshComponent::Render()
 bool TextMeshComponent::SetupTextMesh()
 {
 	entt::entity entity = entt::to_entity(ecs->registry, *this); /* get this entity */
-	ecs->registry.get<GeneralComponent>(entity).DestroyChildren();  /* destroy all child */
+	ecs->DestroyChildren(entity);
 
 	offset = ImVec2(NULL, NULL);
 
@@ -238,33 +240,37 @@ bool TextMeshComponent::SetupTextMesh()
 
 			auto& meshComponent = ecs->registry.get<MeshComponent>(glyph);
 
+			std::vector<Vertex> vertices;
+			std::vector<UINT> indices;
+
+			for (int i = 0; i < out->nvert; i++) // apply verts
 			{
-				for (int i = 0; i < out->nvert; i++) /* apply verts */
-				{
-					Vertex vertex;
-					vertex.position.x = out->vert[i].x;
-					vertex.position.y = out->vert[i].y;
-					vertex.position.z = out->vert[i].z;
-					vertex.normal.x = out->normals[i].x;
-					vertex.normal.y = out->normals[i].y;
-					vertex.normal.z = out->normals[i].z;
+				Vertex vertex;
+				vertex.position.x = out->vert[i].x;
+				vertex.position.y = out->vert[i].y;
+				vertex.position.z = out->vert[i].z;
+				vertex.normal.x = out->normals[i].x;
+				vertex.normal.y = out->normals[i].y;
+				vertex.normal.z = out->normals[i].z;
 
-					// why not?
-					vertex.texCoords.x = out->vert[i].x;
-					vertex.texCoords.y = out->vert[i].y;
+				// why not?
+				vertex.textureCoord.x = out->vert[i].x;
+				vertex.textureCoord.y = out->vert[i].y;
 
-					meshComponent.AddVertices(vertex);
-				}
-
-				for (int i = 0; i < out->nfaces; i++) /* apply faces */
-				{
-					meshComponent.AddIndices(out->faces[i].v1);
-					meshComponent.AddIndices(out->faces[i].v2);
-					meshComponent.AddIndices(out->faces[i].v3);
-				}
-
-				meshComponent.SetupMesh();
+				vertices.push_back(vertex);
 			}
+
+			for (int i = 0; i < out->nfaces; i++) // apply faces
+			{
+				indices.push_back(out->faces[i].v1);
+				indices.push_back(out->faces[i].v2);
+				indices.push_back(out->faces[i].v3);
+			}
+
+			MeshStorageBuffer* meshStorageBuffer = nullptr;
+			std::string name = "TextMeshComponent" + i;
+			meshStorage->BuildMesh(name.c_str(), &vertices, &indices, &meshStorageBuffer);
+			meshComponent.ApplyMesh(meshStorageBuffer);
 
 			ttf_free_mesh3d(out);
 		}

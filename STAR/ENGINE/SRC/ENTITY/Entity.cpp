@@ -1,6 +1,6 @@
 #include "Entity.h"
 #include <vector>
-#include "../HELPERS/Helpers.h"
+#include "../STAR/Star.h"
 #include "COMPONENT/MeshComponent.h"
 #include "../XTK/WICTextureLoader11.h"
 #include "COMPONENT/GeneralComponent.h"
@@ -13,6 +13,7 @@
 #include "../SYSTEM/PhysicsSystem.h"
 #include "../MODEL/AssimpLoader.h"
 #include "../EDITOR/WINDOW/Console.h"
+#include "../STORAGE/MeshStorage.h"
 
 #define CUBE_MODEL "data\\model\\cube.obj"
 #define SPHERE_MODEL "data\\model\\sphere.obj"
@@ -27,6 +28,7 @@ Entity* Entity::GetSingleton()
 
 static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
 static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
+static MeshStorage* meshStorage = MeshStorage::GetSingleton();
 
 bool Entity::Init()
 {
@@ -53,21 +55,19 @@ void Entity::CreateCubeEntity(entt::entity entity)
     if (index != 0)
         name = name + std::to_string(index);
 
-    GetComponent<GeneralComponent>(entity).SetName(name);
-	AddComponent<MeshComponent>(entity);
+    GetComponent<GeneralComponent>(entity).SetName(name);;
+    AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
-    Assimp::Importer importer;
-    const aiScene* scene = StarHelpers::OpenModel(&importer, CUBE_MODEL);
-    if (scene)
-    {
-        meshComponent.SetModelPath(CUBE_MODEL);
-        meshComponent.SetMeshIndex(0);
-        meshComponent.LoadMesh(scene);
-        meshComponent.SetupMesh();
-    }
 
-    meshComponent.SetFileName(CUBE_MODEL);
-    meshComponent.SetMeshName(name);
+    ModelStorageBuffer* modelStorageBuffer = nullptr;
+    meshStorage->LoadModel(CUBE_MODEL, &modelStorageBuffer);
+    meshComponent.ApplyModel(modelStorageBuffer);
+
+    MeshStorageBuffer* meshStorageBuffer = nullptr;
+    modelStorageBuffer->LoadMesh(0, &meshStorageBuffer);
+    meshComponent.ApplyMesh(meshStorageBuffer);
+
+    modelStorageBuffer->CloseModel();
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreateSphereEntity(entt::entity entity)
@@ -80,18 +80,16 @@ void Entity::CreateSphereEntity(entt::entity entity)
     GetComponent<GeneralComponent>(entity).SetName(name);
     AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
-    Assimp::Importer importer;
-    const aiScene* scene = StarHelpers::OpenModel(&importer, SPHERE_MODEL);
-    if (scene)
-    {
-        meshComponent.SetModelPath(SPHERE_MODEL);
-        meshComponent.SetMeshIndex(0);
-        meshComponent.LoadMesh(scene);
-        meshComponent.SetupMesh();
-    }
 
-    meshComponent.SetFileName(SPHERE_MODEL);
-    meshComponent.SetMeshName(name);
+    ModelStorageBuffer* modelStorageBuffer = nullptr;
+    meshStorage->LoadModel(SPHERE_MODEL, &modelStorageBuffer);
+    meshComponent.ApplyModel(modelStorageBuffer);
+
+    MeshStorageBuffer* meshStorageBuffer = nullptr;
+    modelStorageBuffer->LoadMesh(0, &meshStorageBuffer);
+    meshComponent.ApplyMesh(meshStorageBuffer);
+
+    modelStorageBuffer->CloseModel();
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreateCapsuleEntity(entt::entity entity)
@@ -104,18 +102,16 @@ void Entity::CreateCapsuleEntity(entt::entity entity)
     GetComponent<GeneralComponent>(entity).SetName(name);
     AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
-    Assimp::Importer importer;
-    const aiScene* scene = StarHelpers::OpenModel(&importer, CAPSULE_MODEL);
-    if (scene)
-    {
-        meshComponent.SetModelPath(CAPSULE_MODEL);
-        meshComponent.SetMeshIndex(0);
-        meshComponent.LoadMesh(scene);
-        meshComponent.SetupMesh();
-    }
 
-    meshComponent.SetFileName(CAPSULE_MODEL);
-    meshComponent.SetMeshName(name);
+    ModelStorageBuffer* modelStorageBuffer = nullptr;
+    meshStorage->LoadModel(CAPSULE_MODEL, &modelStorageBuffer);
+    meshComponent.ApplyModel(modelStorageBuffer);
+
+    MeshStorageBuffer* meshStorageBuffer = nullptr;
+    modelStorageBuffer->LoadMesh(0, &meshStorageBuffer);
+    meshComponent.ApplyMesh(meshStorageBuffer);
+
+    modelStorageBuffer->CloseModel();
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreatePlaneEntity(entt::entity entity)
@@ -128,18 +124,16 @@ void Entity::CreatePlaneEntity(entt::entity entity)
     GetComponent<GeneralComponent>(entity).SetName(name);
     AddComponent<MeshComponent>(entity);
     auto& meshComponent = GetComponent<MeshComponent>(entity);
-    Assimp::Importer importer;
-    const aiScene* scene = StarHelpers::OpenModel(&importer, PLANE_MODEL);
-    if (scene)
-    {
-        meshComponent.SetModelPath(PLANE_MODEL);
-        meshComponent.SetMeshIndex(0);
-        meshComponent.LoadMesh(scene);
-        meshComponent.SetupMesh();
-    }
 
-    meshComponent.SetFileName(PLANE_MODEL);
-    meshComponent.SetMeshName(name);
+    ModelStorageBuffer* modelStorageBuffer = nullptr;
+    meshStorage->LoadModel(PLANE_MODEL, &modelStorageBuffer);
+    meshComponent.ApplyModel(modelStorageBuffer);
+
+    MeshStorageBuffer* meshStorageBuffer = nullptr;
+    modelStorageBuffer->LoadMesh(0, &meshStorageBuffer);
+    meshComponent.ApplyMesh(meshStorageBuffer);
+
+    modelStorageBuffer->CloseModel();
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreateCameraEntity(entt::entity entity)
@@ -255,4 +249,82 @@ entt::entity Entity::FindByTag(const char* tag, bool print)
     if (print)
         consoleWindow->AddWarningMessage("Failed to find entity by tag %s", tag);
     return entt::null;
+}
+
+void Entity::Destroy(entt::entity entity)
+{
+    if (!IsValid(entity))
+        return;
+
+    std::vector<entt::entity> bin;
+    DestroyAll(entity, bin);
+
+    if (!bin.empty())
+    {
+        for (size_t i = 0; i < bin.size(); i++)
+        {
+            auto& generalComponent = GetComponent<GeneralComponent>(bin[i]);
+            printf("Destroying.. %s\n", generalComponent.GetName().c_str());
+            Cleanup(bin[i]);
+            registry.destroy(bin[i]);
+        }
+
+        bin.clear();
+    }
+}
+void Entity::DestroyChildren(entt::entity entity)
+{
+    if (!IsValid(entity))
+        return;
+
+    std::vector<entt::entity> bin;
+    DestroyAll(entity, bin);
+
+    if (!bin.empty())
+    {
+        for (size_t i = 0; i < bin.size(); i++)
+        {
+            // skip main entry
+            if (i == 0)
+            {
+                // fix arrow
+                GetComponent<GeneralComponent>(bin[0]).GetChildren().clear();
+                continue;
+            }
+            auto& generalComponent = GetComponent<GeneralComponent>(bin[i]);
+            printf("Destroying.. %s\n", generalComponent.GetName().c_str());
+            Cleanup(bin[i]);
+            registry.destroy(bin[i]);
+        }
+
+        bin.clear();
+    }
+}
+void Entity::DestroyAll(entt::entity entity, std::vector<entt::entity>& bin)
+{
+    if (!IsValid(entity))
+        return;
+
+    bin.push_back(entity);
+
+    auto& generalComponent = registry.get<GeneralComponent>(entity);
+    for (size_t i = 0; i < generalComponent.GetChildren().size(); i++)
+        DestroyAll(generalComponent.GetChildren()[i], bin);
+}
+void Entity::Cleanup(entt::entity entity)
+{
+    if (!IsValid(entity))
+        return;
+
+    if (HasComponent<RigidbodyComponent>(entity))
+    {
+        auto& rigidBodyComponent = GetComponent<RigidbodyComponent>(entity);
+        rigidBodyComponent.ReleaseActor();
+    }
+    if (HasComponent<PhysicsComponent>(entity))
+    {
+        auto& physicsComponent = GetComponent<PhysicsComponent>(entity);
+        physicsComponent.ReleaseAllBoxColliders();
+        physicsComponent.ReleaseAllSphereColliders();
+    }
 }

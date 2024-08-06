@@ -198,6 +198,8 @@ bool D3D11Context::Draw(D3D11Shader* _Shader)
     if (_Shader->GetIndexBuffer()) dx->dxDeviceContext->DrawIndexed(_Shader->GetIndicesSize(), 0, 0);
     else dx->dxDeviceContext->Draw(_Shader->GetVerticesSize(), 0);
 
+    dx->UnbindAll(0, 1);
+
     return true;
 }
 bool D3D11Context::Set(D3D11Shader* _Shader)
