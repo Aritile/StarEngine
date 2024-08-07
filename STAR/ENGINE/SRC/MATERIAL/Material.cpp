@@ -8,7 +8,7 @@ void Material::SerializeMaterial(const char* path)
 	if (!path)
 		return;
 
-	Star::AddLog("Serializing material.. %s", path);
+	Star::AddLog("[Material] -> Serializing material.. %s", path);
 	YAML::Emitter out;
 
 	Star::BeginFormat(out);
@@ -41,7 +41,7 @@ void Material::DeserializeMaterial(const char* path)
 	if (!Star::FileExist(path))
 		return;
 
-	Star::AddLog("Deserializing material.. %s", path);
+	Star::AddLog("[Material] -> Deserializing material.. %s", path);
 
 	YAML::Node in = YAML::LoadFile(path);
 	if (!Star::CheckSignature(in))

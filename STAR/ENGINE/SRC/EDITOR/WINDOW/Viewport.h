@@ -90,6 +90,7 @@ public:
 	void LookAtEntity(entt::entity entity);
 
 	POINT cursorPosition = { 0 };
+	bool off = false;
 
 public:
 	void UpdateMovement();

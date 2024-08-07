@@ -20,7 +20,10 @@ public:
 	UINT GetContextWidth();
 	UINT GetContextHeight();
 	HWND GetHandle();
+	void LockCursor(bool _Lock);
+	bool IsCursorLocked();
 
 private:
 	HWND hwnd = NULL;
+	bool isCursorLocked = false;
 };

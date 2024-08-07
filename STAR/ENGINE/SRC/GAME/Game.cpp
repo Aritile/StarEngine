@@ -5,6 +5,7 @@
 #include "../SYSTEM/ScriptingSystem.h"
 #include "../SYSTEM/ProjectSceneSystem.h"
 #include "../ENGINE/Engine.h"
+#include "../WINDOW/MainWindow.h"
 
 Game* Game::GetSingleton()
 {
@@ -18,35 +19,11 @@ static DX* dx = DX::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
 static Engine* engine = Engine::GetSingleton();
 static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
+static MainWindow* mainWindow = MainWindow::GetSingleton();
 
-bool Game::StartGame(HWND parent)
+bool Game::InitGame(bool _ShowWindow, HWND parent)
 {
-    projectSceneSystem->SaveScene();
-
-    if (!GameCreateWindow())
-        return false;
-
-    if (!InitInput())
-        return false;
-
-    if (!GameCreateContext(parent))
-        return false;
-
-    gameState = GameState::GamePlay;
-
-    /* start frameTime, deltaTime, elapsedTime and frameCount */
-    StartTime();
-
-    auto view = ecs->registry.view<ScriptingComponent>();
-    for (auto entity : view)
-        ecs->registry.get<ScriptingComponent>(entity).lua_call_start();
-
-    return true;
-}
-
-bool Game::Game1(HWND parent)
-{
-    if (!GameCreateWindow())
+    if (!GameCreateWindow(_ShowWindow))
         return false;
 
     if (!InitInput())
@@ -57,10 +34,8 @@ bool Game::Game1(HWND parent)
 
     return true;
 }
-void Game::Game2()
+bool Game::StartGame()
 {
-    projectSceneSystem->OpenScene("data.scene");
-
     gameState = GameState::GamePlay;
 
     /* start frameTime, deltaTime, elapsedTime and frameCount */
@@ -69,31 +44,8 @@ void Game::Game2()
     auto view = ecs->registry.view<ScriptingComponent>();
     for (auto entity : view)
         ecs->registry.get<ScriptingComponent>(entity).lua_call_start();
-}
-void Game::Game3()
-{
-    gameState = GameState::GameNone;
 
-    /* stop frameTime, deltaTime, elapsedTime and frameCount */
-    StopTime();
-    ResetTime();
-
-    ReleaseInput();
-    DestroyWindow(hwnd);
-    UnregisterClass(name.c_str(), engine->hInstance);
-
-    if (IsCursorHidden()) HideCursor(false);
-    if (IsCursorLocked()) LockCursor(false);
-    //HideCursor(false);
-    //LockCursor(false);
-
-    if (gameSwapChain) gameSwapChain->Release();
-    if (gameRenderTargetView) gameRenderTargetView->Release();
-    if (gameDepthStencilView) gameDepthStencilView->Release();
-
-    PostQuitMessage(0);
-
-    hwnd = NULL;
+    return true;
 }
 LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -104,37 +56,36 @@ LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     case WM_CLOSE:
     {
 #if defined(GAME)
-        game->Game3();
-#else
-        game->StopGame();
+        PostQuitMessage(0);
 #endif
-        game->focus = true;
+        game->StopGame();
         break;
     }
-    case WM_SETFOCUS:
+
+    case WM_LBUTTONDOWN:
     {
         if (game->focus)
         {
+            Star::ShowCursor(game->lastIsCursorShowed);
+            game->LockCursor(game->lastIsCursorLocked);
             game->focus = false;
         }
-        else
-        {
-            // fix focus
-            game->LockCursor(game->IsCursorLocked());
-            game->HideCursor(game->IsCursorHidden());
-            //printf("focus..\n");
-        }
         break;
     }
+
+    // set mouse state to default
     case WM_KILLFOCUS:
     {
-        if (game->IsCursorLocked())
-            ClipCursor(nullptr);
-        if (game->IsCursorHidden())
-            ShowCursor(true);
-        //printf("lost focus..\n");
+        game->lastIsCursorShowed = Star::IsCursorShowed();
+        game->lastIsCursorLocked = game->IsCursorLocked();
+
+        Star::ShowCursor(TRUE);
+        game->LockCursor(FALSE);
+
+        game->focus = true;
         break;
     }
+
     case WM_SIZE:
     {
         game->GameResizeBuffer();
@@ -147,7 +98,7 @@ LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     return NULL;
 }
 
-bool Game::GameCreateWindow()
+bool Game::GameCreateWindow(bool _ShowWindow)
 {
     WNDCLASSEX wcex;
     ZeroMemory(&wcex, sizeof(WNDCLASSEX));
@@ -191,8 +142,8 @@ bool Game::GameCreateWindow()
     if (!hwnd)
         return false;
 
-    if (hide_window) ShowWindow(hwnd, SW_HIDE);
-    else ShowWindow(hwnd, SW_NORMAL);
+    if (_ShowWindow) ShowWindow(hwnd, SW_NORMAL);
+    else ShowWindow(hwnd, SW_HIDE);
 
     ///////////////////////////////////////////////////////////
 
@@ -201,9 +152,6 @@ bool Game::GameCreateWindow()
 
 void Game::StopGame()
 {
-    // fix
-    projectSceneSystem->OpenScene("data.scene");
-
     gameState = GameState::GameNone;
 
     /* stop frameTime, deltaTime, elapsedTime and frameCount */
@@ -214,9 +162,7 @@ void Game::StopGame()
     DestroyWindow(hwnd);
     UnregisterClass(name.c_str(), engine->hInstance);
 
-    //if (IsCursorHidden()) HideCursor(false);
-    //if (IsCursorLocked()) LockCursor(false);
-    HideCursor(false);
+    Star::ShowCursor(true);
     LockCursor(false);
 
     if (gameSwapChain) gameSwapChain->Release();
@@ -377,29 +323,29 @@ unsigned char Game::GetGameState()
 
 UINT Game::GameGetContextWidth()
 {
-    /*
     if (hwnd == NULL)
-        return width;
+    {
+        Star::AddLog("[Game] -> Handle is null.");
+        return 0;
+    }
 
     RECT rc;
     GetClientRect(hwnd, &rc);
     UINT width = rc.right - rc.left;
     return width;
-    */
-    return width;
 }
 
 UINT Game::GameGetContextHeight()
 {
-    /*
     if (hwnd == NULL)
-        return height;
+    {
+        Star::AddLog("[Game] -> Handle is null.");
+        return 0;
+    }
 
     RECT rc;
     GetClientRect(hwnd, &rc);
     UINT height = rc.bottom - rc.top;
-    return height;
-    */
     return height;
 }
 
@@ -436,7 +382,7 @@ bool Game::InitInput()
 
     return true;
 }
-bool Game::InputGetKey(unsigned char key)
+bool Game::GetKeyDown(unsigned char key)
 {
     if (DIKeyboard)
     {
@@ -520,46 +466,27 @@ unsigned int Game::GetFrameCount()
 {
     return frameCount;
 }
-
-void Game::HideCursor(bool value)
+void Game::LockCursor(bool _Lock)
 {
-    ShowCursor(!value);
-    isCursorHidden = value;
-}
-void Game::LockCursor(bool value)
-{
-    if (value)
+    if (_Lock)
     {
         RECT rect;
-        GetClientRect(hwnd, &rect);
-        ClientToScreen(hwnd, (POINT*)&rect.left);
-        ClientToScreen(hwnd, (POINT*)&rect.right);
-        ClipCursor(&rect);
+        ::GetClientRect(hwnd, &rect);
+        ::ClientToScreen(hwnd, (POINT*)&rect.left);
+        ::ClientToScreen(hwnd, (POINT*)&rect.right);
+        ::ClipCursor(&rect);
         isCursorLocked = true;
     }
     else
     {
-        ClipCursor(NULL);
+        ::ClipCursor(NULL);
         isCursorLocked = false;
     }
-}
-bool Game::IsCursorHidden()
-{
-    return isCursorHidden;
-
-    /*
-    CURSORINFO cursorInfo;
-    cursorInfo.cbSize = sizeof(CURSORINFO);
-    if (GetCursorInfo(&cursorInfo))
-        return cursorInfo.flags != CURSOR_SHOWING;
-    return false;
-    */
 }
 bool Game::IsCursorLocked()
 {
     return isCursorLocked;
 }
-
 D3D11_VIEWPORT Game::GetViewport()
 {
     D3D11_VIEWPORT viewport;
@@ -574,27 +501,22 @@ D3D11_VIEWPORT Game::GetViewport()
 
     return viewport;
 }
-
 ID3D11RenderTargetView* Game::GetRenderTargetView()
 {
     return gameRenderTargetView;
 }
-
 ID3D11DepthStencilView* Game::GetDepthStencilView()
 {
     return gameDepthStencilView;
 }
-
 IDXGISwapChain* Game::GetSwapChain()
 {
     return gameSwapChain;
 }
-
 bool Game::GameResizeBuffer()
 {
     return true;
 }
-
 void Game::SetWindowState(unsigned int state)
 {
     ShowWindow(hwnd, state);

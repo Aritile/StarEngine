@@ -1,0 +1,22 @@
+[Engine] -> Engine version: 1.3.3
+[Window] -> Creating main window..
+[SwapChain] -> Creating main SwapChain..
+[SwapChain] -> Creating render target view..
+[SwapChain] -> Creating depth stencil view..
+[Sky] -> Loading.. data\hdr\overcast_soil_puresky_4k.hdr
+[Engine] -> Initializing User Input System..
+[Engine] -> Initializing Model System..
+[Engine] -> Initializing Sky System..
+[MeshStorage] -> Opening model.. data\model\sphere.obj
+[MeshStorage] -> Loading mesh.. 0
+[Engine] -> Initializing Editor System..
+[Engine] -> Initializing Physics System..
+[Engine] -> Initializing Entity Component System..
+[MeshStorage] -> Opening model.. data\model\cube.obj
+[MeshStorage] -> Loading mesh.. 0
+[MeshStorage] -> Closing model..
+[Engine] -> Initializing Lua Script System..
+[Engine] -> Initializing Module System..
+[Engine] -> Resizing SwapChain Buffer..
+[Sky] -> Successfully loaded.
+[Engine] -> Shutting/Cleaning..

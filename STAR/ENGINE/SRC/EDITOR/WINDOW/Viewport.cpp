@@ -260,14 +260,16 @@ void ViewportWindow::UpdateMovement()
 
 		ImGuizmo::Enable(false);
 		GetCursorPos(&cursorPosition);
-		ShowCursor(false);
+		Star::ShowCursor(false);
 		ClipCursor(&clip);
 		userInput->GetMouse(); // idk?
+		off = true;
 	}
 	else if (ImGui::IsMouseReleased(ImGuiMouseButton_Right) && cursorOnWindow)
 	{
+		off = false;
 		ClipCursor(nullptr);
-		ShowCursor(true);
+		Star::ShowCursor(true);
 		SetCursorPos(cursorPosition.x, cursorPosition.y);
 		ImGuizmo::Enable(true);
 	}

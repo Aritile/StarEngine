@@ -15,7 +15,7 @@ bool TextureStorage::LoadTexture(const char* _Path, TextureStorageBuffer** _Text
 {
 	if (IsTextureAlreadyLoaded(_Path))
 	{
-		Star::AddLog("Texture is already loaded.");
+		Star::AddLog("[TextureStorage] -> Texture is already loaded.");
 		GetTexture(_Path, _Texture);
 		return true;
 	}
@@ -25,7 +25,7 @@ bool TextureStorage::LoadTexture(const char* _Path, TextureStorageBuffer** _Text
 
 		if (type.compare(PNG) == 0 || type.compare(JPEG) == 0)
 		{
-			Star::AddLog("Loading texture.. %s", _Path);
+			Star::AddLog("[TextureStorage] -> Loading texture.. %s", _Path);
 
 			textureStorageBuffers.emplace_back();
 			TextureStorageBuffer* textureStorageBuffer = &textureStorageBuffers.back();
@@ -37,7 +37,7 @@ bool TextureStorage::LoadTexture(const char* _Path, TextureStorageBuffer** _Text
 				nullptr,
 				&textureStorageBuffer->texture)))
 			{
-				Star::AddLog("Failed to load texture.");
+				Star::AddLog("[TextureStorage] -> Failed to load texture.");
 				textureStorageBuffers.pop_back();
 ;				return false;
 			}
@@ -50,7 +50,7 @@ bool TextureStorage::LoadTexture(const char* _Path, TextureStorageBuffer** _Text
 		}
 		else if (type.compare(DDS) == 0)
 		{
-			Star::AddLog("Loading texture.. %s", _Path);
+			Star::AddLog("[TextureStorage] -> Loading texture.. %s", _Path);
 
 			textureStorageBuffers.push_back(TextureStorageBuffer());
 			TextureStorageBuffer* textureStorageBuffer = &textureStorageBuffers.back();
@@ -62,7 +62,7 @@ bool TextureStorage::LoadTexture(const char* _Path, TextureStorageBuffer** _Text
 				nullptr,
 				&textureStorageBuffer->texture)))
 			{
-				Star::AddLog("Failed to load texture.");
+				Star::AddLog("[TextureStorage] -> Failed to load texture.");
 				textureStorageBuffers.pop_back();
 				return false;
 			}

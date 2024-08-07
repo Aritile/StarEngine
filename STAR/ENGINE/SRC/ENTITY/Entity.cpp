@@ -292,7 +292,7 @@ void Entity::DestroyChildren(entt::entity entity)
                 continue;
             }
             auto& generalComponent = GetComponent<GeneralComponent>(bin[i]);
-            printf("Destroying.. %s\n", generalComponent.GetName().c_str());
+            printf("[Entity] -> Destroying.. %s\n", generalComponent.GetName().c_str());
             Cleanup(bin[i]);
             registry.destroy(bin[i]);
         }

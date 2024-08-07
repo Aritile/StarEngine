@@ -8,13 +8,13 @@ bool ModelStorageBuffer::LoadMesh(UINT _Index, MeshStorageBuffer** _MeshStorageB
 {
 	if (IsMeshAlreadyLoaded(_Index))
 	{
-		Star::AddLog("Mesh is already loaded.");
+		Star::AddLog("[MeshStorage] -> Mesh is already loaded.");
 		GetMesh(_Index, _MeshStorageBuffer);
 		return true;
 	}
 	else
 	{
-		Star::AddLog("Loading mesh.. %i", _Index);
+		Star::AddLog("[MeshStorage] -> Loading mesh.. %i", _Index);
 
 		// copy & paste fix
 		meshStorageBuffers.emplace_back();
@@ -22,21 +22,21 @@ bool ModelStorageBuffer::LoadMesh(UINT _Index, MeshStorageBuffer** _MeshStorageB
 
 		if (!meshStorageBuffer->LoadMesh(importer.GetScene(), _Index))
 		{
-			Star::AddLog("LoadMesh() Failed.");
+			Star::AddLog("[MeshStorage] -> LoadMesh() Failed.");
 			meshStorageBuffers.pop_back();
 			return false;
 		}
 
 		if (!meshStorageBuffer->SetupMesh())
 		{
-			Star::AddLog("SetupMesh() Failed.");
+			Star::AddLog("[MeshStorage] -> SetupMesh() Failed.");
 			meshStorageBuffers.pop_back();
 			return false;
 		}
 
 		if (!meshStorageBuffer->CreateMaterial(path.c_str(), importer.GetScene(), _Index))
 		{
-			Star::AddLog("CreateMaterial() Error.");
+			Star::AddLog("[MeshStorage] -> CreateMaterial() Error.");
 			meshStorageBuffers.pop_back();
 			return false;
 		}
@@ -64,7 +64,7 @@ bool ModelStorageBuffer::GetMesh(UINT _Index, MeshStorageBuffer** _MeshStorageBu
 	}
 
 	// mesh missing
-	Star::AddLog("Mesh missing.");
+	Star::AddLog("[MeshStorage] -> Mesh missing.");
 	return false;
 }
 bool ModelStorageBuffer::ReleaseMesh(UINT _Index)
@@ -82,7 +82,7 @@ bool ModelStorageBuffer::ReleaseMesh(UINT _Index)
 	}
 
 	// mesh missing
-	Star::AddLog("Mesh missing.");
+	Star::AddLog("[MeshStorage] -> Mesh missing.");
 	return false;
 }
 void ModelStorageBuffer::ReleaseAllMeshes()
@@ -112,24 +112,24 @@ void ModelStorageBuffer::OpenModel(const char* _Path)
 {
 	if (!importer.GetScene())
 	{
-		Star::AddLog("Opening model.. %s", _Path);
+		Star::AddLog("[MeshStorage] -> Opening model.. %s", _Path);
 		importer.ReadFile(_Path, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
 	}
 	else
 	{
-		Star::AddLog("Model is already opened.");
+		Star::AddLog("[MeshStorage] -> Model is already opened.");
 	}
 }
 void ModelStorageBuffer::CloseModel()
 {
 	if (importer.GetScene())
 	{
-		Star::AddLog("Closing model..");
+		Star::AddLog("[MeshStorage] -> Closing model..");
 		importer.FreeScene();
 	}
 	else
 	{
-		Star::AddLog("Model is already closed.");
+		Star::AddLog("[MeshStorage] -> Model is already closed.");
 	}
 }
 
@@ -195,7 +195,7 @@ bool MeshStorageBuffer::LoadMesh(const aiScene* _Scene, UINT _Index)
 {
 	if (_Scene->mNumMeshes <= _Index)
 	{
-		Star::AddLog("Out of range.");
+		Star::AddLog("[MeshStorage] -> Out of range.");
 		return false;
 	}
 
@@ -245,13 +245,13 @@ bool MeshStorageBuffer::CreateMaterial(const char* _Path, const aiScene* _Scene,
 {
 	if (!_Scene)
 	{
-		Star::AddLog("Scene is null.");
+		Star::AddLog("[MeshStorage] -> Scene is null.");
 		return false;
 	}
 
 	if (_Scene->mNumMeshes <= _Index)
 	{
-		Star::AddLog("Out of range.");
+		Star::AddLog("[MeshStorage] -> Out of range.");
 		return false;
 	}
 
@@ -260,7 +260,7 @@ bool MeshStorageBuffer::CreateMaterial(const char* _Path, const aiScene* _Scene,
 
 	if (materialIndex >= _Scene->mNumMaterials)
 	{
-		Star::AddLog("Out of range.");
+		Star::AddLog("[MeshStorage] -> Out of range.");
 		return false;
 	}
 
@@ -312,7 +312,7 @@ bool MeshStorage::ReleaseModel(const char* _Path)
 	}
 
 	// model missing
-	Star::AddLog("Model missing.");
+	Star::AddLog("[MeshStorage] -> Model missing.");
 	return false;
 }
 void MeshStorage::ReleaseAllModels()
@@ -329,7 +329,7 @@ bool MeshStorage::LoadModel(const char* _Path, ModelStorageBuffer** _ModelStorag
 {
 	if (IsModelAlreadyLoaded(_Path))
 	{
-		Star::AddLog("Model is already loaded.");
+		Star::AddLog("[MeshStorage] -> Model is already loaded.");
 		GetModel(_Path, _ModelStorageBuffer);
 		return true;
 	}
@@ -348,7 +348,7 @@ bool MeshStorage::LoadModel(const char* _Path, ModelStorageBuffer** _ModelStorag
 		}
 		else
 		{
-			Star::AddLog("Failed to open model.");
+			Star::AddLog("[MeshStorage] -> Failed to open model.");
 			modelStorageBuffers.pop_back();
 			return false;
 		}
@@ -370,7 +370,7 @@ bool MeshStorage::GetModel(const char* _Path, ModelStorageBuffer** _ModelStorage
 	}
 
 	// model missing
-	Star::AddLog("Model missing.");
+	Star::AddLog("[MeshStorage] -> Model missing.");
 	return false;
 }
 void MeshStorage::CloseAllOpenedModels()
@@ -431,7 +431,7 @@ bool MeshStorage::ReleaseMesh(const char* _Name)
 	}
 
 	// mesh missing
-	Star::AddLog("Mesh missing.");
+	Star::AddLog("[MeshStorage] -> Mesh missing.");
 	return false;
 }
 bool MeshStorage::IsMeshAlreadyBuild(const char* _Name)
@@ -461,6 +461,6 @@ bool MeshStorage::GetMesh(const char* _Name, MeshStorageBuffer** _MeshStorageBuf
 	}
 
 	// mesh missing
-	Star::AddLog("Mesh missing.");
+	Star::AddLog("[MeshStorage] -> Mesh missing.");
 	return false;
 }

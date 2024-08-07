@@ -1,5 +1,6 @@
 #include "LuaInput.h"
 #include "../../GAME/Game.h"
+#include "../../STAR/Star.h"
 
 static Game* game = Game::GetSingleton();
 
@@ -8,16 +9,16 @@ void LuaInput::LuaAdd(sol::state& state)
 	state["Input"] = sol::new_table();
 
 	/* Mouse */
-	state["Input"]["HideCursor"] = [](bool value) { game->HideCursor(value); };
-	state["Input"]["LockCursor"] = [](bool value) { game->LockCursor(value); };
-	state["Input"]["IsCursorHidden"] = []() { return game->IsCursorHidden(); };
+	state["Input"]["ShowCursor"] = [](bool _Show) { Star::ShowCursor(_Show); };
+	state["Input"]["LockCursor"] = [](bool _Lock) { game->LockCursor(_Lock); };
+	state["Input"]["IsCursorShowed"] = []() { return Star::IsCursorShowed(); };
 	state["Input"]["IsCursorLocked"] = []() { return game->IsCursorLocked(); };
 	state["Input"]["GetCursorAxis"] = []() { return game->GetCursorAxis(); };
 	state["Input"]["GetCursorAxisX"] = []() { return game->GetCursorAxis().x; };
 	state["Input"]["GetCursorAxisY"] = []() { return game->GetCursorAxis().y; };
 
 	/* Keyboard */
-	state["Input"]["GetKeyDown"] = [](unsigned char key) { return game->InputGetKey(key); };
+	state["Input"]["GetKeyDown"] = [](unsigned char key) { return game->GetKeyDown(key); };
 	state["Input"]["KeyCode"] = sol::new_table();
 
 	state["Input"]["KeyCode"]["Q"] = DIK_Q;

@@ -409,14 +409,16 @@ void Editor::RenderUpBar()
 			*/
 		}
 
+		static bool sw = true;
+
 		ImGui::SameLine();
-		if (game->hide_window)
+		if (sw)
 		{
 			ImGui::PushStyleColor(ImGuiCol_Button, myColor);
 			if (ImGui::Button(ICON_FA_LEAF, size))
 			{
-				game->hide_window = false;
-				game->SetWindowState(SW_NORMAL);
+				sw = false;
+				game->SetWindowState(SW_HIDE);
 			}
 			ImGui::PopStyleColor();
 		}
@@ -424,8 +426,8 @@ void Editor::RenderUpBar()
 		{
 			if (ImGui::Button(ICON_FA_LEAF, size))
 			{
-				game->hide_window = true;
-				game->SetWindowState(SW_HIDE);
+				sw = true;
+				game->SetWindowState(SW_NORMAL);
 			}
 		}
 
@@ -437,13 +439,20 @@ void Editor::RenderUpBar()
 		{
 			ImGui::PushStyleColor(ImGuiCol_Button, myColor);
 			if (ImGui::Button(ICON_FA_PLAY, size))
+			{
 				game->StopGame();
+				projectSceneSystem->OpenScene("data.scene");
+			}
 			ImGui::PopStyleColor();
 		}
 		else
 		{
 			if (ImGui::Button(ICON_FA_PLAY, size))
-				game->StartGame(mainWindow->GetHandle());
+			{
+				projectSceneSystem->SaveScene();
+				game->InitGame(sw, mainWindow->GetHandle());
+				game->StartGame();
+			}
 		}
 
 		///////////////////////////////////////////////////////

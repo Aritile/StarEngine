@@ -6,6 +6,7 @@
 #include "../EDITOR/Editor.h"
 #include "../SYSTEM/ScriptingSystem.h"
 #include "../ENGINE/Engine.h"
+#include "../EDITOR/WINDOW/Viewport.h"
 
 MainWindow* MainWindow::GetSingleton()
 {
@@ -18,9 +19,12 @@ static Entity* ecs = Entity::GetSingleton();
 static Editor* editor = Editor::GetSingleton();
 static MainWindow* mainWindow = MainWindow::GetSingleton();
 static Engine* engine = Engine::GetSingleton();
+static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 
 bool MainWindow::CreateMainWindow(std::wstring _Name, int _Width, int _Height)
 {
+    Star::AddLog("[Window] -> Creating main window..");
+
     WNDCLASSEX wcex;
     ZeroMemory(&wcex, sizeof(WNDCLASSEX));
 
@@ -92,6 +96,15 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
         break;
     }
 
+    case WM_KILLFOCUS:
+    {
+        ClipCursor(NULL);
+        if (viewportWindow->off)
+            SetCursorPos(viewportWindow->cursorPosition.x, viewportWindow->cursorPosition.y);
+        Star::ShowCursor(TRUE);
+        break;
+    }
+
     case WM_SIZE:
     {
         if (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)
@@ -112,6 +125,8 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
 
     case WM_SETFOCUS:
     {
+        viewportWindow->off = false;
+
         auto view = ecs->registry.view<ScriptingComponent>();
         for (auto entity : view)
             ecs->GetComponent<ScriptingComponent>(entity).RecompileScriptsChecksum();
@@ -155,4 +170,25 @@ UINT MainWindow::GetContextHeight()
 HWND MainWindow::GetHandle()
 {
     return hwnd;
+}
+void MainWindow::LockCursor(bool _Lock)
+{
+    if (_Lock)
+    {
+        RECT rect;
+        ::GetClientRect(hwnd, &rect);
+        ::ClientToScreen(hwnd, (POINT*)&rect.left);
+        ::ClientToScreen(hwnd, (POINT*)&rect.right);
+        ::ClipCursor(&rect);
+        isCursorLocked = true;
+    }
+    else
+    {
+        ::ClipCursor(NULL);
+        isCursorLocked = false;
+    }
+}
+bool MainWindow::IsCursorLocked()
+{
+    return isCursorLocked;
 }

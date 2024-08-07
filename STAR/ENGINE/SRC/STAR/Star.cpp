@@ -537,3 +537,21 @@ bool Star::FileExist(std::string path)
 	std::filesystem::path file(path);
 	return std::filesystem::exists(file);
 }
+static bool isCursorVisible = true;
+void Star::ShowCursor(bool _Show)
+{
+	if (_Show && !isCursorVisible)
+	{
+		::ShowCursor(TRUE);
+		isCursorVisible = true;
+	}
+	else if (!_Show && isCursorVisible)
+	{
+		::ShowCursor(FALSE);
+		isCursorVisible = false;
+	}
+}
+bool Star::IsCursorShowed()
+{
+	return isCursorVisible;
+}

@@ -90,6 +90,8 @@ bool DX::ResizeBuffer(UINT _Width, UINT _Height)
 }
 bool DX::CreateContext(UINT _Width, UINT _Height)
 {
+    Star::AddLog("[SwapChain] -> Creating main SwapChain..");
+
     DXGI_SWAP_CHAIN_DESC sd;
     ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
@@ -122,11 +124,13 @@ bool DX::CreateContext(UINT _Width, UINT _Height)
 
     /*---*/
 
+    Star::AddLog("[SwapChain] -> Creating render target view..");
     if (!CreateRenderTargetView())
         return false;
 
     /*---*/
 
+    Star::AddLog("[SwapChain] -> Creating depth stencil view..");
     if (!CreateDepthStencilView(_Width, _Height))
         return false;
 

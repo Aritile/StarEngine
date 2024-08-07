@@ -37,15 +37,11 @@ private:
 	ID3D11DepthStencilView* gameDepthStencilView = NULL;
 
 public:
-	bool StartGame(HWND parent);
+	bool InitGame(bool _ShowWindow, HWND parent);
+	bool StartGame();
 	void StopGame();
 	unsigned char GetGameState();
 	bool GameResizeBuffer();
-
-	// fix
-	bool Game1(HWND parent);
-	void Game2();
-	void Game3();
 
 public:
 	D3D11_VIEWPORT GetViewport();
@@ -54,7 +50,7 @@ public:
 	IDXGISwapChain* GetSwapChain();
 
 private:
-	bool GameCreateWindow();
+	bool GameCreateWindow(bool _ShowWindow);
 	bool GameCreateContext(HWND parent);
 	bool GameCreateRenderTargetView();
 	bool GameCreateDepthStencilView();
@@ -67,15 +63,7 @@ private:
 	unsigned char gameState = GameState::GameNone;
 
 	/**** INPUT ****/
-
-public:
-	void LockCursor(bool value);
-	void HideCursor(bool value);
 	bool isCursorLocked = false;
-	bool isCursorHidden = false;
-	bool IsCursorLocked();
-	bool IsCursorHidden();
-	bool focus = true;
 
 private:
 	LPDIRECTINPUT8 gDirectInput;
@@ -85,7 +73,7 @@ private:
 	void ReleaseInput();
 
 public:
-	bool InputGetKey(unsigned char key);
+	bool GetKeyDown(unsigned char key);
 	Vector2 GetCursorAxis();
 
 	/**** TIME ****/
@@ -113,10 +101,16 @@ public:
 	float GetElapsedTime();
 	unsigned int GetFrameCount();
 
+	void LockCursor(bool _Lock);
+	bool IsCursorLocked();
+
 public:
-	bool hide_window = false;
 	void SetWindowState(unsigned int state);
 
 public:
 	static Game* GetSingleton();
+
+	bool focus = false;
+	bool lastIsCursorShowed = false;
+	bool lastIsCursorLocked = false;
 };

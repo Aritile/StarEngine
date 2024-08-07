@@ -85,4 +85,7 @@ namespace Star
 	const aiScene* OpenModel(Assimp::Importer* importer, const char* path);
 	void StartCommand(std::string string);
 	std::string SlashesFix(std::string string);
+
+	void ShowCursor(bool _Show);
+	bool IsCursorShowed();
 }

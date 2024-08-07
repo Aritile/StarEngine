@@ -4,12 +4,14 @@
 #include "../GAME/Game.h"
 #include <iostream>
 #include "../WINDOW/MainWindow.h"
+#include "../SYSTEM/ProjectSceneSystem.h"
 
 static Game* game = Game::GetSingleton();
 static SplashScreen* splashScreen = SplashScreen::GetSingleton();
 static DX* dx = DX::GetSingleton();
 static Engine* engine = Engine::GetSingleton();
 static MainWindow* mainWindow = MainWindow::GetSingleton();
+static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
 
 int StartEngine(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine, int& nCmdShow)
 {
@@ -18,6 +20,8 @@ int StartEngine(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine,
 #endif
 
 	engine->SetReference(hInstance, hPrevInstance, pCmdLine, nCmdShow);
+
+	Star::AddLog("[Engine] -> Engine version: %i.%i.%i", MAJOR, MINOR, PATCH);
 
 	if (!splashScreen->ShowSplashScreen())
 		return 0;
@@ -53,10 +57,10 @@ int StartGame(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine, i
 
 	{
 		splashScreen->ShowSplashScreen();
-		game->hide_window = true;
-		game->Game1(NULL);
+		game->InitGame(false, NULL);
 		engine->EngineStart();
-		game->Game2();
+		projectSceneSystem->OpenScene("data.scene");
+		game->StartGame();
 		splashScreen->HideSplashScreen();
 		game->SetWindowState(SW_NORMAL);
 		engine->EngineUpdate();
