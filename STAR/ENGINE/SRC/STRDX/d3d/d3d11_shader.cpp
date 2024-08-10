@@ -69,14 +69,14 @@ bool D3D11Shader::CompilePixel()
 }
 bool D3D11Shader::SaveVertex(const char* _Filename)
 {
-    if (!Write(_Filename, vs_blob.Get()))
+    if (!Write(_Filename, vs_blob))
         return false;
 
     return true;
 }
 bool D3D11Shader::SavePixel(const char* _Filename)
 {
-    if (!Write(_Filename, ps_blob.Get()))
+    if (!Write(_Filename, ps_blob))
         return false;
 
     return true;
@@ -92,7 +92,7 @@ bool D3D11Shader::CreateVertex()
     if (FAILED(context->GetDevice()->CreateVertexShader(vs_blob->GetBufferPointer(),
                                                         vs_blob->GetBufferSize(),
                                                         NULL,
-                                                        vertex_shader.GetAddressOf())))
+                                                        &vertex_shader)))
     {
         printf("create vertex shader failed\n");
         return false;
@@ -111,7 +111,7 @@ bool D3D11Shader::CreatePixel()
     if (FAILED(context->GetDevice()->CreatePixelShader(ps_blob->GetBufferPointer(),
                                                        ps_blob->GetBufferSize(),
                                                        NULL,
-                                                       pixel_shader.GetAddressOf())))
+                                                       &pixel_shader)))
     {
         printf("create pixel shader failed\n");
         return false;
@@ -146,7 +146,7 @@ bool D3D11Shader::CreateIndexBuffer(bool _CpuAccess)
     D3D11_SUBRESOURCE_DATA data;
     ZeroMemory(&data, sizeof(data));
     data.pSysMem = indices.data();
-    if (FAILED(context->GetDevice()->CreateBuffer(&desc, &data, index_buffer.GetAddressOf())))
+    if (FAILED(context->GetDevice()->CreateBuffer(&desc, &data, &index_buffer)))
     {
         printf("create index buffer failed\n");
         return false;
@@ -195,7 +195,7 @@ bool D3D11Shader::CreateLayout()
                                                        (UINT)layout.size(),
                                                        vs_blob->GetBufferPointer(),
                                                        vs_blob->GetBufferSize(),
-                                                       vertex_layout.GetAddressOf())))
+                                                       &vertex_layout)))
     {
         printf("create input layout failed\n");
         return false;
@@ -206,46 +206,91 @@ bool D3D11Shader::CreateLayout()
 }
 void D3D11Shader::ReleaseVertex()
 {
-    STRDXWRL_RESET(vertex_shader);
+    if (vertex_shader)
+    {
+        vertex_shader->Release();
+        vertex_shader = nullptr;
+    }
 }
 void D3D11Shader::ReleasePixel()
 {
-    STRDXWRL_RESET(pixel_shader);
+    if (pixel_shader)
+    {
+        pixel_shader->Release();
+        pixel_shader = nullptr;
+    }
 }
 void D3D11Shader::ReleaseLayout()
 {
-    STRDXWRL_RESET(vertex_layout);
+    if (vertex_layout)
+    {
+        vertex_layout->Release();
+        vertex_layout = nullptr;
+    }
 }
 void D3D11Shader::ReleaseVertexBlob()
 {
-    STRDXWRL_RESET(vs_blob);
+    if (vs_blob)
+    {
+        vs_blob->Release();
+        vs_blob = nullptr;
+    }
 }
 void D3D11Shader::ReleasePixelBlob()
 {
-    STRDXWRL_RESET(ps_blob);
+    if (ps_blob)
+    {
+        ps_blob->Release();
+        ps_blob = nullptr;
+    }
 }
 void D3D11Shader::Release()
 {
-    STRDXWRL_RESET(vertex_shader);
-    STRDXWRL_RESET(pixel_shader);
-    STRDXWRL_RESET(vertex_layout);
-    STRDXWRL_RESET(vertex_buffer);
-    STRDXWRL_RESET(index_buffer);
-    STRDXWRL_RESET(vs_blob);
-    STRDXWRL_RESET(ps_blob);
-
-    vertex_data.clear();
-    pixel_data.clear();
-    layout.clear();
-    indices.clear();
-
-    vertices_size = 0;
-    indices_size = 0;
-
-    vertexFilename = "";
-    pixelFilename = "";
+    if (vs_blob)
+    {
+        vs_blob->Release();
+        vs_blob = nullptr;
+    }
+    if (ps_blob)
+    {
+        ps_blob->Release();
+        ps_blob = nullptr;
+    }
+    if (vertex_shader)
+    {
+        vertex_shader->Release();
+        vertex_shader = nullptr;
+    }
+    if (pixel_shader)
+    {
+        pixel_shader->Release();
+        pixel_shader = nullptr;
+    }
+    if (vertex_layout)
+    {
+        vertex_layout->Release();
+        vertex_layout = nullptr;
+    }
+    if (vertex_buffer)
+    {
+        vertex_buffer->Release();
+        vertex_buffer = nullptr;
+    }
+    if (index_buffer)
+    {
+        index_buffer->Release();
+        index_buffer = nullptr;
+    }
 
     delete this;
+}
+void D3D11Shader::ReleaseVertexBuffer()
+{
+    if (vertex_buffer)
+    {
+        vertex_buffer->Release();
+        vertex_buffer = nullptr;
+    }
 }
 bool D3D11Shader::ReadFromFileToBlob(const char* _Filename, ID3DBlob** _Blob)
 {
@@ -382,11 +427,11 @@ bool D3D11Shader::CompileShader(std::vector<uint8_t>& _Data, std::string _EntryP
     *_Blob = shaderBlob;
     return true;
 }
-STRDXWRL<ID3D11Device> D3D11Shader::GetDevice()
+ID3D11Device* D3D11Shader::GetDevice()
 {
     return context->GetDevice();
 }
-STRDXWRL<ID3D11Buffer> D3D11Shader::GetVertexBuffer()
+ID3D11Buffer* D3D11Shader::GetVertexBuffer()
 {
     return vertex_buffer;
 }
@@ -394,7 +439,7 @@ std::vector<UINT>& D3D11Shader::GetIndices()
 {
     return indices;
 }
-STRDXWRL<ID3D11Buffer> D3D11Shader::GetIndexBuffer()
+ID3D11Buffer* D3D11Shader::GetIndexBuffer()
 {
     return index_buffer;
 }
@@ -406,11 +451,11 @@ void D3D11Shader::ClearIndices()
 {
     indices.clear();
 }
-STRDXWRL<ID3D11VertexShader> D3D11Shader::GetVertexShader()
+ID3D11VertexShader* D3D11Shader::GetVertexShader()
 {
     return vertex_shader;
 }
-STRDXWRL<ID3D11PixelShader> D3D11Shader::GetPixelShader()
+ID3D11PixelShader* D3D11Shader::GetPixelShader()
 {
     return pixel_shader;
 }
@@ -422,7 +467,7 @@ UINT D3D11Shader::GetIndicesSize()
 {
     return indices_size;
 }
-STRDXWRL<ID3D11InputLayout> D3D11Shader::GetVertexLayout()
+ID3D11InputLayout* D3D11Shader::GetVertexLayout()
 {
     return vertex_layout;
 }

@@ -213,9 +213,21 @@ bool ViewportWindow::CreateBuffer(ImVec2 resolution)
 
 void ViewportWindow::ReleaseBuffer()
 {
-	if (s_RenderTargetView) s_RenderTargetView->Release();
-	if (s_DepthStencilView) s_DepthStencilView->Release();
-	if (s_ShaderResourceView) s_ShaderResourceView->Release();
+	if (s_RenderTargetView)
+	{
+		s_RenderTargetView->Release();
+		s_RenderTargetView = nullptr;
+	}
+	if (s_DepthStencilView)
+	{
+		s_DepthStencilView->Release();
+		s_DepthStencilView = nullptr;
+	}
+	if (s_ShaderResourceView)
+	{
+		s_ShaderResourceView->Release();
+		s_ShaderResourceView = nullptr;
+	}
 }
 
 bool ViewportWindow::IsBufferResized()

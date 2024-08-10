@@ -40,6 +40,7 @@ public:
 	void ReleaseLayout();
 	void ReleaseVertexBlob();
 	void ReleasePixelBlob();
+	void ReleaseVertexBuffer();
 	void Release();
 	ShaderID* Get();
 

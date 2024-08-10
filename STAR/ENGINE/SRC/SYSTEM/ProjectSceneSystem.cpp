@@ -104,6 +104,8 @@ void ProjectSceneSystem::SerializeEntity(YAML::Emitter& out, entt::entity entity
 				out << YAML::Key << "Children" << YAML::Value << YAML::BeginSeq;
 				for (size_t i = 0; i < children.size(); i++)
 				{
+					if (!ecs->IsValid(children[i]))
+						continue;
 					SerializeEntity(out, children[i]);
 				}
 				out << YAML::EndSeq;

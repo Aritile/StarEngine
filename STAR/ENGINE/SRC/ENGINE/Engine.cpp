@@ -200,7 +200,7 @@ void Engine::EngineShutdown()
     meshStorage->ReleaseAllModels();
     meshStorage->ReleaseAllMeshes();
 
-    dx->ReportLiveObjects();
+    //dx->ReportLiveObjects();
     dx->Release();
 }
 
@@ -302,7 +302,7 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
     if (!game)
     {
         dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-        //widgets->SetRasterizerState();
+        //widgets->SetRasterizerState(); // black lines of edges, idk why, for now disable
         widgets->RenderBoundingBoxWidget();
         widgets->RenderGridWidget();
         widgets->RenderPerspectiveFrustumWidget();

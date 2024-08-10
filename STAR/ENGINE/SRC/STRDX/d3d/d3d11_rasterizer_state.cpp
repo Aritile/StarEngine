@@ -20,25 +20,25 @@ D3D11RasterizerState* D3D11RasterizerState::Create()
     desc.MultisampleEnable = false;
     desc.AntialiasedLineEnable = true;
 
-    if (FAILED(context->GetDevice()->CreateRasterizerState(&desc, rasterizerState->rasterizerState.GetAddressOf())))
+    if (FAILED(context->GetDevice()->CreateRasterizerState(&desc, &rasterizerState->rasterizerState)))
         printf("create rasterizer state failed\n");
 
 	return rasterizerState;
 }
 void D3D11RasterizerState::Set()
 {
-    context->GetDeviceContext()->RSSetState(rasterizerState.Get());
+    context->GetDeviceContext()->RSSetState(rasterizerState);
 }
 void D3D11RasterizerState::Unset()
 {
     context->GetDeviceContext()->RSSetState(NULL);
 }
-STRDXWRL<ID3D11RasterizerState> D3D11RasterizerState::Get()
+ID3D11RasterizerState* D3D11RasterizerState::Get()
 {
 	return rasterizerState;
 }
 void D3D11RasterizerState::Release()
 {
-    STRDXWRL_RESET(rasterizerState);
+    if (rasterizerState) rasterizerState->Release();
     delete this;
 }

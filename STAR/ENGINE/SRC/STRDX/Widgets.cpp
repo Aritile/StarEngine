@@ -439,6 +439,10 @@ void Widgets::SetRenderGrid(bool _Render)
 }
 void Widgets::SetGridSize(int _Size)
 {
+	if (!gridShader)
+		return;
+
+	gridShader->ReleaseVertexBuffer();
 	gridSize = _Size;
 
 	std::vector<POSCOL> vertices = BuildGrid();

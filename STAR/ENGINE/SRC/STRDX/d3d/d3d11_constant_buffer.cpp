@@ -1,13 +1,13 @@
 #include "d3d11_constant_buffer.h"
 #include "d3d11_context.h"
 
-STRDXWRL<ID3D11Buffer> D3D11ConstantBuffer::Get()
+ID3D11Buffer* D3D11ConstantBuffer::Get()
 {
 	return constant_buffer;
 }
 void D3D11ConstantBuffer::Release()
 {
-	STRDXWRL_RESET(constant_buffer);
+	if (constant_buffer) constant_buffer->Release();
 	delete this;
 }
 D3D11ConstantBuffer* D3D11ConstantBuffer::Create(UINT _SizeOf)
@@ -20,7 +20,7 @@ D3D11ConstantBuffer* D3D11ConstantBuffer::Create(UINT _SizeOf)
 	desc.ByteWidth = _SizeOf;
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	desc.CPUAccessFlags = 0;
-	if (FAILED(D3D11Context::GetSingleton()->GetDevice()->CreateBuffer(&desc, NULL, constantBuffer->constant_buffer.GetAddressOf())))
+	if (FAILED(D3D11Context::GetSingleton()->GetDevice()->CreateBuffer(&desc, NULL, &constantBuffer->constant_buffer)))
 		printf("create constant buffer failed\n");
 
 	return constantBuffer;
@@ -39,6 +39,6 @@ bool D3D11ConstantBuffer::Update(const void* _ConstantBuffer)
 		return false;
 	}
 
-	D3D11Context::GetSingleton()->GetDeviceContext()->UpdateSubresource(constant_buffer.Get(), 0, NULL, _ConstantBuffer, 0, 0);
+	D3D11Context::GetSingleton()->GetDeviceContext()->UpdateSubresource(constant_buffer, 0, NULL, _ConstantBuffer, 0, 0);
 	return true;
 }

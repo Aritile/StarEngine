@@ -28,7 +28,7 @@ RasterizerStateID* RasterizerState::Get()
 {
 #if defined(RENDERER_D3D11)
 	if (d3d11_rasterizer_state)
-		return (RasterizerStateID*)d3d11_rasterizer_state->Get().Get();
+		return (RasterizerStateID*)d3d11_rasterizer_state->Get();
 #endif
 
 	return NULL;

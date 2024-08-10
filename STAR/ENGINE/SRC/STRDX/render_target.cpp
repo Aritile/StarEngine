@@ -28,7 +28,7 @@ ShaderResourceID* RenderTarget::GetShaderResource()
 {
 #if defined(RENDERER_D3D11)
 	if (d3d11_render_target)
-		return (ShaderResourceID*)d3d11_render_target->Get().Get();
+		return (ShaderResourceID*)d3d11_render_target->Get();
 #endif
 
 	return NULL;

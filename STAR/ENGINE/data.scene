@@ -1,5 +1,5 @@
 # do not edit
-# Aug  7 2024 10:02:13
+# Aug 10 2024 23:16:21
 Star:
   Version:
     Major: 1
@@ -27,7 +27,7 @@ Star:
                   Static: false
                 TransformComponent:
                   Position: [0, 0, 0]
-                  Rotation: [-0, 0, -0, 1]
+                  Rotation: [0, 0, 0, 1]
                   Scale: [1, 1, 1]
                   Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
                 MeshComponent:
@@ -46,7 +46,7 @@ Star:
                   Static: false
                 TransformComponent:
                   Position: [0, 0, -5]
-                  Rotation: [-0, 0, -0, 1]
+                  Rotation: [0, 0, 0, 1]
                   Scale: [1, 1, 1]
                   Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -5, 1]
                 CameraComponent:

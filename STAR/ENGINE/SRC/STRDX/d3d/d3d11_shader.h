@@ -46,7 +46,7 @@ public:
 		D3D11_SUBRESOURCE_DATA data;
 		ZeroMemory(&data, sizeof(data));
 		data.pSysMem = _Vertices.data();
-		if (FAILED(GetDevice()->CreateBuffer(&desc, &data, vertex_buffer.GetAddressOf())))
+		if (FAILED(GetDevice()->CreateBuffer(&desc, &data, &vertex_buffer)))
 		{
 			printf("create vertex buffer failed\n");
 			return false;
@@ -61,36 +61,36 @@ public:
 	bool CreateIndexBuffer(bool _CpuAccess);
 	bool AddLayout(LPCSTR _Name, UINT _Index, UINT _Format, UINT _Slot, UINT _Offset);
 	bool CreateLayout();
-	bool Set();
 	void ReleaseVertex();
 	void ReleasePixel();
+	void ReleaseVertexBuffer();
 	void ReleaseLayout();
 	void ReleaseVertexBlob();
 	void ReleasePixelBlob();
 	void Release();
-	STRDXWRL<ID3D11Buffer> GetVertexBuffer();
+	ID3D11Buffer* GetVertexBuffer();
 	std::vector<UINT>& GetIndices();
-	STRDXWRL<ID3D11Buffer> GetIndexBuffer();
+	ID3D11Buffer* GetIndexBuffer();
 	void SetIndicesSize(UINT _Size);
 	void ClearIndices();
-	STRDXWRL<ID3D11VertexShader> GetVertexShader();
-	STRDXWRL<ID3D11PixelShader> GetPixelShader();
+	ID3D11VertexShader* GetVertexShader();
+	ID3D11PixelShader* GetPixelShader();
 	UINT GetVerticesSize();
 	UINT GetIndicesSize();
-	STRDXWRL<ID3D11InputLayout> GetVertexLayout();
+	ID3D11InputLayout* GetVertexLayout();
 	UINT GetSizeOf();
 
 private:
-	STRDXWRL<ID3D11Device> GetDevice();
+	ID3D11Device* GetDevice();
 
 private:
-	STRDXWRL<ID3DBlob> vs_blob;
-	STRDXWRL<ID3DBlob> ps_blob;
-	STRDXWRL<ID3D11VertexShader> vertex_shader;
-	STRDXWRL<ID3D11PixelShader> pixel_shader;
-	STRDXWRL<ID3D11InputLayout> vertex_layout;
-	STRDXWRL<ID3D11Buffer> vertex_buffer;
-	STRDXWRL<ID3D11Buffer> index_buffer;
+	ID3DBlob* vs_blob = nullptr;
+	ID3DBlob* ps_blob = nullptr;
+	ID3D11VertexShader* vertex_shader = nullptr;
+	ID3D11PixelShader* pixel_shader = nullptr;
+	ID3D11InputLayout* vertex_layout = nullptr;
+	ID3D11Buffer* vertex_buffer = nullptr;
+	ID3D11Buffer* index_buffer = nullptr;
 	std::vector<uint8_t> vertex_data;
 	std::vector<uint8_t> pixel_data;
 	std::vector<D3D11_INPUT_ELEMENT_DESC> layout;

@@ -151,6 +151,13 @@ void Shader::ReleaseVertexBlob()
 		d3d11_shader->ReleaseVertexBlob();
 #endif
 }
+void Shader::ReleaseVertexBuffer()
+{
+#if defined(RENDERER_D3D11)
+	if (d3d11_shader)
+		d3d11_shader->ReleaseVertexBuffer();
+#endif
+}
 void Shader::ReleasePixelBlob()
 {
 #if defined(RENDERER_D3D11)

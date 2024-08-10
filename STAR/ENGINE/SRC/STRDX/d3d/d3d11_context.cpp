@@ -78,7 +78,8 @@ bool D3D11Context::SetVertexConstantBuffer(D3D11ConstantBuffer* _ConstantBuffer,
         return false;
     }
 
-    dx->dxDeviceContext->VSSetConstantBuffers(_Slot, 1, _ConstantBuffer->Get().GetAddressOf());
+    ID3D11Buffer* buffer = _ConstantBuffer->Get();
+    dx->dxDeviceContext->VSSetConstantBuffers(_Slot, 1, &buffer);
     return true;
 }
 bool D3D11Context::SetPixelConstantBuffer(D3D11ConstantBuffer* _ConstantBuffer, UINT _Slot)
@@ -89,7 +90,8 @@ bool D3D11Context::SetPixelConstantBuffer(D3D11ConstantBuffer* _ConstantBuffer, 
         return false;
     }
 
-    dx->dxDeviceContext->PSSetConstantBuffers(_Slot, 1, _ConstantBuffer->Get().GetAddressOf());
+    ID3D11Buffer* buffer = _ConstantBuffer->Get();
+    dx->dxDeviceContext->PSSetConstantBuffers(_Slot, 1, &buffer);
     return true;
 }
 bool D3D11Context::SetVertexShaderResource(ID3D11ShaderResourceView* _ShaderResource, UINT _Slot)
@@ -122,7 +124,8 @@ bool D3D11Context::SetVertexSampler(D3D11SamplerState* _SamplerState, UINT _Slot
         return false;
     }
 
-    dx->dxDeviceContext->VSSetSamplers(_Slot, 1, _SamplerState->Get().GetAddressOf());
+    ID3D11SamplerState* samplerState = _SamplerState->Get();
+    dx->dxDeviceContext->VSSetSamplers(_Slot, 1, &samplerState);
     return true;
 }
 bool D3D11Context::SetPixelSampler(D3D11SamplerState* _SamplerState, UINT _Slot)
@@ -133,7 +136,8 @@ bool D3D11Context::SetPixelSampler(D3D11SamplerState* _SamplerState, UINT _Slot)
         return false;
     }
 
-    dx->dxDeviceContext->PSSetSamplers(_Slot, 1, _SamplerState->Get().GetAddressOf());
+    ID3D11SamplerState* samplerState = _SamplerState->Get();
+    dx->dxDeviceContext->PSSetSamplers(_Slot, 1, &samplerState);
     return true;
 }
 void D3D11Context::ReleaseVertexShaderResources(UINT _Slot)
@@ -166,11 +170,11 @@ bool D3D11Context::UpdateIndexBuffer(D3D11Shader* _Shader)
     }
 
     D3D11_MAPPED_SUBRESOURCE resource;
-    if (FAILED(dx->dxDeviceContext->Map(_Shader->GetIndexBuffer().Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
+    if (FAILED(dx->dxDeviceContext->Map(_Shader->GetIndexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
         return false;
 
     memcpy(resource.pData, _Shader->GetIndices().data(), (sizeof(UINT) * (UINT)_Shader->GetIndices().size()));
-    dx->dxDeviceContext->Unmap(_Shader->GetIndexBuffer().Get(), 0);
+    dx->dxDeviceContext->Unmap(_Shader->GetIndexBuffer(), 0);
 
     _Shader->SetIndicesSize((UINT)_Shader->GetIndices().size());
     _Shader->ClearIndices();
@@ -231,17 +235,18 @@ bool D3D11Context::Set(D3D11Shader* _Shader)
         return false;
     }
 
-    dx->dxDeviceContext->IASetInputLayout(_Shader->GetVertexLayout().Get());
+    dx->dxDeviceContext->IASetInputLayout(_Shader->GetVertexLayout());
 
     UINT stride = _Shader->GetSizeOf();
     UINT offset = 0;
-    dx->dxDeviceContext->IASetVertexBuffers(0, 1, _Shader->GetVertexBuffer().GetAddressOf(), &stride, &offset);
+    ID3D11Buffer* vertexBuffer = _Shader->GetVertexBuffer();
+    dx->dxDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 
     if (_Shader->GetIndexBuffer())
-        D3D11Context::GetSingleton()->GetDeviceContext()->IASetIndexBuffer(_Shader->GetIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
+        D3D11Context::GetSingleton()->GetDeviceContext()->IASetIndexBuffer(_Shader->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 
-    dx->dxDeviceContext->VSSetShader(_Shader->GetVertexShader().Get(), NULL, 0);
-    dx->dxDeviceContext->PSSetShader(_Shader->GetPixelShader().Get(), NULL, 0);
+    dx->dxDeviceContext->VSSetShader(_Shader->GetVertexShader(), NULL, 0);
+    dx->dxDeviceContext->PSSetShader(_Shader->GetPixelShader(), NULL, 0);
 
     return true;
 }

@@ -2,7 +2,6 @@
 
 #include <d3d11.h>
 #include <stdio.h>
-#include "strdxwrl.h"
 
 class D3D11SamplerState
 {
@@ -11,9 +10,9 @@ public:
 
 public:
 	static D3D11SamplerState* Create();
-	STRDXWRL<ID3D11SamplerState> Get();
+	ID3D11SamplerState* Get();
 	void Release();
 
 private:
-	STRDXWRL<ID3D11SamplerState> samplerState;
+	ID3D11SamplerState* samplerState = nullptr;
 };

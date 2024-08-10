@@ -1,7 +1,6 @@
 #pragma once
 
 #include <d3d11.h>
-#include "strdxwrl.h"
 #include "d3d11_shader.h"
 #include "../Topology.h"
 #include <vector>
@@ -46,11 +45,11 @@ public:
 		}
 
 		D3D11_MAPPED_SUBRESOURCE resource;
-		if (FAILED(GetDeviceContext()->Map(_Shader->GetVertexBuffer().Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
+		if (FAILED(GetDeviceContext()->Map(_Shader->GetVertexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
 			return false;
 
 		memcpy(resource.pData, _Vertices.data(), (sizeof(T) * _Vertices.size()));
-		GetDeviceContext()->Unmap(_Shader->GetVertexBuffer().Get(), 0);
+		GetDeviceContext()->Unmap(_Shader->GetVertexBuffer(), 0);
 
 		return true;
 	}

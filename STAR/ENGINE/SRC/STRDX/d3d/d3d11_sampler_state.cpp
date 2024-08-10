@@ -17,17 +17,17 @@ D3D11SamplerState* D3D11SamplerState::Create()
     desc.MinLOD = 0;
     desc.MaxLOD = D3D11_FLOAT32_MAX;
 
-    if (FAILED(context->GetDevice()->CreateSamplerState(&desc, samplerState->samplerState.GetAddressOf())))
+    if (FAILED(context->GetDevice()->CreateSamplerState(&desc, &samplerState->samplerState)))
         printf("create sampler state failed\n");
 
 	return samplerState;
 }
-STRDXWRL<ID3D11SamplerState> D3D11SamplerState::Get()
+ID3D11SamplerState* D3D11SamplerState::Get()
 {
 	return samplerState;
 }
 void D3D11SamplerState::Release()
 {
-    STRDXWRL_RESET(samplerState);
+    if (samplerState) samplerState->Release();
     delete this;
 }
