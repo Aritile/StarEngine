@@ -17,13 +17,13 @@ D3D11RasterizerState* D3D11RasterizerState::Create()
     desc.SlopeScaledDepthBias = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
     desc.DepthClipEnable = true;
     desc.ScissorEnable = false;
-    desc.MultisampleEnable = false;
+    desc.MultisampleEnable = true;
     desc.AntialiasedLineEnable = true;
 
     if (FAILED(context->GetDevice()->CreateRasterizerState(&desc, &rasterizerState->rasterizerState)))
         printf("create rasterizer state failed\n");
 
-	return rasterizerState;
+    return rasterizerState;
 }
 void D3D11RasterizerState::Set()
 {
@@ -35,7 +35,7 @@ void D3D11RasterizerState::Unset()
 }
 ID3D11RasterizerState* D3D11RasterizerState::Get()
 {
-	return rasterizerState;
+    return rasterizerState;
 }
 void D3D11RasterizerState::Release()
 {

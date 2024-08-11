@@ -278,7 +278,7 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
     dx->dxDeviceContext->ClearDepthStencilView(_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
     dx->dxDeviceContext->OMSetRenderTargets(1, &_RenderTargetView, _DepthStencilView);
     dx->dxDeviceContext->RSSetViewports(1, &_Viewport);
-    
+
     sky->Render(_ViewMatrix, _ProjectionMatrix);
 
     auto view = ecs->registry.view<GeneralComponent>();
@@ -302,12 +302,12 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
     if (!game)
     {
         dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-        //widgets->SetRasterizerState(); // black lines of edges, idk why, for now disable it
+        widgets->SetRasterizerState();
         widgets->RenderBoundingBoxWidget();
         widgets->RenderGridWidget();
         widgets->RenderPerspectiveFrustumWidget();
         widgets->RenderOrthographicFrustumWidget();
-        //widgets->UnsetRasterizerState();
+        widgets->UnsetRasterizerState();
         viewportWindow->RefreshRenderState();
     }
 
