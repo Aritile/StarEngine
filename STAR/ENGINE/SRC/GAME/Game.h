@@ -58,6 +58,8 @@ private:
 public:
 	UINT GameGetContextWidth();
 	UINT GameGetContextHeight();
+	UINT GameGetWindowWidth();
+	UINT GameGetWindowHeight();
 
 private:
 	unsigned char gameState = GameState::GameNone;

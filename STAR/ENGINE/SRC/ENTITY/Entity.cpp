@@ -328,3 +328,83 @@ void Entity::Cleanup(entt::entity entity)
         physicsComponent.ReleaseAllSphereColliders();
     }
 }
+entt::entity Entity::CopyEntity(entt::entity _Entity)
+{
+    // DEMO
+
+    entt::entity entity = CreateEntity();
+    {
+        if (HasComponent<GeneralComponent>(_Entity))
+        {
+            CopyComponent<GeneralComponent>(_Entity, entity);
+            GetComponent<GeneralComponent>(entity).ClearVector();
+        }
+
+        if (HasComponent<TransformComponent>(_Entity))
+        {
+            CopyComponent<TransformComponent>(_Entity, entity);
+        }
+
+        if (HasComponent<ScriptingComponent>(_Entity))
+        {
+            CopyComponent<ScriptingComponent>(_Entity, entity);
+        }
+
+        if (HasComponent<PhysicsComponent>(_Entity))
+        {
+            CopyComponent<PhysicsComponent>(_Entity, entity);
+            GetComponent<PhysicsComponent>(entity).ClearVector();
+            for (size_t i = 0; i < GetComponent<PhysicsComponent>(_Entity).GetBoxColliders()->size(); i++)
+            {
+                BoxColliderComponent* _BoxColliderComponent = &GetComponent<PhysicsComponent>(_Entity).GetBoxColliders()->at(i);
+
+                GetComponent<PhysicsComponent>(entity).AddBoxCollider();
+                BoxColliderComponent* boxColliderComponent = &GetComponent<PhysicsComponent>(entity).GetBoxColliders()->back();
+                boxColliderComponent->SetCenter(_BoxColliderComponent->GetCenter());
+                boxColliderComponent->SetExtents(_BoxColliderComponent->GetExtents());
+                boxColliderComponent->SetSize(_BoxColliderComponent->GetSize());
+            }
+            for (size_t i = 0; i < GetComponent<PhysicsComponent>(_Entity).GetSphereColliders()->size(); i++)
+            {
+                SphereColliderComponent* _SphereColliderComponent = &GetComponent<PhysicsComponent>(_Entity).GetSphereColliders()->at(i);
+
+                GetComponent<PhysicsComponent>(entity).AddSphereCollider();
+                SphereColliderComponent* sphereColliderComponent = &GetComponent<PhysicsComponent>(entity).GetSphereColliders()->back();
+                sphereColliderComponent->SetCenter(_SphereColliderComponent->GetCenter());
+                sphereColliderComponent->SetExtent(_SphereColliderComponent->GetExtent());
+                sphereColliderComponent->SetRadius(_SphereColliderComponent->GetRadius());
+            }
+        }
+
+        if (HasComponent<RigidbodyComponent>(_Entity))
+        {
+            CopyComponent<RigidbodyComponent>(_Entity, entity);
+            GetComponent<RigidbodyComponent>(entity).SetNullActor(); // set null, but do not release actor
+            GetComponent<RigidbodyComponent>(entity).CreateActor(); // and now create new actor
+            auto& _RigidbodyComponent = GetComponent<RigidbodyComponent>(_Entity);
+            auto& rigidbodyComponent = GetComponent<RigidbodyComponent>(entity);
+            rigidbodyComponent.SetMass(_RigidbodyComponent.GetMass());
+            rigidbodyComponent.SetLinearDamping(_RigidbodyComponent.GetLinearDamping());
+            rigidbodyComponent.SetAngularDamping(_RigidbodyComponent.GetAngularDamping());
+            rigidbodyComponent.UseGravity(_RigidbodyComponent.HasUseGravity());
+            rigidbodyComponent.SetKinematic(_RigidbodyComponent.GetKinematic());
+        }
+
+        if (HasComponent<MeshComponent>(_Entity))
+        {
+            CopyComponent<MeshComponent>(_Entity, entity);
+        }
+
+        if (HasComponent<CameraComponent>(_Entity))
+        {
+            CopyComponent<CameraComponent>(_Entity, entity);
+        }
+
+        for (size_t i = 0; i < GetComponent<GeneralComponent>(_Entity).GetChildren().size(); i++)
+        {
+            entt::entity x = CopyEntity(GetComponent<GeneralComponent>(_Entity).GetChildren()[i]);
+            GetComponent<GeneralComponent>(entity).AddChild(x);
+        }
+    }
+    return entity;
+}

@@ -325,8 +325,8 @@ UINT Game::GameGetContextWidth()
 {
     if (hwnd == NULL)
     {
-        Star::AddLog("[Game] -> Handle is null.");
-        return 0;
+        //Star::AddLog("[Game] -> Handle is null.");
+        return width;
     }
 
     RECT rc;
@@ -339,8 +339,8 @@ UINT Game::GameGetContextHeight()
 {
     if (hwnd == NULL)
     {
-        Star::AddLog("[Game] -> Handle is null.");
-        return 0;
+        //Star::AddLog("[Game] -> Handle is null.");
+        return height;
     }
 
     RECT rc;
@@ -520,4 +520,12 @@ bool Game::GameResizeBuffer()
 void Game::SetWindowState(unsigned int state)
 {
     ShowWindow(hwnd, state);
+}
+UINT Game::GameGetWindowWidth()
+{
+    return width;
+}
+UINT Game::GameGetWindowHeight()
+{
+    return height;
 }

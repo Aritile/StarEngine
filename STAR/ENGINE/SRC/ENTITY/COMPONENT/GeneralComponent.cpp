@@ -253,3 +253,8 @@ void GeneralComponent::LuaAdd(sol::state& state)
 	component["MoveDown"] = &GeneralComponent::MoveDown;
 	component["GetParentEntity"] = &GeneralComponent::GetParent;
 }
+void GeneralComponent::ClearVector()
+{
+	if (!childrenEntity.empty())
+		childrenEntity.clear();
+}

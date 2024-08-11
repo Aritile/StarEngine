@@ -247,3 +247,10 @@ void PhysicsComponent::ReleaseAllSphereColliders()
 	for (size_t i = 0; i < sphere_colliders.size(); i++)
 		sphere_colliders[i].Release();
 }
+void PhysicsComponent::ClearVector()
+{
+	if (!box_colliders.empty())
+		box_colliders.clear();
+	if (!sphere_colliders.empty())
+		sphere_colliders.clear();
+}

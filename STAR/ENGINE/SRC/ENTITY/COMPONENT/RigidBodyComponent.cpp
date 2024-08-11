@@ -482,3 +482,7 @@ Quaternion RigidbodyComponent::GetRotationQuaternion()
 	quaternion = Star::PhysicsToQuat(trans.q);
 	return quaternion;
 }
+void RigidbodyComponent::SetNullActor()
+{
+	pxRigidBody = nullptr;
+}

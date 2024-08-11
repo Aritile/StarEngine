@@ -59,6 +59,7 @@ public:
 	void SetRotationYawPitchRoll(Vector3 value);
 	void SetRotationQuaternion(Quaternion value);
 	Quaternion GetRotationQuaternion();
+	void SetNullActor();
 
 public:
 	void SetLock(physx::PxRigidDynamicLockFlag::Enum flag, bool value);

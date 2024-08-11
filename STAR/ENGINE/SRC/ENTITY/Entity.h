@@ -14,6 +14,7 @@ public:
 	entt::registry registry;
 	entt::entity selected = entt::null;
 	entt::entity root = entt::null;
+	entt::entity copy = entt::null;
 
 public:
 	entt::entity CreateEntity();
@@ -27,6 +28,22 @@ public:
 	entt::entity FindByTag(const char* tag, bool print);
 	void Destroy(entt::entity entity);
 	void DestroyChildren(entt::entity entity);
+	template<typename T>
+	void CopyComponent(entt::entity from, entt::entity to)
+	{
+		if (HasComponent<T>(from))
+		{
+			if (!HasComponent<T>(to))
+			{
+				registry.emplace<T>(to, registry.get<T>(from));
+			}
+			else
+			{
+				registry.replace<T>(to, registry.get<T>(from));
+			}
+		}
+	}
+	entt::entity CopyEntity(entt::entity _Entity);
 
 private:
 	void DestroyAll(entt::entity entity, std::vector<entt::entity>& bin);

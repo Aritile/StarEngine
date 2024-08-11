@@ -76,6 +76,8 @@ public:
 	void SerializeComponent(YAML::Emitter& out);
 	void DeserializeComponent(YAML::Node& in);
 
+	void ClearVector();
+
 public:
 	std::vector<BoxColliderComponent>* GetBoxColliders();
 	std::vector<SphereColliderComponent>* GetSphereColliders();

@@ -37,6 +37,7 @@ public:
 	bool IsStatic();
 	entt::entity GetParent();
 	std::vector<entt::entity>& GetChildren();
+	void ClearVector();
 
 private:
 	void EntitySkip(entt::entity _Entity, int& _Skip);

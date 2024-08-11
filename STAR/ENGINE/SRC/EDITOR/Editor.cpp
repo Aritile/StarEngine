@@ -807,8 +807,26 @@ void Editor::RenderEntityMenuBar()
 		ImGui::Separator();
 		if (ecs->selected != entt::null)
 		{
-			if (ImGui::MenuItem("Copy")) {}
-			if (ImGui::MenuItem("Paste")) {}
+			if (ImGui::MenuItem("Copy"))
+			{
+				ecs->copy = ecs->selected;
+			}
+			if (ecs->IsValid(ecs->copy))
+			{
+				if (ImGui::MenuItem("Paste"))
+				{
+					if (ecs->IsValid(ecs->selected))
+					{
+						// copy and add entity to selected entity
+						entt::entity entity = ecs->CopyEntity(ecs->copy);
+						ecs->GetComponent<GeneralComponent>(ecs->selected).AddChild(entity);
+					}
+				}
+			}
+			else
+			{
+				ImGui::MenuItem("Paste", "", false, false);
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Remove"))
 			{
@@ -828,7 +846,19 @@ void Editor::RenderEntityMenuBar()
 		else
 		{
 			ImGui::MenuItem("Copy", "", false, false);
-			ImGui::MenuItem("Paste", "", false, false);
+			if (ecs->IsValid(ecs->copy))
+			{
+				if (ImGui::MenuItem("Paste"))
+				{
+					// copy and add entity to root entity
+					entt::entity entity = ecs->CopyEntity(ecs->copy);
+					ecs->GetComponent<GeneralComponent>(ecs->root).AddChild(entity);
+				}
+			}
+			else
+			{
+				ImGui::MenuItem("Paste", "", false, false);
+			}
 			ImGui::Separator();
 			ImGui::MenuItem("Remove", "", false, false);
 			ImGui::Separator();
