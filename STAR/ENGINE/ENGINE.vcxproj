@@ -35,6 +35,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SRC\DEBUG\DTiming.h" />
+    <ClInclude Include="SRC\EDITOR\WINDOW\Profiler.h" />
     <ClInclude Include="SRC\CONSTANTDATA\ConstantData.h" />
     <ClInclude Include="SRC\MATERIAL\Material.h" />
     <ClInclude Include="SRC\WINDOW\MainWindow.h" />
@@ -130,6 +132,8 @@
     <ClInclude Include="SRC\VERTEX\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\DEBUG\DTiming.cpp" />
+    <ClCompile Include="SRC\EDITOR\WINDOW\Profiler.cpp" />
     <ClCompile Include="SRC\CONSTANTDATA\ConstantData.cpp" />
     <ClCompile Include="SRC\MATERIAL\Material.cpp" />
     <ClCompile Include="SRC\WINDOW\MainWindow.cpp" />

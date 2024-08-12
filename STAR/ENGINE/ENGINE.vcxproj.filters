@@ -294,6 +294,12 @@
     <ClInclude Include="SRC\CONSTANTDATA\ConstantData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\EDITOR\WINDOW\Profiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\DEBUG\DTiming.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SRC\MAIN\Main.cpp">
@@ -594,6 +600,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\CONSTANTDATA\ConstantData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\EDITOR\WINDOW\Profiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\DEBUG\DTiming.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

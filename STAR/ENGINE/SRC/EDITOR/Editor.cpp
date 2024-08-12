@@ -17,6 +17,7 @@
 #include "../SYSTEM/PlayerPrefs.h"
 #include "WINDOW/Settings.h"
 #include "../WINDOW/MainWindow.h"
+#include "WINDOW/Profiler.h"
 
 Editor* Editor::GetSingleton()
 {
@@ -43,6 +44,7 @@ static ProjectWindow*      projectWindow = ProjectWindow::GetSingleton();
 static PlayerPrefs*        playerPrefs = PlayerPrefs::GetSingleton();
 static SettingsWindow*     settingsWindow = SettingsWindow::GetSingleton();
 static MainWindow*         mainWindow = MainWindow::GetSingleton();
+static ProfilerWindow*     profilerWindow = ProfilerWindow::GetSingleton();
 
 static ImVec2 mainMenuBarSize = ImVec2(NULL, NULL);
 
@@ -96,6 +98,7 @@ void Editor::Render()
 		consoleWindow->Render();
 		aboutWindow->Render();
 		settingsWindow->Render();
+		profilerWindow->Render();
 
 		//if (module) module->myFunc(ImGui::GetCurrentContext());
 		//ImGui::ShowDemoWindow();
@@ -138,6 +141,7 @@ void Editor::RenderBar()
 		RenderAssetsMenuBar();
 		RenderEntityMenuBar();
 		RenderScriptMenuBar();
+		RenderDebugMenuBar();
 		RenderWindowMenuBar();
 		RenderHelpMenuBar();
 
@@ -920,4 +924,13 @@ void Editor::UpdateTimer()
 void Editor::TimedFunction()
 {
 	fps = (int)ImGui::GetIO().Framerate;
+}
+
+void Editor::RenderDebugMenuBar()
+{
+	if (ImGui::BeginMenu("Debug"))
+	{
+		ImGui::MenuItem("Profiler", NULL, &profilerWindow->renderProfiler);
+		ImGui::EndMenu();
+	}
 }

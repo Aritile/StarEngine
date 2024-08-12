@@ -56,6 +56,7 @@ private:
 	void RenderWindowMenuBar();
 	void RenderHelpMenuBar();
 	void RenderScriptMenuBar();
+	void RenderDebugMenuBar();
 
 private:
 	int fps = 0;

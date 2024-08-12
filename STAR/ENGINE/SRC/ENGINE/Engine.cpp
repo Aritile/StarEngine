@@ -16,6 +16,7 @@
 #include "../WINDOW/MainWindow.h"
 #include "../USERINPUT/UserInput.h"
 #include "../STORAGE/MeshStorage.h"
+#include "../DEBUG/DTiming.h"
 
 static DX* dx = DX::GetSingleton();
 static Editor* editor = Editor::GetSingleton();
@@ -34,6 +35,10 @@ static TextureStorage* textureStorage = TextureStorage::GetSingleton();
 static MainWindow* mainWindow = MainWindow::GetSingleton();
 static UserInput* userInput = UserInput::GetSingleton();
 static MeshStorage* meshStorage = MeshStorage::GetSingleton();
+static Timing* timing = Timing::GetSingleton();
+
+static TimingBuffer* physicsTiming = nullptr;
+static TimingBuffer* drawTiming = nullptr;
 
 Engine* Engine::GetSingleton()
 {
@@ -108,6 +113,11 @@ void Engine::EngineStart()
     widgets->InitPerspectiveFrustumWidget();
     widgets->InitOrthographicFrustumWidget();
 
+#if !defined(GAME) // this is only for engine
+    physicsTiming = timing->AddTimer("Physics");
+    drawTiming = timing->AddTimer("Draw");
+#endif
+
     settingsWindow->Load();
 
     ShowWindow(mainWindow->GetHandle(), SW_NORMAL);
@@ -138,7 +148,17 @@ void Engine::EngineProcess()
     if (game->GetGameState() == GameState::GamePlay)
     {
         GamePlayFixedUpdate();
+        if (physicsTiming)
+        {
+            physicsTiming->SetTotalTime(0.0f);
+            physicsTiming->StartTimer();
+        }
         physicsSystem->Update(1.0f / 120.0f); // if physics is too fast or slow, edit this value
+        if (physicsTiming)
+        {
+            physicsTiming->StopTimer();
+            physicsTiming->SetTotalTime(physicsTiming->GetElapsedTime());
+        }
     }
     UpdateTransform(ecs->root); /* update all entity transforms */
     GamePlayLateUpdate();
@@ -200,7 +220,7 @@ void Engine::EngineShutdown()
     meshStorage->ReleaseAllModels();
     meshStorage->ReleaseAllMeshes();
 
-    //dx->ReportLiveObjects();
+    dx->ReportLiveObjects();
     dx->Release();
 }
 
@@ -281,6 +301,8 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
 
     sky->Render(_ViewMatrix, _ProjectionMatrix);
 
+    if (drawTiming) drawTiming->SetTotalTime(0.0f);
+
     auto view = ecs->registry.view<GeneralComponent>();
     for (auto entity : view)
     {
@@ -295,19 +317,27 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
         {
             auto& meshComponent = ecs->GetComponent<MeshComponent>(entity);
             if (meshComponent.IsActive())
+            {
+                if (drawTiming) drawTiming->StartTimer();
                 meshComponent.DrawMesh(_ViewMatrix, _ProjectionMatrix);
+                if (drawTiming)
+                {
+                    drawTiming->StopTimer();
+                    drawTiming->AddTotalTime(drawTiming->GetElapsedTime());
+                }
+            }
         }
     }
 
     if (!game)
     {
         dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-        widgets->SetRasterizerState();
+        //widgets->SetRasterizerState();
         widgets->RenderBoundingBoxWidget();
         widgets->RenderGridWidget();
         widgets->RenderPerspectiveFrustumWidget();
         widgets->RenderOrthographicFrustumWidget();
-        widgets->UnsetRasterizerState();
+        //widgets->UnsetRasterizerState();
         viewportWindow->RefreshRenderState();
     }
 
