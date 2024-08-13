@@ -124,7 +124,9 @@ void Sky::Render(DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 			{
 				dx->dxDeviceContext->IASetVertexBuffers(0, 1, &meshStorageBuffer->vertexBuffer, &stride, &offset);
 				dx->dxDeviceContext->IASetIndexBuffer(meshStorageBuffer->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+				mutex.lock();
 				dx->dxDeviceContext->PSSetShaderResources(0, 1, &sphere_texture);
+				mutex.unlock();
 				dx->dxDeviceContext->DrawIndexed((UINT)meshStorageBuffer->indices.size(), 0, 0);
 			}
 			viewportWindow->RefreshRenderState();
@@ -171,7 +173,9 @@ void Sky::OutCore(SkyFile sky)
 	{
 		if (sky.GetType() == SkyType::SkySphereMap)
 		{
+			mutex.lock();
 			if (sphere_texture) sphere_texture->Release();
+			mutex.unlock();
 
 			Star::AddLog("[Sky] -> Loading.. %s", sky.GetSpherePath().c_str());
 
@@ -197,9 +201,14 @@ void Sky::OutCore(SkyFile sky)
 					Star::ConvertString(sky.GetSpherePath()).c_str(), &data, sphere_image)))
 					return;
 
+				ID3D11ShaderResourceView* shaderResourceView = nullptr;
 				if (FAILED(DirectX::CreateShaderResourceView(
-					dx->dxDevice, sphere_image.GetImages(), sphere_image.GetImageCount(), data, &sphere_texture)))
+					dx->dxDevice, sphere_image.GetImages(), sphere_image.GetImageCount(), data, &shaderResourceView)))
 					return;
+
+				mutex.lock();
+				sphere_texture = shaderResourceView;
+				mutex.unlock();
 			}
 
 			sphere_image.Release();

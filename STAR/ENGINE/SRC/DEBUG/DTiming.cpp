@@ -86,6 +86,6 @@ void TimingBuffer::DrawPlotLines()
 		char overlay[32];
 		sprintf(overlay, "avg %.3f", average);
 		std::string x = "##" + GetName();
-		ImGui::PlotLines(x.c_str(), lastData.data(), lastData.size(), values_offset, overlay, 0.0f, 0.1f, ImVec2(0, 80.0f));
+		ImGui::PlotLines(x.c_str(), lastData.data(), (int)lastData.size(), values_offset, overlay, 0.0f, 0.1f, ImVec2(0, 80.0f));
 	}
 }

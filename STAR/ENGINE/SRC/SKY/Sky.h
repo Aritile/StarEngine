@@ -2,6 +2,7 @@
 
 #include "../MODEL/AssimpLoader.h"
 #include "../XTK/TEX/DirectXTex.h"
+#include <mutex>
 
 enum SkyType : unsigned char
 {
@@ -81,6 +82,7 @@ private:
 	ID3D11ShaderResourceView* sphere_texture = nullptr;
 	ModelStorageBuffer* modelStorageBuffer = nullptr;
 	MeshStorageBuffer* meshStorageBuffer = nullptr;
+	std::mutex mutex;
 
 public:
 	float exposure = 1.0f;
