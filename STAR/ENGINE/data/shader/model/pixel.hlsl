@@ -32,11 +32,11 @@ float4 main(float4 pos : SV_POSITION, float3 normal : NORMAL, float2 texcoord : 
     
     if (renderState == 3)
     {
-        return float4(pos_norm, 1.0);
+        return float4(To_ACES(pos_norm), 1.0);
     }
     else if (renderState == 4)
     {
-        return float4(normal, 1.0);
+        return float4(To_ACES(normal), 1.0);
     }
     else
     {
