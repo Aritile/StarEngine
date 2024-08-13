@@ -58,14 +58,14 @@ void ViewportWindow::Render()
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
 			{
-				FILEs payload_n = *(FILEs*)payload->Data;
-				std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
+				FILEs* payload_n = (FILEs*)payload->Data;
+				std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n->file_name;
 				std::string exe = Star::GetParent(Star::GetExecutablePath());
 				std::string x = Star::GetRelativePath(buffer, exe);
 				entt::entity entity = RunRay(false);
 				if (ecs->IsValid(entity))
 				{
-					if (payload_n.file_type == PNG || payload_n.file_type == JPEG || payload_n.file_type == DDS)
+					if (payload_n->file_type == PNG || payload_n->file_type == JPEG || payload_n->file_type == DDS)
 					{
 						if (ecs->HasComponent<MeshComponent>(entity))
 						{

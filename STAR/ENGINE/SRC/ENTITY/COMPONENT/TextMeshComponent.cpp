@@ -75,9 +75,9 @@ void TextMeshComponent::Render()
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
 					{
-						FILEs payload_n = *(FILEs*)payload->Data;
-						std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
-						if (payload_n.file_type == TTF) SetFont(buffer.c_str());
+						FILEs* payload_n = (FILEs*)payload->Data;
+						std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n->file_name;
+						if (payload_n->file_type == TTF) SetFont(buffer.c_str());
 					}
 					ImGui::EndDragDropTarget();
 				}
