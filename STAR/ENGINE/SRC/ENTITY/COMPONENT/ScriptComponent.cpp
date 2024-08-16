@@ -2,8 +2,12 @@
 #include "../../STAR/Star.h"
 #include "../../SYSTEM/ScriptingSystem.h"
 #include "../../IMGUI/imgui.h"
+#include "../../EDITOR/WINDOW/Console.h"
+#include "../../GAME/Game.h"
 
 static ScriptingSystem* scriptingSystem = ScriptingSystem::GetSingleton();
+static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
+static Game* game = Game::GetSingleton();
 
 void ScriptComponent::RecompileScript()
 {
@@ -51,4 +55,42 @@ void ScriptComponent::Render()
 		}
 		ImGui::EndPopup();
 	}
+}
+bool ScriptComponent::CallLuaFunction(const char* _FunctionName)
+{
+	// get function
+	sol::function function = scriptingSystem->GetState()[fileName.c_str()][_FunctionName];
+	if (function)
+	{
+		// call function
+		sol::protected_function_result result = function();
+
+		// get result
+		if (!result.valid())
+		{
+			sol::error error = result;
+			consoleWindow->AddErrorMessage("%s", error.what());
+			game->StopGame();
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+bool ScriptComponent::LuaFunctionIsValid(const char* _FunctionName)
+{
+	sol::optional<sol::object> maybe_object = scriptingSystem->GetState()[fileName.c_str()][_FunctionName];
+	if (maybe_object)
+		if (maybe_object.value().is<sol::function>())
+			return true;
+
+	return false;
+}
+bool ScriptComponent::IsActive()
+{
+	return activeComponent;
 }

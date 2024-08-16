@@ -7,6 +7,7 @@
 #include "../SYSTEM/ScriptingSystem.h"
 #include "../ENGINE/Engine.h"
 #include "../EDITOR/WINDOW/Viewport.h"
+#include "../MODULE/Module.h"
 
 MainWindow* MainWindow::GetSingleton()
 {
@@ -20,6 +21,7 @@ static Editor* editor = Editor::GetSingleton();
 static MainWindow* mainWindow = MainWindow::GetSingleton();
 static Engine* engine = Engine::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
+static Module* module = Module::GetSingleton();
 
 bool MainWindow::CreateMainWindow(std::wstring _Name, int _Width, int _Height)
 {
@@ -79,6 +81,7 @@ bool MainWindow::CreateMainWindow(std::wstring _Name, int _Width, int _Height)
 LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     editor->SetProcHandler(hwnd, uMsg, wParam, lParam);
+    module->EngineWindowProcModules(hwnd, uMsg, wParam, lParam);
 
     switch (uMsg)
     {

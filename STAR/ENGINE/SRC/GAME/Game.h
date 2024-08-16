@@ -42,6 +42,7 @@ public:
 	void StopGame();
 	unsigned char GetGameState();
 	bool GameResizeBuffer();
+	HWND GetHandle();
 
 public:
 	D3D11_VIEWPORT GetViewport();

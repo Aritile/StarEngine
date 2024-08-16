@@ -15,11 +15,15 @@ public:
 
 public:
 	bool activeComponent = true;
+	bool IsActive();
 
 public:
 	void RecompileScript();
 	void RecompileScriptsChecksum();
 	void Render();
+
+	bool CallLuaFunction(const char* _FunctionName);
+	bool LuaFunctionIsValid(const char* _FunctionName);
 
 public:
 	void SerializeComponent(YAML::Emitter& out);

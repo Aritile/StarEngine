@@ -37,16 +37,20 @@ public:
 	void RecompileScriptsChecksum();
 
 public:
-	void lua_call_start();
-	void lua_call_update();
-	void lua_call_late_update();
-	void lua_call_fixed_update();
+	void LuaCallStart();
+	void LuaCallUpdate();
+	void LuaCallLateUpdate();
+	void LuaCallFixedUpdate();
+	void LuaCallFunction(const char* _FunctionName);
 
 private:
-	void lua_add_entity_from_component();
+	void LuaAddEntityFromComponent();
 
 private:
 	std::vector<ScriptComponent> scripts;
+
+public:
+	std::vector<ScriptComponent>* GetScripts();
 
 public:
 	void SerializeComponent(YAML::Emitter& out);

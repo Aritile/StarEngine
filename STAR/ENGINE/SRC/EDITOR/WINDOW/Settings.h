@@ -21,7 +21,7 @@ private:
 	std::vector<std::string> list;
 	const char* filename = "settings.star";
 	const char* programList[3] = { "Text Editor", "Visual Studio", "Visual Studio Code" };
-	int programSelected = 1;
+	int programSelected = 0;
 
 private:
 	void RenderGrid();

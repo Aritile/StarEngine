@@ -6,6 +6,7 @@
 #include "../SYSTEM/ProjectSceneSystem.h"
 #include "../ENGINE/Engine.h"
 #include "../WINDOW/MainWindow.h"
+#include "../MODULE/Module.h"
 
 Game* Game::GetSingleton()
 {
@@ -20,6 +21,7 @@ static Entity* ecs = Entity::GetSingleton();
 static Engine* engine = Engine::GetSingleton();
 static ProjectSceneSystem* projectSceneSystem = ProjectSceneSystem::GetSingleton();
 static MainWindow* mainWindow = MainWindow::GetSingleton();
+static Module* module = Module::GetSingleton();
 
 bool Game::InitGame(bool _ShowWindow, HWND parent)
 {
@@ -43,13 +45,16 @@ bool Game::StartGame()
 
     auto view = ecs->registry.view<ScriptingComponent>();
     for (auto entity : view)
-        ecs->registry.get<ScriptingComponent>(entity).lua_call_start();
+        ecs->registry.get<ScriptingComponent>(entity).LuaCallStart();
+
+    module->GameStartModules();
 
     return true;
 }
 LRESULT CALLBACK GameWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     Game* game = Game::GetSingleton();
+    module->GameWindowProcModules(hwnd, uMsg, wParam, lParam);
 
     switch (uMsg)
     {
@@ -110,7 +115,7 @@ bool Game::GameCreateWindow(bool _ShowWindow)
     wcex.cbWndExtra = NULL;
     wcex.hInstance = engine->hInstance;
     wcex.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+    //wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(46, 46, 46));
     wcex.lpszMenuName = NULL;
     wcex.lpszClassName = name.c_str();
@@ -168,6 +173,8 @@ void Game::StopGame()
     if (gameSwapChain) gameSwapChain->Release();
     if (gameRenderTargetView) gameRenderTargetView->Release();
     if (gameDepthStencilView) gameDepthStencilView->Release();
+
+    module->GameReleaseModules();
 
     hwnd = NULL;
 }
@@ -528,4 +535,8 @@ UINT Game::GameGetWindowWidth()
 UINT Game::GameGetWindowHeight()
 {
     return height;
+}
+HWND Game::GetHandle()
+{
+    return hwnd;
 }

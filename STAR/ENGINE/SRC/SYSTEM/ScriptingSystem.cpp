@@ -140,51 +140,15 @@ void ScriptingComponent::Render()
 		ImGui::PopID();
 	}
 }
-void ScriptingComponent::lua_call_start()
+void ScriptingComponent::LuaCallStart()
 {
-	lua_add_entity_from_component();
-
-	for (size_t i = 0; i < scripts.size(); i++)
-	{
-		if (!scripts[i].activeComponent) continue;
-		//if (scripts[i].error) continue;
-
-		std::string buffer = scripts[i].fileName;
-		sol::function function = scriptingSystem->GetState()[buffer.c_str()]["Start"];
-		if (function)
-		{
-			sol::protected_function_result result = function();
-			if (!result.valid())
-			{
-				sol::error error = result;
-				consoleWindow->AddErrorMessage("%s", error.what());
-				game->StopGame();
-			}
-		}
-	}
+	LuaAddEntityFromComponent();
+	LuaCallFunction("Start");
 }
-void ScriptingComponent::lua_call_update()
+void ScriptingComponent::LuaCallUpdate()
 {
-	lua_add_entity_from_component();
-
-	for (size_t i = 0; i < scripts.size(); i++)
-	{
-		if (!scripts[i].activeComponent) continue;
-		//if (scripts[i].error) continue;
-
-		std::string buffer = scripts[i].fileName;
-		sol::function function = scriptingSystem->GetState()[buffer.c_str()]["Update"];
-		if (function)
-		{
-			sol::protected_function_result result = function();
-			if (!result.valid())
-			{
-				sol::error error = result;
-				consoleWindow->AddErrorMessage("%s", error.what());
-				game->StopGame();
-			}
-		}
-	}
+	LuaAddEntityFromComponent();
+	LuaCallFunction("Update");
 }
 void ScriptingComponent::RecompileScriptsChecksum()
 {
@@ -235,7 +199,7 @@ void ScriptingComponent::RecompileScripts()
 		scripts[i].RecompileScript();
 	}
 }
-void ScriptingComponent::lua_add_entity_from_component()
+void ScriptingComponent::LuaAddEntityFromComponent()
 {
 	entt::entity entity = entt::to_entity(ecs->registry, *this);
 	EntityX entityX; entityX.entity = entity;
@@ -469,49 +433,27 @@ void ScriptingComponent::DeserializeComponent(YAML::Node& in)
 		}
 	}
 }
-void ScriptingComponent::lua_call_late_update()
+void ScriptingComponent::LuaCallLateUpdate()
 {
-	lua_add_entity_from_component();
-
+	LuaAddEntityFromComponent();
+	LuaCallFunction("LateUpdate");
+}
+void ScriptingComponent::LuaCallFunction(const char* _FunctionName)
+{
 	for (size_t i = 0; i < scripts.size(); i++)
 	{
-		if (!scripts[i].activeComponent) continue;
-		//if (scripts[i].error) continue;
-
-		std::string buffer = scripts[i].fileName;
-		sol::function function = scriptingSystem->GetState()[buffer.c_str()]["LateUpdate"];
-		if (function)
-		{
-			sol::protected_function_result result = function();
-			if (!result.valid())
-			{
-				sol::error error = result;
-				consoleWindow->AddErrorMessage("%s", error.what());
-				game->StopGame();
-			}
-		}
+		if (!scripts[i].IsActive()) continue;
+		if (!scripts[i].LuaFunctionIsValid(_FunctionName)) continue;
+		if (!scripts[i].CallLuaFunction(_FunctionName)) continue;
 	}
 }
-void ScriptingComponent::lua_call_fixed_update()
+void ScriptingComponent::LuaCallFixedUpdate()
 {
-	lua_add_entity_from_component();
+	LuaAddEntityFromComponent();
+	LuaCallFunction("FixedUpdate");
+}
 
-	for (size_t i = 0; i < scripts.size(); i++)
-	{
-		if (!scripts[i].activeComponent) continue;
-		//if (scripts[i].error) continue;
-
-		std::string buffer = scripts[i].fileName;
-		sol::function function = scriptingSystem->GetState()[buffer.c_str()]["FixedUpdate"];
-		if (function)
-		{
-			sol::protected_function_result result = function();
-			if (!result.valid())
-			{
-				sol::error error = result;
-				consoleWindow->AddErrorMessage("%s", error.what());
-				game->StopGame();
-			}
-		}
-	}
+std::vector<ScriptComponent>* ScriptingComponent::GetScripts()
+{
+	return &scripts;
 }

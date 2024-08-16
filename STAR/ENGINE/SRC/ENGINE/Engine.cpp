@@ -18,6 +18,8 @@
 #include "../STORAGE/MeshStorage.h"
 #include "../DEBUG/DTiming.h"
 
+#define ENABLE_MODULES
+
 static DX* dx = DX::GetSingleton();
 static Editor* editor = Editor::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
@@ -101,9 +103,11 @@ void Engine::EngineStart()
     if (!scriptingSystem->Init())
         Star::AddLog("[Engine] -> Failed to initialize Lua Script System!");
     /* --------------------------- */
+#if defined(ENABLE_MODULES)
     Star::AddLog("[Engine] -> Initializing Module System..");
     if (!module->Init())
         Star::AddLog("[Engine] -> Failed to initialize Module System!");
+#endif
     /* --------------------------- */
 
     // strdx
@@ -119,6 +123,7 @@ void Engine::EngineStart()
 #endif
 
     settingsWindow->Load();
+    module->EngineStartModules();
 
     ShowWindow(mainWindow->GetHandle(), SW_NORMAL);
     UpdateWindow(mainWindow->GetHandle());
@@ -144,36 +149,50 @@ void Engine::EngineUpdate()
 
 void Engine::EngineProcess()
 {
-    GamePlayUpdate(); /* update physics, scripts when playing */
+    // call lua update void
+    GamePlayUpdate();
+
     if (game->GetGameState() == GameState::GamePlay)
     {
+        // call lua fixed update void
         GamePlayFixedUpdate();
+
         if (physicsTiming)
         {
             physicsTiming->SetTotalTime(0.0f);
             physicsTiming->StartTimer();
         }
-        physicsSystem->Update(1.0f / 120.0f); // if physics is too fast or slow, edit this value
+        // if physics is too fast or slow, edit this value
+        physicsSystem->Update(1.0f / 120.0f);
         if (physicsTiming)
         {
             physicsTiming->StopTimer();
             physicsTiming->SetTotalTime(physicsTiming->GetElapsedTime());
         }
     }
-    UpdateTransform(ecs->root); /* update all entity transforms */
+
+    // update all entity transforms
+    UpdateTransform(ecs->root);
+
+    // lua call late update
     GamePlayLateUpdate();
+
+    // render engine layout
 #if !defined(GAME)
-    RenderToMainBuffer(); /* render engine layout */
+    RenderToMainBuffer();
 #endif
-    RenderEnvironment( /* render sky, models for viewport window */
-        viewportWindow->GetPerspectiveProjectionMatrix(),
-        viewportWindow->GetPerspectiveViewMatrix(),
-        clearColor,
-        viewportWindow->GetRenderTargetView(),
-        viewportWindow->GetDepthStencilView(),
-        viewportWindow->GetViewport(),
-        dx->dxSwapChain,
-        false);
+
+    module->EngineUpdateModules();
+
+    // render sky, models for viewport window
+    RenderEnvironment(viewportWindow->GetPerspectiveProjectionMatrix(),
+                      viewportWindow->GetPerspectiveViewMatrix(),
+                      clearColor,
+                      viewportWindow->GetRenderTargetView(),
+                      viewportWindow->GetDepthStencilView(),
+                      viewportWindow->GetViewport(),
+                      dx->dxSwapChain,
+                      false);
 
     if (game->GetGameState() == GameState::GamePlay)
     {
@@ -184,15 +203,14 @@ void Engine::EngineProcess()
         {
             game->BeginTime();
             {
-                RenderEnvironment(
-                    projectionMatrix,
-                    viewMatrix,
-                    clearColor,
-                    game->GetRenderTargetView(),
-                    game->GetDepthStencilView(),
-                    game->GetViewport(),
-                    game->GetSwapChain(),
-                    true);
+                RenderEnvironment(projectionMatrix,
+                                  viewMatrix,
+                                  clearColor,
+                                  game->GetRenderTargetView(),
+                                  game->GetDepthStencilView(),
+                                  game->GetViewport(),
+                                  game->GetSwapChain(),
+                                  true);
             }
             game->EndTime();
         }
@@ -220,7 +238,10 @@ void Engine::EngineShutdown()
     meshStorage->ReleaseAllModels();
     meshStorage->ReleaseAllMeshes();
 
-    dx->ReportLiveObjects();
+    module->EngineReleaseModules();
+    module->DestroyModules();
+
+    //dx->ReportLiveObjects();
     dx->Release();
 }
 
@@ -260,7 +281,7 @@ void Engine::GamePlayUpdate()
     {
         auto view = ecs->registry.view<ScriptingComponent>();
         for (auto entity : view)
-            ecs->GetComponent<ScriptingComponent>(entity).lua_call_update();
+            ecs->GetComponent<ScriptingComponent>(entity).LuaCallUpdate();
     }
 }
 void Engine::GamePlayLateUpdate()
@@ -269,7 +290,7 @@ void Engine::GamePlayLateUpdate()
     {
         auto view = ecs->registry.view<ScriptingComponent>();
         for (auto entity : view)
-            ecs->GetComponent<ScriptingComponent>(entity).lua_call_late_update();
+            ecs->GetComponent<ScriptingComponent>(entity).LuaCallLateUpdate();
     }
 }
 void Engine::GamePlayFixedUpdate()
@@ -278,7 +299,7 @@ void Engine::GamePlayFixedUpdate()
     {
         auto view = ecs->registry.view<ScriptingComponent>();
         for (auto entity : view)
-            ecs->GetComponent<ScriptingComponent>(entity).lua_call_fixed_update();
+            ecs->GetComponent<ScriptingComponent>(entity).LuaCallFixedUpdate();
     }
 }
 
@@ -339,6 +360,10 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
         widgets->RenderOrthographicFrustumWidget();
         //widgets->UnsetRasterizerState();
         viewportWindow->RefreshRenderState();
+    }
+    else
+    {
+        module->GameUpdateModules();
     }
 
     if (_SwapChain) _SwapChain->Present(0, DXGI_PRESENT_ALLOW_TEARING);

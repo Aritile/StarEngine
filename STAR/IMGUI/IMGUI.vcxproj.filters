@@ -1,0 +1,328 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\SRC">
+      <UniqueIdentifier>{e35c7d7b-ba6f-4045-9d75-341b603461be}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\DEBUG\DTiming.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\Profiler.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\CONSTANTDATA\ConstantData.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\MATERIAL\Material.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\WINDOW\MainWindow.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STORAGE\MeshStorage.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaEngine.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaBoundingBox.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaConsole.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaEntity.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaInput.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaMatrix.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaQuaternion.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\SphereColliderComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\PhysicsMaterialComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\ScriptComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\BoxColliderComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\Settings.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\PlayerPrefs.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\Project.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\MODULE\Module.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\constant_buffer.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\context.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\d3d\d3d11_constant_buffer.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\d3d\d3d11_context.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\d3d\d3d11_rasterizer_state.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\d3d\d3d11_render_target.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\d3d\d3d11_sampler_state.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\d3d\d3d11_shader.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\rasterizer_state.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\render_target.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\sampler_state.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\shader.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STRDX\Widgets.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\ScriptingSystem.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\ProjectSceneSystem.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SPLASHSCREEN\SplashScreen.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\About.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\ModelSystem.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\PhysicsSystem.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\RigidbodyComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\Console.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\CameraComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\GAME\Game.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\MODEL\AssimpLoader.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SKY\Sky.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\File.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\IMGUIZMO\ImGuizmo.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\MeshComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\Inspector.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\Hierarchy.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\GeneralComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\Entity.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\Assets.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\Editor.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STAR\Star.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\DX\DX.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENGINE\Engine.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\IMGUI\imgui.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\IMGUI\imgui_demo.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\IMGUI\imgui_draw.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\IMGUI\imgui_impl_dx11.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\IMGUI\imgui_impl_win32.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\IMGUI\imgui_stdlib.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\IMGUI\imgui_tables.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\IMGUI\imgui_widgets.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\TTF2MESH\ttf2mesh.c">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\AUDIO\WAVFileReader.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\DDSTextureLoader11.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\MATH\SimpleMath.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\pch.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\BC.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\BC4BC5.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\BC6HBC7.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexCompress.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexConvert.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexD3D11.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexD3D12.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexDDS.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexFlipRotate.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexHDR.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexImage.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexMipmaps.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexMisc.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexNormalMaps.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexPMAlpha.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexResize.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexTGA.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexUtil.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\TEX\DirectXTexWIC.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\XTK\WICTextureLoader11.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\EDITOR\WINDOW\Viewport.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\TransformComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\ENTITY\COMPONENT\TextMeshComponent.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaTime.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaVector2.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaVector3.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\SYSTEM\LUA\LuaVector4.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\STORAGE\TextureStorage.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\USERINPUT\UserInput.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ENGINE\SRC\VERTEX\Vertex.cpp">
+      <Filter>Source Files\SRC</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,12 @@
+# do not edit
+# Aug  6 2024 13:45:19
+Star:
+  Version:
+    Major: 1
+    Minor: 3
+    Patch: 3
+  Data:
+    Material:
+      Name: None
+      Diffuse:
+        Path: assets\island\textures\texture_sand.jpeg
