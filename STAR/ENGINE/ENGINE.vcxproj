@@ -38,6 +38,7 @@
     <ClInclude Include="SRC\DEBUG\DTiming.h" />
     <ClInclude Include="SRC\EDITOR\WINDOW\Profiler.h" />
     <ClInclude Include="SRC\CONSTANTDATA\ConstantData.h" />
+    <ClInclude Include="SRC\JOB\Job.h" />
     <ClInclude Include="SRC\MATERIAL\Material.h" />
     <ClInclude Include="SRC\WINDOW\MainWindow.h" />
     <ClInclude Include="SRC\STORAGE\MeshStorage.h" />
@@ -135,6 +136,7 @@
     <ClCompile Include="SRC\DEBUG\DTiming.cpp" />
     <ClCompile Include="SRC\EDITOR\WINDOW\Profiler.cpp" />
     <ClCompile Include="SRC\CONSTANTDATA\ConstantData.cpp" />
+    <ClCompile Include="SRC\JOB\Job.cpp" />
     <ClCompile Include="SRC\MATERIAL\Material.cpp" />
     <ClCompile Include="SRC\WINDOW\MainWindow.cpp" />
     <ClCompile Include="SRC\STORAGE\MeshStorage.cpp" />

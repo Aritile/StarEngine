@@ -17,6 +17,7 @@
 #include "../USERINPUT/UserInput.h"
 #include "../STORAGE/MeshStorage.h"
 #include "../DEBUG/DTiming.h"
+#include "../JOB/Job.h"
 
 #define ENABLE_MODULES
 
@@ -38,6 +39,7 @@ static MainWindow* mainWindow = MainWindow::GetSingleton();
 static UserInput* userInput = UserInput::GetSingleton();
 static MeshStorage* meshStorage = MeshStorage::GetSingleton();
 static Timing* timing = Timing::GetSingleton();
+static Job* job = Job::GetSingleton();
 
 static TimingBuffer* physicsTiming = nullptr;
 static TimingBuffer* drawTiming = nullptr;
@@ -109,6 +111,29 @@ void Engine::EngineStart()
         Star::AddLog("[Engine] -> Failed to initialize Module System!");
 #endif
     /* --------------------------- */
+
+    // cute job test
+    job->CreateJob<void>(
+        []() {
+            std::this_thread::sleep_for(std::chrono::seconds(3));
+        },
+        []() {
+        }
+    );
+    job->CreateJob<void>(
+        []() {
+            std::this_thread::sleep_for(std::chrono::seconds(6));
+        },
+        []() {
+        }
+    );
+    job->CreateJob<void>(
+        []() {
+            std::this_thread::sleep_for(std::chrono::seconds(9));
+        },
+        []() {
+        }
+    );
 
     // strdx
     widgets->Init();
@@ -183,6 +208,7 @@ void Engine::EngineProcess()
 #endif
 
     module->EngineUpdateModules();
+    job->Update();
 
     // render sky, models for viewport window
     RenderEnvironment(viewportWindow->GetPerspectiveProjectionMatrix(),
@@ -237,9 +263,9 @@ void Engine::EngineShutdown()
     textureStorage->ReleaseAllTextures();
     meshStorage->ReleaseAllModels();
     meshStorage->ReleaseAllMeshes();
-
     module->EngineReleaseModules();
     module->DestroyModules();
+    job->Release();
 
     //dx->ReportLiveObjects();
     dx->Release();

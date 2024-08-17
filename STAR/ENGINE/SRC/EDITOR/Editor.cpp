@@ -18,6 +18,7 @@
 #include "WINDOW/Settings.h"
 #include "../WINDOW/MainWindow.h"
 #include "WINDOW/Profiler.h"
+#include "../JOB/Job.h"
 
 Editor* Editor::GetSingleton()
 {
@@ -45,6 +46,7 @@ static PlayerPrefs*        playerPrefs = PlayerPrefs::GetSingleton();
 static SettingsWindow*     settingsWindow = SettingsWindow::GetSingleton();
 static MainWindow*         mainWindow = MainWindow::GetSingleton();
 static ProfilerWindow*     profilerWindow = ProfilerWindow::GetSingleton();
+static Job*                job = Job::GetSingleton();
 
 static ImVec2 mainMenuBarSize = ImVec2(NULL, NULL);
 
@@ -101,7 +103,7 @@ void Editor::Render()
 		profilerWindow->Render();
 
 		//if (module) module->myFunc(ImGui::GetCurrentContext());
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 	}
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -195,11 +197,15 @@ void Editor::RenderDownBar()
 	ImGui::SetNextWindowPos(ImVec2(0.0f, (float)mainWindow->GetContextHeight() - WINDOW_DOWN));
 	ImGui::SetNextWindowSize(ImVec2((float)mainWindow->GetContextWidth(), WINDOW_DOWN));
 
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
 
 	ImGui::Begin("DownBar", NULL, window_flags);
 	{
+		ImVec2 a = ImGui::GetCursorPos();
+		ImGui::SetCursorPos(ImVec2(a.x + 8.0f, a.y + 8.0f));
+
 		/*
 		if (fps < 30)
 		{
@@ -228,9 +234,29 @@ void Editor::RenderDownBar()
 		*/
 		ImGui::SameLine();
 		ImGui::Text("%i Entities", (ecs->registry.alive() - 1));
+
+		static Vector2 lerp;
+		lerp = Vector2::Lerp(lerp, Vector2((float)job->GetCompletedJobsSize(), (float)job->GetCompletedJobsSize()), ImGui::GetIO().DeltaTime * 2.0f);
+
+		float value = lerp.x;
+		float clamped_value = std::clamp(value, 0.0f, (float)job->GetJobsSize());
+		float normalized_value = clamped_value / (float)job->GetJobsSize();
+
+		const float epsilon = 0.001f;
+		if (std::abs(value - (float)job->GetJobsSize()) < epsilon)
+			job->ResetJobs();
+
+		ImVec2 b = ImGui::GetCursorPos();
+		ImGui::SetCursorPos(ImVec2(0.0f, 28.0f));
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+		ImGui::PushStyleColor(ImGuiCol_PlotHistogram, myColor);
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+		ImGui::ProgressBar(normalized_value, ImVec2(ImGui::GetContentRegionAvail().x, 0.0));
+		ImGui::PopStyleColor(2);
+		ImGui::PopStyleVar();
 	}
 	ImGui::End();
-	ImGui::PopStyleVar(2);
+	ImGui::PopStyleVar(3);
 }
 
 void Editor::RenderUpBar()
@@ -502,13 +528,13 @@ void Editor::SetStyle()
 
 	unsigned char offset = 0x10;
 
-	ImVec4 text = ImVec4(1.000f, 1.000f, 1.000f, 1.000f); /* OK */
+	ImVec4 text = ImVec4(1.000f, 1.000f, 1.000f, 1.000f);
 	ImVec4 textDisabled = ImGui::ColorConvertU32ToFloat4(IM_COL32(0x80 - offset, 0x80 - offset, 0x80 - offset, 0xFF));
 	ImVec4 windowBg = ImGui::ColorConvertU32ToFloat4(IM_COL32(0x2E - offset, 0x2E - offset, 0x2E - offset, 0xFF));
-	ImVec4 childBg = ImVec4(0.280f, 0.280f, 0.280f, 0.000f); /* OK */
+	ImVec4 childBg = ImVec4(0.280f, 0.280f, 0.280f, 0.000f);
 	ImVec4 popupBg = ImGui::ColorConvertU32ToFloat4(IM_COL32(0x50 - offset, 0x50 - offset, 0x50 - offset, 0xFF));
 	ImVec4 border = ImGui::ColorConvertU32ToFloat4(IM_COL32(0x44 - offset, 0x44 - offset, 0x44 - offset, 0xFF));
-	ImVec4 borderShadow = ImVec4(0.000f, 0.000f, 0.000f, 0.000f); /* OK */
+	ImVec4 borderShadow = ImVec4(0.000f, 0.000f, 0.000f, 0.000f);
 	ImVec4 frameBg = ImGui::ColorConvertU32ToFloat4(IM_COL32(0x29 - offset, 0x29 - offset, 0x29 - offset, 0xFF));
 	ImVec4 frameBgHovered = ImGui::ColorConvertU32ToFloat4(IM_COL32(0x33 - offset, 0x33 - offset, 0x33 - offset, 0xFF));
 	ImVec4 titleBg = ImGui::ColorConvertU32ToFloat4(IM_COL32(0x26 - offset, 0x26 - offset, 0x26 - offset, 0xFF));
