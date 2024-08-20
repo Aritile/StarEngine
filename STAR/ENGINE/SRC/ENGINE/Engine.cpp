@@ -141,6 +141,7 @@ void Engine::EngineStart()
     widgets->InitGridWidget();
     widgets->InitPerspectiveFrustumWidget();
     widgets->InitOrthographicFrustumWidget();
+    widgets->InitRenderTarget();
 
 #if !defined(GAME) // this is only for engine
     physicsTiming = timing->AddTimer("Physics");
@@ -210,15 +211,28 @@ void Engine::EngineProcess()
     module->EngineUpdateModules();
     job->Update();
 
-    // render sky, models for viewport window
+    // render sky, models to render target
     RenderEnvironment(viewportWindow->GetPerspectiveProjectionMatrix(),
                       viewportWindow->GetPerspectiveViewMatrix(),
                       clearColor,
-                      viewportWindow->GetRenderTargetView(),
-                      viewportWindow->GetDepthStencilView(),
+                      (ID3D11RenderTargetView*)widgets->GetRenderTarget(),
+                      (ID3D11DepthStencilView*)widgets->GetDepthStencil(),
                       viewportWindow->GetViewport(),
                       dx->dxSwapChain,
                       false);
+
+    {
+        // render rectangle with render target texture
+        ID3D11RenderTargetView* renderTargetView = viewportWindow->GetRenderTargetView();
+        ID3D11DepthStencilView* depthStencilView = viewportWindow->GetDepthStencilView();
+        D3D11_VIEWPORT viewport = viewportWindow->GetViewport();
+        dx->dxDeviceContext->OMSetRenderTargets(1, &renderTargetView, NULL);
+        dx->dxDeviceContext->ClearRenderTargetView(renderTargetView, (float*)&clearColor);
+        //dx->dxDeviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+        dx->dxDeviceContext->RSSetViewports(1, &viewport);
+        widgets->RenderRectangle();
+        dx->dxDeviceContext->OMSetRenderTargets(NULL, NULL, NULL);
+    }
 
     if (game->GetGameState() == GameState::GamePlay)
     {
@@ -341,9 +355,9 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
     if (!_DepthStencilView) return;
     if (!_SwapChain) return;
 
+    dx->dxDeviceContext->OMSetRenderTargets(1, &_RenderTargetView, _DepthStencilView);
     dx->dxDeviceContext->ClearRenderTargetView(_RenderTargetView, (float*)&_Color);
     dx->dxDeviceContext->ClearDepthStencilView(_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-    dx->dxDeviceContext->OMSetRenderTargets(1, &_RenderTargetView, _DepthStencilView);
     dx->dxDeviceContext->RSSetViewports(1, &_Viewport);
 
     sky->Render(_ViewMatrix, _ProjectionMatrix);
@@ -379,12 +393,12 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
     if (!game)
     {
         dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-        //widgets->SetRasterizerState();
+        widgets->SetRasterizerState();
         widgets->RenderBoundingBoxWidget();
         widgets->RenderGridWidget();
         widgets->RenderPerspectiveFrustumWidget();
         widgets->RenderOrthographicFrustumWidget();
-        //widgets->UnsetRasterizerState();
+        widgets->UnsetRasterizerState();
         viewportWindow->RefreshRenderState();
     }
     else

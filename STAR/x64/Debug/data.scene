@@ -1,5 +1,5 @@
 # do not edit
-# Aug 15 2024 16:38:24
+# Aug 20 2024 22:23:37
 Star:
   Version:
     Major: 1
@@ -31,18 +31,13 @@ Star:
                   Scale: [1, 1, 1]
                   Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
                 MeshComponent:
-                  IsActive: true
+                  IsActive: false
                   ModelPath: data\model\cube.obj
                   MaterialPath: data\model\cube\Cube.mat
                   MeshIndex: 0
                   VerticesSize: 24
                   IndicesSize: 36
                   FacesSize: 12
-                Scripts:
-                  - Script:
-                      IsActive: true
-                      Name: LuaScript0
-                      Path: assets\LuaScript0.lua
             - Entity:
                 GeneralComponent:
                   Name: Camera
@@ -62,3 +57,34 @@ Star:
                   Far: 100
                   AutomaticAspect: true
                   Aspect: [0, 0]
+            - Entity:
+                GeneralComponent:
+                  Name: garden_gnome_1k
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [0.707106769, 0, -0, 0.707106709]
+                  Scale: [5, 5, 5]
+                  Matrix: [5, 0, 0, 0, 0, 2.98023224e-07, 4.99999952, 0, 0, -4.99999952, 2.98023224e-07, 0, 0, 0, 0, 1]
+                Children:
+                  - Entity:
+                      GeneralComponent:
+                        Name: garden_gnome_01
+                        Tag: Empty
+                        Active: true
+                        Static: false
+                      TransformComponent:
+                        Position: [0, 0, 0]
+                        Rotation: [0, 0, 0, 1]
+                        Scale: [1, 1, 1]
+                        Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                      MeshComponent:
+                        IsActive: true
+                        ModelPath: assets\garden_gnome_1k.fbx
+                        MaterialPath: assets\garden_gnome_1k\garden_gnome_01.mat
+                        MeshIndex: 0
+                        VerticesSize: 59054
+                        IndicesSize: 86574
+                        FacesSize: 28858

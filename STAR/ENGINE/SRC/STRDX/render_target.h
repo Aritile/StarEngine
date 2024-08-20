@@ -13,6 +13,8 @@ public:
 	void Set();
 	void ClearRenderTarget(float _R, float _G, float _B, float _A);
 	ShaderResourceID* GetShaderResource();
+	RenderTargetID* GetRenderTarget();
+	DepthStencilID* GetDepthStencil();
 	void Release();
 
 private:

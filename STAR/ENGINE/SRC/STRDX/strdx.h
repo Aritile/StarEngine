@@ -10,3 +10,5 @@ typedef void* RasterizerStateID;
 typedef void* SamplerStateID;
 typedef void* ShaderID;
 typedef void* ShaderResourceID;
+typedef void* RenderTargetID;
+typedef void* DepthStencilID;

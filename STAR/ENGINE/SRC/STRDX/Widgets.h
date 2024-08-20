@@ -6,6 +6,15 @@
 #include "rasterizer_state.h"
 #include "../ENTITY/COMPONENT/TransformComponent.h"
 #include "Vertex.h"
+#include "render_target.h"
+#include "sampler_state.h"
+
+struct CBRectangle
+{
+	DirectX::XMFLOAT2 iResolution;
+	int sampleCount;
+	DirectX::XMMATRIX padding;
+};
 
 class Widgets
 {
@@ -19,6 +28,14 @@ public:
 	void InitPerspectiveFrustumWidget();
 	void InitOrthographicFrustumWidget();
 
+	void InitRenderTarget();
+	void SetRenderTarget();
+	void UnsetRenderTarget();
+	ShaderResourceID GetRenderTargetShaderResource();
+	RenderTargetID GetRenderTarget();
+	DepthStencilID GetDepthStencil();
+	void ResizeRenderTarget(Vector2 _Size);
+
 public:
 	void RenderBoundingBoxWidget();
 	void RenderGridWidget();
@@ -26,6 +43,7 @@ public:
 	void RenderOrthographicFrustumWidget();
 	void SetRasterizerState();
 	void UnsetRasterizerState();
+	void RenderRectangle();
 
 public:
 	void SetRenderGrid(bool _Render);
@@ -55,6 +73,10 @@ private:
 	Shader* perspectiveFrustum = nullptr;
 	Shader* orthographicFrustum = nullptr;
 	ConstantBuffer* constantBuffer = nullptr;
+	RenderTarget* renderTarget = nullptr;
+	Shader* rectangle = nullptr;
 	CB cb;
+	CBRectangle cbRectangle;
+	ConstantBuffer* rectangleConstantBuffer = nullptr;
 	RasterizerState* rasterizerState = nullptr;
 };

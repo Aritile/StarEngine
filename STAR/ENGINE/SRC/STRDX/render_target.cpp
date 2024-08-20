@@ -28,7 +28,25 @@ ShaderResourceID* RenderTarget::GetShaderResource()
 {
 #if defined(RENDERER_D3D11)
 	if (d3d11_render_target)
-		return (ShaderResourceID*)d3d11_render_target->Get();
+		return (ShaderResourceID*)d3d11_render_target->GetShaderResourceView();
+#endif
+
+	return NULL;
+}
+RenderTargetID* RenderTarget::GetRenderTarget()
+{
+#if defined(RENDERER_D3D11)
+	if (d3d11_render_target)
+		return (RenderTargetID*)d3d11_render_target->GetRenderTargetView();
+#endif
+
+	return NULL;
+}
+DepthStencilID* RenderTarget::GetDepthStencil()
+{
+#if defined(RENDERER_D3D11)
+	if (d3d11_render_target)
+		return (DepthStencilID*)d3d11_render_target->GetDepthStencilView();
 #endif
 
 	return NULL;

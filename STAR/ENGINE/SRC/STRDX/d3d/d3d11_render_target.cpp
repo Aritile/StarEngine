@@ -25,7 +25,7 @@ void D3D11RenderTarget::ClearRenderTarget(float _R, float _G, float _B, float _A
 	context->GetDeviceContext()->ClearRenderTargetView(renderTargetView, clear_color);
 	context->GetDeviceContext()->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
-ID3D11ShaderResourceView* D3D11RenderTarget::Get()
+ID3D11ShaderResourceView* D3D11RenderTarget::GetShaderResourceView()
 {
 	return shaderResourceView;
 }
@@ -110,4 +110,12 @@ bool D3D11RenderTarget::CreateDepthStencilView(UINT _Width, UINT _Height, UINT _
 
 	texture->Release();
 	return true;
+}
+ID3D11RenderTargetView* D3D11RenderTarget::GetRenderTargetView()
+{
+	return renderTargetView;
+}
+ID3D11DepthStencilView* D3D11RenderTarget::GetDepthStencilView()
+{
+	return depthStencilView;
 }

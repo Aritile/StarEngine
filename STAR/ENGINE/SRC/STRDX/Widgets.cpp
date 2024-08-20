@@ -10,9 +10,12 @@
 // strdx
 #include "context.h"
 
+#define MS_COUNT 8
+
 static Context* context = Context::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
+static DX* dx = DX::GetSingleton();
 
 Widgets* Widgets::GetSingleton()
 {
@@ -182,6 +185,9 @@ void Widgets::Release()
 	if (rasterizerState) rasterizerState->Release();
 	if (perspectiveFrustum) perspectiveFrustum->Release();
 	if (orthographicFrustum) orthographicFrustum->Release();
+	if (renderTarget) renderTarget->Release();
+	if (rectangle) rectangle->Release();
+	if (rectangleConstantBuffer) rectangleConstantBuffer->Release();
 }
 void Widgets::Init()
 {
@@ -513,4 +519,101 @@ std::vector<POSCOL> Widgets::BuildGrid()
 	vertices.push_back(POSCOL(0.0f, -lenght, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f));
 
 	return vertices;
+}
+void Widgets::InitRenderTarget()
+{
+	renderTarget = RenderTarget::Create(500, 500, MS_COUNT);
+	rectangle = Shader::Create();
+	rectangleConstantBuffer = ConstantBuffer::Create(sizeof(CBRectangle));
+
+	if (rectangle)
+	{
+		rectangle->LoadVertex("data\\shader\\rectangle\\vertex.hlsl", true);
+		rectangle->LoadPixel("data\\shader\\rectangle\\pixel.hlsl", true);
+
+		// compile shaders
+		rectangle->CompileVertex();
+		rectangle->CompilePixel();
+
+		// save shaders
+		//shader->SaveVertex("vertex.bin");
+		//shader->SavePixel("pixel.bin");
+
+		// create shaders
+		rectangle->CreateVertex();
+		rectangle->CreatePixel();
+
+		rectangle->AddLayout("POSITION", 0, 3, 0, 0);
+		rectangle->CreateLayout();
+
+		// x, y, z coords
+		std::vector<POS> vertices;
+		vertices.push_back(POS(-1.0f, -1.0f, 0.0f));
+		vertices.push_back(POS(-1.0f, 1.0f, 0.0f));
+		vertices.push_back(POS(1.0f, 1.0f, 0.0f));
+		vertices.push_back(POS(1.0f, -1.0f, 0.0f));
+
+		rectangle->AddIndex(0);
+		rectangle->AddIndex(1);
+		rectangle->AddIndex(2);
+		rectangle->AddIndex(0);
+		rectangle->AddIndex(2);
+		rectangle->AddIndex(3);
+
+		rectangle->CreateVertexBuffer<POS>(vertices);
+		rectangle->CreateIndexBuffer();
+
+		rectangle->ReleaseVertexBlob();
+		rectangle->ReleasePixelBlob();
+	}
+}
+void Widgets::SetRenderTarget()
+{
+	renderTarget->Set();
+	renderTarget->ClearRenderTarget(0.0f, 0.0f, 0.0f, 1.0);
+}
+void Widgets::UnsetRenderTarget()
+{
+	context->UnsetRenderTarget();
+}
+ShaderResourceID Widgets::GetRenderTargetShaderResource()
+{
+	return renderTarget->GetShaderResource();
+}
+RenderTargetID Widgets::GetRenderTarget()
+{
+	return renderTarget->GetRenderTarget();
+}
+DepthStencilID Widgets::GetDepthStencil()
+{
+	return renderTarget->GetDepthStencil();
+}
+void Widgets::RenderRectangle()
+{
+	if (rectangle)
+	{
+		// set shader
+		context->Set(rectangle);
+
+		// update constant buffer from struct and set
+		cbRectangle.iResolution = DirectX::XMFLOAT2(viewportWindow->GetBufferSize().x, viewportWindow->GetBufferSize().y);
+		cbRectangle.sampleCount = MS_COUNT;
+		rectangleConstantBuffer->Update(&cbRectangle);
+		context->SetPixelConstantBuffer(rectangleConstantBuffer, 0);
+
+		// bind texture
+		context->SetPixelShaderResource(renderTarget->GetShaderResource(), 0);
+
+		// draw shader
+		context->Draw(rectangle);
+	}
+
+	dx->UnbindAll(0, 1);
+}
+void Widgets::ResizeRenderTarget(Vector2 _Size)
+{
+	if (renderTarget)
+		renderTarget->Release();
+
+	renderTarget = RenderTarget::Create(_Size.x, _Size.y, MS_COUNT);
 }

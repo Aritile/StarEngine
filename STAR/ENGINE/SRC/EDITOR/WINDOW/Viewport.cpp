@@ -11,6 +11,7 @@
 #include "../../WINDOW/MainWindow.h"
 #include "../../USERINPUT/UserInput.h"
 #include "../../STORAGE/TextureStorage.h"
+#include "../../STRDX/Widgets.h"
 
 static DX* dx = DX::GetSingleton();
 static Game* game = Game::GetSingleton();
@@ -19,6 +20,7 @@ static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 static MainWindow* mainWindow = MainWindow::GetSingleton();
 static UserInput* userInput = UserInput::GetSingleton();
 static TextureStorage* textureStorage = TextureStorage::GetSingleton();
+static Widgets* widgets = Widgets::GetSingleton();
 
 ViewportWindow* ViewportWindow::GetSingleton()
 {
@@ -48,6 +50,7 @@ void ViewportWindow::Render()
 				{
 					SetPerspectiveProjectionMatrix(windowSizeAvail, camFov, camNearZ, camFarZ);
 					CreateBuffer(windowSizeAvail);
+					widgets->ResizeRenderTarget(Vector2(windowSizeAvail.x, windowSizeAvail.y));
 				}
 			}
 		}
