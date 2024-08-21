@@ -79,4 +79,5 @@ private:
 	CBRectangle cbRectangle;
 	ConstantBuffer* rectangleConstantBuffer = nullptr;
 	RasterizerState* rasterizerState = nullptr;
+	Vector2 bufferSize;
 };

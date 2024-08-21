@@ -1,5 +1,5 @@
 # do not edit
-# Aug 20 2024 22:23:37
+# Aug 21 2024 21:45:12
 Star:
   Version:
     Major: 1
@@ -13,8 +13,8 @@ Star:
         Size: 15
       Camera:
         Near: 0.100000001
-        Far: 1000
-        Fov: 124
+        Far: 399
+        Fov: 147
         Speed: 8
         BoostSpeed: 16
         PositionLerp: 5

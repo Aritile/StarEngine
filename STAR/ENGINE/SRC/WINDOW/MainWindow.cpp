@@ -8,6 +8,7 @@
 #include "../ENGINE/Engine.h"
 #include "../EDITOR/WINDOW/Viewport.h"
 #include "../MODULE/Module.h"
+#include "../JOB/Job.h"
 
 MainWindow* MainWindow::GetSingleton()
 {
@@ -22,6 +23,7 @@ static MainWindow* mainWindow = MainWindow::GetSingleton();
 static Engine* engine = Engine::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 static Module* module = Module::GetSingleton();
+static Job* job = Job::GetSingleton();
 
 bool MainWindow::CreateMainWindow(std::wstring _Name, int _Width, int _Height)
 {
@@ -83,11 +85,16 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
     editor->SetProcHandler(hwnd, uMsg, wParam, lParam);
     module->EngineWindowProcModules(hwnd, uMsg, wParam, lParam);
 
+    MainWindow* mainWindow = MainWindow::GetSingleton();
+
     switch (uMsg)
     {
     case WM_DESTROY:
     {
-        PostQuitMessage(0);
+        //PostQuitMessage(0);
+        if (!job->IsDone())
+            Star::AddLog("[Window] -> Please wait. Some of the jobs are still running.");
+        mainWindow->close = true;
         break;
     }
 

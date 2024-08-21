@@ -10,6 +10,7 @@
 #include "../MAIN/Main.h"
 #include "../WINDOW/MainWindow.h"
 #include "../ENGINE/Engine.h"
+#include "../EDITOR/WINDOW/Assets.h"
 
 static DX* dx = DX::GetSingleton();
 static MainWindow* mainWindow = MainWindow::GetSingleton();
@@ -554,4 +555,11 @@ void Star::ShowCursor(bool _Show)
 bool Star::IsCursorShowed()
 {
 	return isCursorVisible;
+}
+bool Star::ImageFormatCheck(std::string _FileType)
+{
+	if (_FileType.compare(PNG) == 0 || _FileType.compare(DDS) == 0 || _FileType.compare(JPEG) == 0 || _FileType.compare(JPG) == 0 || _FileType.compare(HDR) == 0)
+		return true;
+
+	return false;
 }

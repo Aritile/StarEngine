@@ -98,7 +98,7 @@ void MeshComponent::Render()
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
 					{
 						FILEs* payload_n = (FILEs*)payload->Data;
-						if (payload_n->file_type == PNG || payload_n->file_type == JPEG || payload_n->file_type == DDS)
+						if (Star::ImageFormatCheck(payload_n->file_type.c_str()))
 						{
 							entt::entity entity = entt::to_entity(ecs->registry, *this);
 							std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n->file_name;

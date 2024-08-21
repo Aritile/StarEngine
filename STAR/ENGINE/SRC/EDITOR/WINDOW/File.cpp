@@ -29,7 +29,7 @@ void FileWindow::Render()
 				ImGui::Text("File size: %i KB", selected->file_size / 1024); /* B TO KB */
 				ImGui::Separator();
 			}
-			if (selected->file_type == PNG || selected->file_type == DDS)
+			if (Star::ImageFormatCheck(selected->file_type.c_str()))
 			{
 				/* code */
 			}

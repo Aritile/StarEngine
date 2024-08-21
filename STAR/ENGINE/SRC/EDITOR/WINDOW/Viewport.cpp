@@ -50,7 +50,8 @@ void ViewportWindow::Render()
 				{
 					SetPerspectiveProjectionMatrix(windowSizeAvail, camFov, camNearZ, camFarZ);
 					CreateBuffer(windowSizeAvail);
-					widgets->ResizeRenderTarget(Vector2(windowSizeAvail.x, windowSizeAvail.y));
+					if (!mainWindow->close) // this is good, because if windows is closed, then ResizeRenderTarget() is still called
+						widgets->ResizeRenderTarget(Vector2(windowSizeAvail.x, windowSizeAvail.y));
 				}
 			}
 		}
@@ -68,7 +69,7 @@ void ViewportWindow::Render()
 				entt::entity entity = RunRay(false);
 				if (ecs->IsValid(entity))
 				{
-					if (payload_n->file_type == PNG || payload_n->file_type == JPEG || payload_n->file_type == DDS)
+					if (Star::ImageFormatCheck(payload_n->file_type.c_str()))
 					{
 						if (ecs->HasComponent<MeshComponent>(entity))
 						{

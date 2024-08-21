@@ -22,6 +22,7 @@ public:
 	HWND GetHandle();
 	void LockCursor(bool _Lock);
 	bool IsCursorLocked();
+	bool close = false;
 
 private:
 	HWND hwnd = NULL;

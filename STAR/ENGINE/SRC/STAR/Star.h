@@ -88,4 +88,5 @@ namespace Star
 
 	void ShowCursor(bool _Show);
 	bool IsCursorShowed();
+	bool ImageFormatCheck(std::string _FileType);
 }

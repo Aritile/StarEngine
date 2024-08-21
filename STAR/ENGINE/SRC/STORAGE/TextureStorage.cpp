@@ -23,7 +23,7 @@ bool TextureStorage::LoadTexture(const char* _Path, TextureStorageBuffer** _Text
 	{
 		std::string type = Star::GetFileExtensionFromPath(_Path);
 
-		if (type.compare(PNG) == 0 || type.compare(JPEG) == 0)
+		if (Star::ImageFormatCheck(type.c_str()))
 		{
 			Star::AddLog("[TextureStorage] -> Loading texture.. %s", _Path);
 

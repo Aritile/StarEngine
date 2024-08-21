@@ -596,7 +596,7 @@ void Widgets::RenderRectangle()
 		context->Set(rectangle);
 
 		// update constant buffer from struct and set
-		cbRectangle.iResolution = DirectX::XMFLOAT2(viewportWindow->GetBufferSize().x, viewportWindow->GetBufferSize().y);
+		cbRectangle.iResolution = bufferSize;
 		cbRectangle.sampleCount = MS_COUNT;
 		rectangleConstantBuffer->Update(&cbRectangle);
 		context->SetPixelConstantBuffer(rectangleConstantBuffer, 0);
@@ -615,5 +615,6 @@ void Widgets::ResizeRenderTarget(Vector2 _Size)
 	if (renderTarget)
 		renderTarget->Release();
 
-	renderTarget = RenderTarget::Create(_Size.x, _Size.y, MS_COUNT);
+	bufferSize = Vector2(_Size.x, _Size.y);
+	renderTarget = RenderTarget::Create((UINT)_Size.x, (UINT)_Size.y, MS_COUNT);
 }

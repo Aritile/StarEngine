@@ -14,18 +14,19 @@
 #include "../../XTK/WICTextureLoader11.h"
 #include "../../XTK/DDSTextureLoader11.h"
 
-#define LUA ".lua"
-#define JPEG ".jpeg"
-#define PNG ".png"
-#define DDS ".dds"
-#define HDR ".hdr"
-#define WAV ".wav"
-#define TXT ".txt"
-#define OBJ ".obj"
-#define FBX ".fbx"
-#define TTF ".ttf"
-#define SKY ".sky"
-#define MAT ".mat"
+#define LUA ".lua" // script
+#define JPEG ".jpeg" // image
+#define JPG ".jpg" // this format is just jpeg, why? because people have created their own shortened form
+#define PNG ".png" // image
+#define DDS ".dds" // image
+#define HDR ".hdr" // image
+#define WAV ".wav" // audio
+#define TXT ".txt" // text
+#define OBJ ".obj" // model
+#define FBX ".fbx" // model
+#define TTF ".ttf" // font
+#define SKY ".sky" // sky
+#define MAT ".mat" // material
 
 #define FOLDER "\\assets"
 

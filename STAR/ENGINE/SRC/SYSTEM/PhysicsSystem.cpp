@@ -95,25 +95,26 @@ physx::PxScene* PhysicsSystem::GetScene()
 
 void PhysicsComponent::AddBoxCollider()
 {
-	BoxColliderComponent boxColliderBuffer;
+	box_colliders.emplace_back();
+	BoxColliderComponent* boxColliderComponent = &box_colliders.back();
 	{
-		//boxColliderBuffer.CreateMaterial();
 		entt::entity entity = entt::to_entity(ecs->registry, *this);
+
+		// create shape
 		if (ecs->HasComponent<TransformComponent>(entity))
 		{
 			auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
-			boxColliderBuffer.CreateShape(transformComponent.GetScale());
+			boxColliderComponent->CreateShape(transformComponent.GetScale());
 		}
 
+		// attach shape
 		if (ecs->registry.any_of<RigidbodyComponent>(entity))
 		{
 			auto& rigidBodyComponent = ecs->registry.get<RigidbodyComponent>(entity);
 			if (rigidBodyComponent.GetRigidBody())
-				rigidBodyComponent.GetRigidBody()->attachShape(*boxColliderBuffer.GetShape());
-			//printf("Attaching shape\n");
+				rigidBodyComponent.GetRigidBody()->attachShape(*boxColliderComponent->GetShape());
 		}
 	}
-	box_colliders.push_back(boxColliderBuffer);
 }
 
 void PhysicsComponent::Render()
@@ -216,26 +217,27 @@ PhysicsSystem* PhysicsSystem::GetSingleton()
 }
 void PhysicsComponent::AddSphereCollider()
 {
-	SphereColliderComponent sphereColliderBuffer;
+	sphere_colliders.emplace_back();
+	SphereColliderComponent* sphereColliderComponent = &sphere_colliders.back();
 	{
-		//boxColliderBuffer.CreateMaterial();
 		entt::entity entity = entt::to_entity(ecs->registry, *this);
+
+		// create shape
 		if (ecs->HasComponent<TransformComponent>(entity))
 		{
 			auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
 			float extent = std::max(std::max(transformComponent.GetScale().x, transformComponent.GetScale().y), transformComponent.GetScale().z);
-			sphereColliderBuffer.CreateShape(extent); // fixed! static? what about this? (1.0f, 1.0f, 1.0f) / 3
+			sphereColliderComponent->CreateShape(extent); // fixed! static? what about this? (1.0f, 1.0f, 1.0f) / 3
 		}
 
+		// attach shape
 		if (ecs->registry.any_of<RigidbodyComponent>(entity))
 		{
 			auto& rigidBodyComponent = ecs->registry.get<RigidbodyComponent>(entity);
 			if (rigidBodyComponent.GetRigidBody())
-				rigidBodyComponent.GetRigidBody()->attachShape(*sphereColliderBuffer.GetShape());
-			//printf("Attaching shape\n");
+				rigidBodyComponent.GetRigidBody()->attachShape(*sphereColliderComponent->GetShape());
 		}
 	}
-	sphere_colliders.push_back(sphereColliderBuffer);
 }
 void PhysicsComponent::ReleaseAllBoxColliders()
 {

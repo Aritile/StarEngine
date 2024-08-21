@@ -255,6 +255,10 @@ void Engine::EngineProcess()
             game->EndTime();
         }
     }
+
+    if (mainWindow->close)
+        if (job->IsDone())
+            PostQuitMessage(0);
 }
 
 void Engine::EngineShutdown()

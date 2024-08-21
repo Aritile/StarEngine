@@ -221,7 +221,7 @@ void AssetsWindow::Render()
 									{
 										ImGui::ImageButton((void*)folderTexture, ImVec2(size, size));
 									}
-									else if (files[i].file_type == PNG || files[i].file_type == DDS || files[i].file_type == JPEG || files[i].file_type == HDR)
+									else if (Star::ImageFormatCheck(files[i].file_type.c_str()))
 									{
 										if (files[i].texture) /* if active */
 										{
@@ -274,7 +274,7 @@ void AssetsWindow::Render()
 										{
 											ImGui::Image((void*)folderTexture, ImVec2(size, size));
 										}
-										else if (files[i].file_type == PNG || files[i].file_type == DDS || files[i].file_type == JPEG || files[i].file_type == HDR)
+										else if (Star::ImageFormatCheck(files[i].file_type.c_str()))
 										{
 											if (files[i].texture) /* if active */
 											{
@@ -537,7 +537,7 @@ void AssetsWindow::OutCore(std::string path)
 
 		if (!files[i].is_dir)
 		{
-			if (files[i].file_type == PNG || files[i].file_type == DDS || files[i].file_type == JPEG)
+			if (Star::ImageFormatCheck(files[i].file_type.c_str()))
 			{
 				std::string buffer = nowDirPath + "\\" + files[i].file_name;
 
@@ -547,7 +547,7 @@ void AssetsWindow::OutCore(std::string path)
 
 				///////////////////////////////////////////////
 
-				if (files[i].file_type == PNG || files[i].file_type == JPEG)
+				if (Star::ImageFormatCheck(files[i].file_type.c_str()))
 				{
 					if (FAILED(LoadFromWICFile(
 						Star::ConvertString(buffer).c_str(),
