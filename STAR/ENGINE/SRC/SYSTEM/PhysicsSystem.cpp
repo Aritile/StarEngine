@@ -135,6 +135,14 @@ void PhysicsComponent::Render()
 		}
 		ImGui::PopID();
 	}
+	for (size_t i = 0; i < capsule_colliders.size(); i++)
+	{
+		ImGui::PushID((int)i);
+		{
+			capsule_colliders[i].Render(GetCapsuleColliders(), i);
+		}
+		ImGui::PopID();
+	}
 }
 
 std::vector<BoxColliderComponent>* PhysicsComponent::GetBoxColliders()
@@ -147,19 +155,32 @@ std::vector<SphereColliderComponent>* PhysicsComponent::GetSphereColliders()
 }
 void PhysicsComponent::SerializeComponent(YAML::Emitter& out)
 {
-	if (box_colliders.empty() && sphere_colliders.empty())
-		return;
+	unsigned int x = 0;
 
-	out << YAML::Key << "Colliders" << YAML::Value << YAML::BeginSeq;
-	for (size_t i = 0; i < box_colliders.size(); i++)
 	{
-		box_colliders[i].SerializeComponent(out);
+		// any type of colliders?
+		if (!box_colliders.empty())
+			x++;
+		if (!sphere_colliders.empty())
+			x++;
+		if (!capsule_colliders.empty())
+			x++;
 	}
-	for (size_t i = 0; i < sphere_colliders.size(); i++)
+
+	if (x != 0)
+		out << YAML::Key << "Colliders" << YAML::Value << YAML::BeginSeq;
+
 	{
-		sphere_colliders[i].SerializeComponent(out);
+		for (size_t i = 0; i < box_colliders.size(); i++)
+			box_colliders[i].SerializeComponent(out);
+		for (size_t i = 0; i < sphere_colliders.size(); i++)
+			sphere_colliders[i].SerializeComponent(out);
+		for (size_t i = 0; i < capsule_colliders.size(); i++)
+			capsule_colliders[i].SerializeComponent(out);
 	}
-	out << YAML::EndSeq;
+
+	if (x != 0)
+		out << YAML::EndSeq;
 }
 void PhysicsComponent::DeserializeComponent(YAML::Node& in)
 {
@@ -179,6 +200,12 @@ void PhysicsComponent::DeserializeComponent(YAML::Node& in)
 			{
 				AddSphereCollider();
 				sphere_colliders.back().DeserializeComponent(sphereCollider);
+			}
+			YAML::Node capsuleCollider = collider["CapsuleCollider"];
+			if (capsuleCollider)
+			{
+				AddCapsuleCollider();
+				capsule_colliders.back().DeserializeComponent(sphereCollider);
 			}
 		}
 	}
@@ -255,4 +282,38 @@ void PhysicsComponent::ClearVector()
 		box_colliders.clear();
 	if (!sphere_colliders.empty())
 		sphere_colliders.clear();
+	if (!capsule_colliders.empty())
+		capsule_colliders.clear();
+}
+std::vector<CapsuleColliderComponent>* PhysicsComponent::GetCapsuleColliders()
+{
+	return &capsule_colliders;
+}
+void PhysicsComponent::ReleaseAllCapsuleColliders()
+{
+	for (size_t i = 0; i < capsule_colliders.size(); i++)
+		capsule_colliders[i].Release();
+}
+void PhysicsComponent::AddCapsuleCollider()
+{
+	capsule_colliders.emplace_back();
+	CapsuleColliderComponent* capsuleColliderComponent = &capsule_colliders.back();
+	{
+		entt::entity entity = entt::to_entity(ecs->registry, *this);
+
+		// create shape
+		if (ecs->HasComponent<TransformComponent>(entity))
+		{
+			auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
+			capsuleColliderComponent->CreateShape(1.0f, 1.0f);
+		}
+
+		// attach shape
+		if (ecs->registry.any_of<RigidbodyComponent>(entity))
+		{
+			auto& rigidBodyComponent = ecs->registry.get<RigidbodyComponent>(entity);
+			if (rigidBodyComponent.GetRigidBody())
+				rigidBodyComponent.GetRigidBody()->attachShape(*capsuleColliderComponent->GetShape());
+		}
+	}
 }

@@ -16,7 +16,6 @@
 #include "../WINDOW/MainWindow.h"
 #include "../USERINPUT/UserInput.h"
 #include "../STORAGE/MeshStorage.h"
-#include "../DEBUG/DTiming.h"
 #include "../JOB/Job.h"
 
 #define ENABLE_MODULES
@@ -40,9 +39,6 @@ static UserInput* userInput = UserInput::GetSingleton();
 static MeshStorage* meshStorage = MeshStorage::GetSingleton();
 static Timing* timing = Timing::GetSingleton();
 static Job* job = Job::GetSingleton();
-
-static TimingBuffer* physicsTiming = nullptr;
-static TimingBuffer* drawTiming = nullptr;
 
 Engine* Engine::GetSingleton()
 {
@@ -141,7 +137,7 @@ void Engine::EngineStart()
     widgets->InitGridWidget();
     widgets->InitPerspectiveFrustumWidget();
     widgets->InitOrthographicFrustumWidget();
-    widgets->InitRenderTarget(MultisamplingCount);
+    widgets->InitRenderTarget(multisamplingCount);
 
 #if !defined(GAME) // this is only for engine
     physicsTiming = timing->AddTimer("Physics");
@@ -230,7 +226,9 @@ void Engine::EngineProcess()
         dx->dxDeviceContext->ClearRenderTargetView(renderTargetView, (float*)&clearColor);
         //dx->dxDeviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
         dx->dxDeviceContext->RSSetViewports(1, &viewport);
-        widgets->RenderRectangle(enableMultisampling, MultisamplingCount);
+        dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // for debug
+        widgets->RenderRectangle(enableMultisampling, multisamplingCount);
+        viewportWindow->RefreshRenderState();
         dx->dxDeviceContext->OMSetRenderTargets(NULL, NULL, NULL);
     }
 

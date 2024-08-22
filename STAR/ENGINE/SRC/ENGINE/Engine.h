@@ -6,6 +6,7 @@
 #include "../SKY/Sky.h"
 #include "../EDITOR/Editor.h"
 #include "../STAR/Star.h"
+#include "../DEBUG/DTiming.h"
 
 class Engine
 {
@@ -49,5 +50,9 @@ public:
 	bool close = false;
 	bool enableAntialiasing = true;
 	bool enableMultisampling = true;
-	unsigned int MultisamplingCount = 8;
+	unsigned int multisamplingCount = 8;
+
+private:
+	TimingBuffer* physicsTiming = nullptr;
+	TimingBuffer* drawTiming = nullptr;
 };

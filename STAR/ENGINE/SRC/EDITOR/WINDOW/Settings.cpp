@@ -104,10 +104,10 @@ void SettingsWindow::RenderRenderer()
 			}
 			if (!engine->enableMultisampling)
 				ImGui::BeginDisabled();
-			if (ImGui::SliderInt("MultisamplingCount", (int*)&engine->MultisamplingCount, 1, 8))
+			if (ImGui::SliderInt("MultisamplingCount", (int*)&engine->multisamplingCount, 1, 8))
 			{
-				// not working for now
-				//widgets->RecreateRenderTarget(Vector2(viewportWindow->GetBufferSize().x, viewportWindow->GetBufferSize().y), engine->MultisamplingCount);
+				// not working
+				//widgets->RecreateRenderTarget(Vector2(viewportWindow->GetBufferSize().x, viewportWindow->GetBufferSize().y), engine->multisamplingCount);
 			}
 			if (!engine->enableMultisampling)
 				ImGui::EndDisabled();
@@ -324,6 +324,7 @@ void SettingsWindow::Save()
 			{
 				out << YAML::Key << "EnableAntialiasing" << YAML::Value << engine->enableAntialiasing;
 				out << YAML::Key << "EnableMultisampling" << YAML::Value << engine->enableMultisampling;
+				out << YAML::Key << "MultisamplingCount" << YAML::Value << engine->multisamplingCount;
 			}
 			out << YAML::EndMap;
 		}
@@ -389,6 +390,7 @@ void SettingsWindow::Load()
 		YAML::Node renderer = settings["Renderer"];
 		engine->enableAntialiasing = renderer["EnableAntialiasing"].as<bool>();
 		engine->enableMultisampling = renderer["EnableMultisampling"].as<bool>();
+		engine->multisamplingCount = renderer["MultisamplingCount"].as<unsigned int>();
 	}
 }
 void SettingsWindow::RenderLuaEditor()

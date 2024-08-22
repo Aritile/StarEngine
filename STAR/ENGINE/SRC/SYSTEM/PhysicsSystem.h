@@ -6,6 +6,7 @@
 #include <yaml-cpp/yaml.h>
 #include "../ENTITY/COMPONENT/BoxColliderComponent.h"
 #include "../ENTITY/COMPONENT/SphereColliderComponent.h"
+#include "../ENTITY/COMPONENT/CapsuleColliderComponent.h"
 
 #define PVD_HOST "127.0.0.1"
 #define PVD_PORT 5425
@@ -67,10 +68,14 @@ struct PhysicsComponent
 {
 public:
 	void Render();
+
 	void AddBoxCollider();
 	void AddSphereCollider();
+	void AddCapsuleCollider();
+
 	void ReleaseAllBoxColliders();
 	void ReleaseAllSphereColliders();
+	void ReleaseAllCapsuleColliders();
 
 public:
 	void SerializeComponent(YAML::Emitter& out);
@@ -81,8 +86,10 @@ public:
 public:
 	std::vector<BoxColliderComponent>* GetBoxColliders();
 	std::vector<SphereColliderComponent>* GetSphereColliders();
+	std::vector<CapsuleColliderComponent>* GetCapsuleColliders();
 
 private:
 	std::vector<BoxColliderComponent> box_colliders;
 	std::vector<SphereColliderComponent> sphere_colliders;
+	std::vector<CapsuleColliderComponent> capsule_colliders;
 };

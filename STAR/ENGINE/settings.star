@@ -1,5 +1,5 @@
 # do not edit
-# Aug 22 2024 09:54:56
+# Aug 22 2024 20:43:13
 Star:
   Version:
     Major: 1
@@ -13,16 +13,17 @@ Star:
         Size: 15
       Camera:
         Near: 0.100000001
-        Far: 399
-        Fov: 147
+        Far: 1000
+        Fov: 45
         Speed: 8
         BoostSpeed: 16
-        PositionLerp: 5
-        RotationLerp: 5
+        PositionLerp: 8
+        RotationLerp: 16
       Physics:
         UseGpu: true
       LuaEditor:
-        Program: Visual Studio
+        Program: Text Editor
       Renderer:
         EnableAntialiasing: true
         EnableMultisampling: true
+        MultisamplingCount: 8

@@ -303,6 +303,9 @@
     <ClInclude Include="SRC\JOB\Job.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\CapsuleColliderComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SRC\MAIN\Main.cpp">
@@ -612,6 +615,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\JOB\Job.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\CapsuleColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

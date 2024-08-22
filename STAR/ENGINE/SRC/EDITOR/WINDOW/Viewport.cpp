@@ -53,7 +53,7 @@ void ViewportWindow::Render()
 					SetPerspectiveProjectionMatrix(windowSizeAvail, camFov, camNearZ, camFarZ);
 					CreateBuffer(windowSizeAvail);
 					if (!engine->close) // this is good, because if windows is closed, then ResizeRenderTarget() is still called
-						widgets->ResizeRenderTarget(Vector2(windowSizeAvail.x, windowSizeAvail.y), engine->MultisamplingCount);
+						widgets->ResizeRenderTarget(Vector2(windowSizeAvail.x, windowSizeAvail.y), engine->multisamplingCount);
 				}
 			}
 		}
