@@ -141,7 +141,7 @@ void Engine::EngineStart()
     widgets->InitGridWidget();
     widgets->InitPerspectiveFrustumWidget();
     widgets->InitOrthographicFrustumWidget();
-    widgets->InitRenderTarget();
+    widgets->InitRenderTarget(MultisamplingCount);
 
 #if !defined(GAME) // this is only for engine
     physicsTiming = timing->AddTimer("Physics");
@@ -230,7 +230,7 @@ void Engine::EngineProcess()
         dx->dxDeviceContext->ClearRenderTargetView(renderTargetView, (float*)&clearColor);
         //dx->dxDeviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
         dx->dxDeviceContext->RSSetViewports(1, &viewport);
-        widgets->RenderRectangle();
+        widgets->RenderRectangle(enableMultisampling, MultisamplingCount);
         dx->dxDeviceContext->OMSetRenderTargets(NULL, NULL, NULL);
     }
 
@@ -256,7 +256,7 @@ void Engine::EngineProcess()
         }
     }
 
-    if (mainWindow->close)
+    if (close)
         if (job->IsDone())
             PostQuitMessage(0);
 }
@@ -397,12 +397,14 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
     if (!game)
     {
         dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-        widgets->SetRasterizerState();
+        if (enableAntialiasing)
+            widgets->SetRasterizerState();
         widgets->RenderBoundingBoxWidget();
         widgets->RenderGridWidget();
         widgets->RenderPerspectiveFrustumWidget();
         widgets->RenderOrthographicFrustumWidget();
-        widgets->UnsetRasterizerState();
+        if (enableAntialiasing)
+            widgets->UnsetRasterizerState();
         viewportWindow->RefreshRenderState();
     }
     else
@@ -428,4 +430,10 @@ bool Engine::FindGoodCamera(Matrix& _ProjectionMatrix, Matrix& _ViewMatrix)
         return true;
     }
     return false;
+}
+void Engine::CloseSafeEngine()
+{
+    if (!job->IsDone())
+        Star::AddLog("[Window] -> Please wait. Some of the jobs are still running.");
+    close = true;
 }

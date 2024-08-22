@@ -92,9 +92,7 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
     case WM_DESTROY:
     {
         //PostQuitMessage(0);
-        if (!job->IsDone())
-            Star::AddLog("[Window] -> Please wait. Some of the jobs are still running.");
-        mainWindow->close = true;
+        engine->CloseSafeEngine();
         break;
     }
 
@@ -201,4 +199,12 @@ void MainWindow::LockCursor(bool _Lock)
 bool MainWindow::IsCursorLocked()
 {
     return isCursorLocked;
+}
+void MainWindow::ShowWindow()
+{
+    ::ShowWindow(hwnd, SW_NORMAL);
+}
+void MainWindow::HideWindow()
+{
+    ::ShowWindow(hwnd, SW_HIDE);
 }

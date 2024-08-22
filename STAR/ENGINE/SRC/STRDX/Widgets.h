@@ -28,13 +28,14 @@ public:
 	void InitPerspectiveFrustumWidget();
 	void InitOrthographicFrustumWidget();
 
-	void InitRenderTarget();
+	void InitRenderTarget(unsigned int _MultisamplingCount);
 	void SetRenderTarget();
 	void UnsetRenderTarget();
 	ShaderResourceID GetRenderTargetShaderResource();
 	RenderTargetID GetRenderTarget();
 	DepthStencilID GetDepthStencil();
-	void ResizeRenderTarget(Vector2 _Size);
+	void ResizeRenderTarget(Vector2 _Size, unsigned int _MultisamplingCount);
+	void RecreateRenderTarget(Vector2 _Size, unsigned int _MultisamplingCount);
 
 public:
 	void RenderBoundingBoxWidget();
@@ -43,7 +44,7 @@ public:
 	void RenderOrthographicFrustumWidget();
 	void SetRasterizerState();
 	void UnsetRasterizerState();
-	void RenderRectangle();
+	void RenderRectangle(bool _EnableMultisampling, unsigned int _MultisamplingCount);
 
 public:
 	void SetRenderGrid(bool _Render);

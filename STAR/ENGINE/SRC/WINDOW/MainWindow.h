@@ -22,7 +22,8 @@ public:
 	HWND GetHandle();
 	void LockCursor(bool _Lock);
 	bool IsCursorLocked();
-	bool close = false;
+	void ShowWindow();
+	void HideWindow();
 
 private:
 	HWND hwnd = NULL;

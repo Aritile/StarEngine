@@ -29,4 +29,5 @@ private:
 	void RenderPlayerPrefs();
 	void RenderPhysics();
 	void RenderLuaEditor();
+	void RenderRenderer();
 };

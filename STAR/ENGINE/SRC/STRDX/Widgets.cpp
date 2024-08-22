@@ -10,8 +10,6 @@
 // strdx
 #include "context.h"
 
-#define MS_COUNT 8
-
 static Context* context = Context::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
@@ -520,9 +518,9 @@ std::vector<POSCOL> Widgets::BuildGrid()
 
 	return vertices;
 }
-void Widgets::InitRenderTarget()
+void Widgets::InitRenderTarget(unsigned int _MultisamplingCount)
 {
-	renderTarget = RenderTarget::Create(500, 500, MS_COUNT);
+	renderTarget = RenderTarget::Create(512, 512, _MultisamplingCount);
 	rectangle = Shader::Create();
 	rectangleConstantBuffer = ConstantBuffer::Create(sizeof(CBRectangle));
 
@@ -588,7 +586,7 @@ DepthStencilID Widgets::GetDepthStencil()
 {
 	return renderTarget->GetDepthStencil();
 }
-void Widgets::RenderRectangle()
+void Widgets::RenderRectangle(bool _EnableMultisampling, unsigned int _MultisamplingCount)
 {
 	if (rectangle)
 	{
@@ -597,7 +595,10 @@ void Widgets::RenderRectangle()
 
 		// update constant buffer from struct and set
 		cbRectangle.iResolution = bufferSize;
-		cbRectangle.sampleCount = MS_COUNT;
+		if (_EnableMultisampling)
+			cbRectangle.sampleCount = _MultisamplingCount;
+		else
+			cbRectangle.sampleCount = 1;
 		rectangleConstantBuffer->Update(&cbRectangle);
 		context->SetPixelConstantBuffer(rectangleConstantBuffer, 0);
 
@@ -610,11 +611,15 @@ void Widgets::RenderRectangle()
 
 	dx->UnbindAll(0, 1);
 }
-void Widgets::ResizeRenderTarget(Vector2 _Size)
+void Widgets::RecreateRenderTarget(Vector2 _Size, unsigned int _MultisamplingCount)
+{
+	ResizeRenderTarget(_Size, _MultisamplingCount);
+}
+void Widgets::ResizeRenderTarget(Vector2 _Size, unsigned int _MultisamplingCount)
 {
 	if (renderTarget)
 		renderTarget->Release();
 
 	bufferSize = Vector2(_Size.x, _Size.y);
-	renderTarget = RenderTarget::Create((UINT)_Size.x, (UINT)_Size.y, MS_COUNT);
+	renderTarget = RenderTarget::Create((UINT)_Size.x, (UINT)_Size.y, _MultisamplingCount);
 }

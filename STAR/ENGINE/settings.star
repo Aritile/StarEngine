@@ -1,5 +1,5 @@
 # do not edit
-# Aug 21 2024 21:45:12
+# Aug 22 2024 09:54:56
 Star:
   Version:
     Major: 1
@@ -23,3 +23,6 @@ Star:
         UseGpu: true
       LuaEditor:
         Program: Visual Studio
+      Renderer:
+        EnableAntialiasing: true
+        EnableMultisampling: true

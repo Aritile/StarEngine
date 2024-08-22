@@ -47,6 +47,7 @@ static SettingsWindow*     settingsWindow = SettingsWindow::GetSingleton();
 static MainWindow*         mainWindow = MainWindow::GetSingleton();
 static ProfilerWindow*     profilerWindow = ProfilerWindow::GetSingleton();
 static Job*                job = Job::GetSingleton();
+static Engine*             engine = Engine::GetSingleton();
 
 static ImVec2 mainMenuBarSize = ImVec2(NULL, NULL);
 
@@ -703,7 +704,11 @@ void Editor::RenderFileMenuBar()
 
 		ImGui::Separator();
 		if (ImGui::MenuItem("Exit"))
-			PostQuitMessage(0);
+		{
+			//PostQuitMessage(0);
+			mainWindow->HideWindow();
+			engine->CloseSafeEngine();
+		}
 		ImGui::EndMenu();
 	}
 }

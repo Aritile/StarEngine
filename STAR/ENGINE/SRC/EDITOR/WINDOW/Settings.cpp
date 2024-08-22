@@ -6,11 +6,13 @@
 #include <fstream>
 #include "../../STAR/Star.h"
 #include <filesystem>
+#include "../../ENGINE/Engine.h"
 
 static PlayerPrefs* playerPrefs = PlayerPrefs::GetSingleton();
 static PhysicsSystem* physicsSystem = PhysicsSystem::GetSingleton();
 static Widgets* widgets = Widgets::GetSingleton();
-ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
+static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
+static Engine* engine = Engine::GetSingleton();
 
 SettingsWindow* SettingsWindow::GetSingleton()
 {
@@ -46,14 +48,16 @@ void SettingsWindow::Render()
             {
                 if (selected == 0)
                     RenderGrid();
-                if (selected == 1)
+                else if (selected == 1)
                     RenderCamera();
-                if (selected == 2)
+                else if (selected == 2)
                     RenderPlayerPrefs();
-                if (selected == 3)
+                else if (selected == 3)
                     RenderPhysics();
-				if (selected == 4)
+				else if (selected == 4)
 					RenderLuaEditor();
+				else if (selected == 5)
+					RenderRenderer();
             }
             ImGui::EndChild();
             ImGui::EndGroup();
@@ -69,6 +73,48 @@ void SettingsWindow::Init()
     list.push_back("PlayerPrefs");
     list.push_back("Physics");
     list.push_back("Lua Editor");
+    list.push_back("Renderer");
+}
+
+void SettingsWindow::RenderRenderer()
+{
+	ImGui::SeparatorText("Renderer");
+	if (ImGui::BeginTable("Physics", 2, ImGuiTableFlags_Resizable))
+	{
+		ImGui::TableNextRow();
+		ImGui::TableNextColumn();
+		{
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+			ImGui::Text("Enable Antialiasing");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
+			ImGui::Text("Enable Multisampling");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
+			ImGui::Text("Multisampling Count");
+		}
+		ImGui::TableNextColumn();
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+		{
+			if (ImGui::Checkbox("##EnableAntialiasing", &engine->enableAntialiasing))
+			{
+				// ?
+			}
+			if (ImGui::Checkbox("##EnableMultisampling", &engine->enableMultisampling))
+			{
+				// ?
+			}
+			if (!engine->enableMultisampling)
+				ImGui::BeginDisabled();
+			if (ImGui::SliderInt("MultisamplingCount", (int*)&engine->MultisamplingCount, 1, 8))
+			{
+				// not working for now
+				//widgets->RecreateRenderTarget(Vector2(viewportWindow->GetBufferSize().x, viewportWindow->GetBufferSize().y), engine->MultisamplingCount);
+			}
+			if (!engine->enableMultisampling)
+				ImGui::EndDisabled();
+		}
+		ImGui::PopItemWidth();
+		ImGui::EndTable();
+	}
 }
 
 void SettingsWindow::RenderGrid()
@@ -273,6 +319,13 @@ void SettingsWindow::Save()
 					out << YAML::Key << "Program" << YAML::Value << programList[2];
 			}
 			out << YAML::EndMap;
+
+			out << YAML::Key << "Renderer" << YAML::Value << YAML::BeginMap;
+			{
+				out << YAML::Key << "EnableAntialiasing" << YAML::Value << engine->enableAntialiasing;
+				out << YAML::Key << "EnableMultisampling" << YAML::Value << engine->enableMultisampling;
+			}
+			out << YAML::EndMap;
 		}
 		out << YAML::EndMap;
 	}
@@ -329,6 +382,13 @@ void SettingsWindow::Load()
 		if (program.compare(programList[0]) == 0) programSelected = 0;
 		else if (program.compare(programList[1]) == 0) programSelected = 1;
 		else if (program.compare(programList[2]) == 0) programSelected = 2;
+	}
+
+	if (settings["Renderer"])
+	{
+		YAML::Node renderer = settings["Renderer"];
+		engine->enableAntialiasing = renderer["EnableAntialiasing"].as<bool>();
+		engine->enableMultisampling = renderer["EnableMultisampling"].as<bool>();
 	}
 }
 void SettingsWindow::RenderLuaEditor()

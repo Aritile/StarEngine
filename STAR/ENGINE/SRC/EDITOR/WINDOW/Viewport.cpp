@@ -12,15 +12,17 @@
 #include "../../USERINPUT/UserInput.h"
 #include "../../STORAGE/TextureStorage.h"
 #include "../../STRDX/Widgets.h"
+#include "../../ENGINE/Engine.h"
 
-static DX* dx = DX::GetSingleton();
-static Game* game = Game::GetSingleton();
-static Entity* ecs = Entity::GetSingleton();
-static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
-static MainWindow* mainWindow = MainWindow::GetSingleton();
-static UserInput* userInput = UserInput::GetSingleton();
+static DX*             dx = DX::GetSingleton();
+static Game*           game = Game::GetSingleton();
+static Entity*         ecs = Entity::GetSingleton();
+static AssetsWindow*   assetsWindow = AssetsWindow::GetSingleton();
+static MainWindow*     mainWindow = MainWindow::GetSingleton();
+static UserInput*      userInput = UserInput::GetSingleton();
 static TextureStorage* textureStorage = TextureStorage::GetSingleton();
-static Widgets* widgets = Widgets::GetSingleton();
+static Widgets*        widgets = Widgets::GetSingleton();
+static Engine*         engine = Engine::GetSingleton();
 
 ViewportWindow* ViewportWindow::GetSingleton()
 {
@@ -50,8 +52,8 @@ void ViewportWindow::Render()
 				{
 					SetPerspectiveProjectionMatrix(windowSizeAvail, camFov, camNearZ, camFarZ);
 					CreateBuffer(windowSizeAvail);
-					if (!mainWindow->close) // this is good, because if windows is closed, then ResizeRenderTarget() is still called
-						widgets->ResizeRenderTarget(Vector2(windowSizeAvail.x, windowSizeAvail.y));
+					if (!engine->close) // this is good, because if windows is closed, then ResizeRenderTarget() is still called
+						widgets->ResizeRenderTarget(Vector2(windowSizeAvail.x, windowSizeAvail.y), engine->MultisamplingCount);
 				}
 			}
 		}
