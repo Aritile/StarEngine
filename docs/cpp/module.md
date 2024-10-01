@@ -104,7 +104,7 @@ Called on window update
 IMGUI_MODULE void GameWindowProc() {}
 ```
 ### Here you can add more custom pointers or functions
-https://github.com/HODAKdev/StarEngine/blob/main/STAR/ENGINE/SRC/MODULE/Module.h
-https://github.com/HODAKdev/StarEngine/blob/main/STAR/ENGINE/SRC/MODULE/Module.cpp
+[Module.h](https://github.com/HODAKdev/StarEngine/blob/main/STAR/ENGINE/SRC/MODULE/Module.h)
+[Module.cpp](https://github.com/HODAKdev/StarEngine/blob/main/STAR/ENGINE/SRC/MODULE/Module.cpp)
 ### ImGui module example
-https://github.com/HODAKdev/StarEngine/blob/main/STAR/IMGUI/main.cpp
+[main.h](https://github.com/HODAKdev/StarEngine/blob/main/STAR/IMGUI/main.cpp)
