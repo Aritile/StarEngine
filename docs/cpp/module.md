@@ -29,7 +29,8 @@ typedef void (*SetDX)(DX* dx);
 typedef void (*SetScriptingSystem)(ScriptingSystem* scriptingSystem);
 typedef void (*SetGame)(Game* game);
 typedef void (*SetEntity)(Entity* entity);
-
+```
+```cpp
 moduleBuffer->SetModule<SetDX, DX>("SetDX", dx);
 moduleBuffer->SetModule<SetGame, Game>("SetGame", game);
 moduleBuffer->SetModule<SetEntity, Entity>("SetEntity", ecs);
