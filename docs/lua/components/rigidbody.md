@@ -1,0 +1,21 @@
+### RigidbodyComponent
+```lua
+RigidbodyComponent.SetMass()
+RigidbodyComponent.GetMass()
+RigidbodyComponent.SetLinearVelocity()
+RigidbodyComponent.GetLinearVelocity()
+RigidbodyComponent.SetAngularVelocity()
+RigidbodyComponent.GetAngularVelocity()
+RigidbodyComponent.SetLinearDamping()
+RigidbodyComponent.GetLinearDamping()
+RigidbodyComponent.SetAngularDamping()
+RigidbodyComponent.GetAngularDamping()
+RigidbodyComponent.SetGravity()
+RigidbodyComponent.GetGravity()
+RigidbodyComponent.SetKinematic()
+RigidbodyComponent.GetKinematic()
+RigidbodyComponent.AddForce()
+RigidbodyComponent.AddTorque()
+RigidbodyComponent.ClearForce()
+RigidbodyComponent.ClearTorque()
+```
