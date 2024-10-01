@@ -1,0 +1,4 @@
+### Scene
+```lua
+Scene.LoadScene()
+```
