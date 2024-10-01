@@ -1,0 +1,19 @@
+### TextMeshComponent
+```lua
+TextMeshComponent.SetText()
+TextMeshComponent.GetText()
+TextMeshComponent.SetQuality()
+TextMeshComponent.GetQuality()
+TextMeshComponent.SetFont()
+TextMeshComponent.GetFont()
+TextMeshComponent.SetAlign()
+TextMeshComponent.GetAlign()
+TextMeshComponent.SetMeshDepth()
+TextMeshComponent.GetMeshDepth()
+TextMeshComponent.SetCharSpacing()
+TextMeshComponent.GetCharSpacing()
+TextMeshComponent.SetLineSpacing()
+TextMeshComponent.GetLineSpacing()
+TextMeshComponent.SetWordSpacing()
+TextMeshComponent.GetWordSpacing()
+```
