@@ -37,7 +37,7 @@ Vector3.x()
 Vector3.y()
 Vector3.z()
 ```
-Vector4
+### Vector4
 ```lua
 Vector4.Length()
 Vector4.Dot()
