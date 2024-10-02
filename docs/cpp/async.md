@@ -29,3 +29,5 @@ job->CreateJob<float>(
     }
 );
 ```
+### Example
+[Sky.cpp](https://github.com/HODAKdev/StarEngine/blob/main/STAR/ENGINE/SRC/SKY/Sky.cpp)
