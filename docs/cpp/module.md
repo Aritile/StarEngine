@@ -81,7 +81,7 @@ Called on engine release
 ```cpp
 IMGUI_MODULE void EngineRelease() {}
 ```
-Called on window update
+Called on engine window update
 ```cpp
 IMGUI_MODULE void EngineWindowProc() {}
 ```
@@ -99,7 +99,7 @@ Called on game release
 ```cpp
 IMGUI_MODULE void GameRelease() {}
 ```
-Called on window update
+Called on game window update
 ```cpp
 IMGUI_MODULE void GameWindowProc() {}
 ```
