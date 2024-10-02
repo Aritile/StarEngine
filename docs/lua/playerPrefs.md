@@ -11,3 +11,7 @@ PlayerPrefs.SetInt()
 PlayerPrefs.SetString()
 PlayerPrefs.Save()
 ```
+Data is saved in
+```
+playerprefs file
+```
