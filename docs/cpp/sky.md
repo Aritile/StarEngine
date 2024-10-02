@@ -9,3 +9,5 @@ sky->SetSolidColor(Vector3(0.5f, 0.5f, 0.5f));
 //sky->LoadTexture("texture.hdr");
 //sky->SetNone();
 ```
+### Default sky is here
+[Engine.cpp](https://github.com/HODAKdev/StarEngine/blob/main/STAR/ENGINE/SRC/ENGINE/Engine.cpp)
