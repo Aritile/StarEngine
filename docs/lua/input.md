@@ -1,4 +1,5 @@
-### Input
+## Input
+### Cursor
 ```lua
 Input.HideCursor()
 Input.LockCursor()
@@ -7,6 +8,9 @@ Input.IsCursorLocked()
 Input.GetCursorAxis()
 Input.GetCursorAxisX()
 Input.GetCursorAxisY()
+```
+### Keyboard
+```lua
 Input.GetKeyDown()
 Input.KeyCode()
 Input.KeyCode.Q()
