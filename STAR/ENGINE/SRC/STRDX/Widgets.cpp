@@ -108,9 +108,9 @@ void Widgets::RenderGridWidget()
 		Matrix world = Matrix::Identity;
 		world = Matrix::CreateTranslation(gridPos) * world;
 
-		cb.SetProjection(DirectX::XMMatrixTranspose(proj));
-		cb.SetView(DirectX::XMMatrixTranspose(view));
-		cb.SetWorld(DirectX::XMMatrixTranspose(world));
+		cb.SetProjection(proj);
+		cb.SetView(view);
+		cb.SetWorld(world);
 		constantBuffer->Update(&cb);
 
 		context->Draw(gridShader);
@@ -135,8 +135,8 @@ void Widgets::RenderBoundingBoxWidget()
 				context->Set(boundingBoxShader);
 				context->SetVertexConstantBuffer(constantBuffer, 0);
 
-				DirectX::XMMATRIX view = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveViewMatrix());
-				DirectX::XMMATRIX proj = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveProjectionMatrix());
+				DirectX::XMMATRIX view = viewportWindow->GetPerspectiveViewMatrix();
+				DirectX::XMMATRIX proj = viewportWindow->GetPerspectiveProjectionMatrix();
 
 				cb.SetProjection(proj);
 				cb.SetView(view);
@@ -261,10 +261,10 @@ void Widgets::RenderPerspectiveFrustumWidget()
 					context->Set(perspectiveFrustum);
 					context->SetVertexConstantBuffer(constantBuffer, 0);
 
-					DirectX::XMMATRIX view = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveViewMatrix());
-					DirectX::XMMATRIX proj = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveProjectionMatrix());
+					DirectX::XMMATRIX view = viewportWindow->GetPerspectiveViewMatrix();
+					DirectX::XMMATRIX proj = viewportWindow->GetPerspectiveProjectionMatrix();
 					Matrix matrix = CreateNoScaleMatrix(ecs->GetComponent<TransformComponent>(ecs->selected));
-					matrix = DirectX::XMMatrixTranspose(matrix);
+					matrix = matrix;
 
 					cb.SetProjection(proj);
 					cb.SetView(view);
@@ -343,10 +343,10 @@ void Widgets::RenderOrthographicFrustumWidget()
 					context->Set(orthographicFrustum);
 					context->SetVertexConstantBuffer(constantBuffer, 0);
 
-					DirectX::XMMATRIX view = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveViewMatrix());
-					DirectX::XMMATRIX proj = DirectX::XMMatrixTranspose(viewportWindow->GetPerspectiveProjectionMatrix());
+					DirectX::XMMATRIX view = viewportWindow->GetPerspectiveViewMatrix();
+					DirectX::XMMATRIX proj = viewportWindow->GetPerspectiveProjectionMatrix();
 					Matrix matrix = CreateNoScaleMatrix(ecs->GetComponent<TransformComponent>(ecs->selected));
-					matrix = DirectX::XMMatrixTranspose(matrix);
+					matrix = matrix;
 
 					float _Near = cameraComponent.GetNear();
 					float _Far = cameraComponent.GetFar();

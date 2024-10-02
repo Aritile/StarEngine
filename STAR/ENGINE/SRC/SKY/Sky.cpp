@@ -5,6 +5,7 @@
 #include "../MODEL/AssimpLoader.h"
 #include "../EDITOR/WINDOW/Assets.h"
 #include "../EDITOR/WINDOW/Viewport.h"
+#include "../JOB/Job.h"
 
 Sky* Sky::GetSingleton()
 {
@@ -16,6 +17,7 @@ static DX* dx = DX::GetSingleton();
 static AssimpLoader* assimpLoader = AssimpLoader::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
 static MeshStorage* meshStorage = MeshStorage::GetSingleton();
+static Job* job = Job::GetSingleton();
 
 struct ConstantBuffer
 {
@@ -97,12 +99,12 @@ bool Sky::Init()
 	return true;
 }
 
-void Sky::Render(DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
+void Sky::Render(DirectX::XMMATRIX _View, DirectX::XMMATRIX _Projection)
 {
-	if (!type == SkyType::SkyNone)
+	if (!type == SkyNone)
 	{
-		DirectX::XMMATRIX skyMatrix = DirectX::XMMatrixIdentity() * view * projection;
-		cb.WVP = DirectX::XMMatrixTranspose(skyMatrix);
+		DirectX::XMMATRIX skyMatrix = DirectX::XMMatrixIdentity() * _View * _Projection;
+		cb.WVP = skyMatrix;
 		cb.exposure = exposure;
 
 		dx->dxDeviceContext->UpdateSubresource(pConstantBuffer, 0, nullptr, &cb, 0, 0);
@@ -115,7 +117,7 @@ void Sky::Render(DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 		dx->dxDeviceContext->OMSetDepthStencilState(pLessEqual, 0);
 		dx->dxDeviceContext->PSSetSamplers(0, 1, &pSamplerState);
 
-		if (type == SkyType::SkySphereMap)
+		if (type == SkyTexture)
 		{
 			UINT stride = sizeof(Vertex);
 			UINT offset = 0;
@@ -124,9 +126,7 @@ void Sky::Render(DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 			{
 				dx->dxDeviceContext->IASetVertexBuffers(0, 1, &meshStorageBuffer->vertexBuffer, &stride, &offset);
 				dx->dxDeviceContext->IASetIndexBuffer(meshStorageBuffer->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-				mutex.lock();
-				dx->dxDeviceContext->PSSetShaderResources(0, 1, &sphere_texture);
-				mutex.unlock();
+				dx->dxDeviceContext->PSSetShaderResources(0, 1, &texture);
 				dx->dxDeviceContext->DrawIndexed((UINT)meshStorageBuffer->indices.size(), 0, 0);
 			}
 			viewportWindow->RefreshRenderState();
@@ -136,7 +136,7 @@ void Sky::Render(DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 	}
 }
 
-void Sky::Shutdown()
+void Sky::Release()
 {
 	if (pVS)             pVS->Release();
 	if (pPS)             pPS->Release();
@@ -145,78 +145,72 @@ void Sky::Shutdown()
 	if (pCullNone)       pCullNone->Release();
 	if (pLessEqual)      pLessEqual->Release();
 	if (pSamplerState)   pSamplerState->Release();
-	if (sphere_texture)     sphere_texture->Release();
+	if (texture)         texture->Release();
 }
-
-bool Sky::SetSky(SkyFile sky)
+void Sky::SetNone()
 {
-	if (sky.GetType() == SkyType::SkySphereMap)
-	{
-		if (sky.GetSpherePath().empty()) return false;
-		if (!std::filesystem::exists(sky.GetSpherePath().c_str())) return false;
-
-		if (outCore)
-		{
-			outCore = false;
-			std::thread thread(&Sky::OutCore, this, sky);
-			thread.detach();
-		}
-	}
-
-	return true;
+	type = SkyNone;
 }
-
-void Sky::OutCore(SkyFile sky)
+void Sky::SetSolidColor(Vector3 _SolidColor)
 {
-	type = SkyType::SkyNone;
+	type = SkySolidColor;
+	solidColor = _SolidColor;
+}
+void Sky::LoadTexture(const char* _Path)
+{
+	type = SkyTexture;
 
+	if (Star::GetFileExtensionFromPath(_Path).compare(HDR) == 0)
 	{
-		if (sky.GetType() == SkyType::SkySphereMap)
-		{
-			mutex.lock();
-			if (sphere_texture) sphere_texture->Release();
-			mutex.unlock();
+		Star::AddLog("[Sky] -> Loading texture.. %s", _Path);
 
-			Star::AddLog("[Sky] -> Loading.. %s", sky.GetSpherePath().c_str());
-
-			size_t pos = sky.GetSpherePath().find_last_of(".");
-			std::string buffer = sky.GetSpherePath().substr(pos);
-
-			/*
-			if (buffer == DDS)
+		job->CreateJob<ID3D11ShaderResourceView*>(
+			[_Path]() -> ID3D11ShaderResourceView*
 			{
-				if (FAILED(DirectX::LoadFromDDSFile(
-					Star::ConvertString(sky.GetSpherePath()).c_str(),
-					DirectX::DDS_FLAGS_NONE,
-					nullptr,
-					sphere_image)))
-					return;
-			}
-			*/
+				ID3D11ShaderResourceView* texture = nullptr;
+				DirectX::ScratchImage scratchImage;
+				DirectX::TexMetadata texMetadata;
 
-			if (buffer == HDR)
-			{
-				DirectX::TexMetadata data;
-				if (FAILED(DirectX::LoadFromHDRFile(
-					Star::ConvertString(sky.GetSpherePath()).c_str(), &data, sphere_image)))
-					return;
+				// load the hdr file
+				if (FAILED(DirectX::LoadFromHDRFile(Star::ConvertString(_Path).c_str(), &texMetadata, scratchImage)))
+				{
+					Star::AddLog("[Sky] -> Failed to load texture.");
+					return nullptr;
+				}
 
-				ID3D11ShaderResourceView* shaderResourceView = nullptr;
+				// create the shaderResourceView
 				if (FAILED(DirectX::CreateShaderResourceView(
-					dx->dxDevice, sphere_image.GetImages(), sphere_image.GetImageCount(), data, &shaderResourceView)))
-					return;
+					dx->dxDevice, scratchImage.GetImages(), scratchImage.GetImageCount(), texMetadata, &texture)))
+				{
+					Star::AddLog("[Sky] -> Failed to create shader resource view.");
+					return nullptr;
+				}
 
-				mutex.lock();
-				sphere_texture = shaderResourceView;
-				mutex.unlock();
+				scratchImage.Release();
+				return texture;
+			},
+			[this](ID3D11ShaderResourceView* _Texture)
+			{
+				if (_Texture)
+				{
+					this->texture = _Texture;
+					Star::AddLog("[Sky] -> Texture successfully loaded.");
+				}
 			}
-
-			sphere_image.Release();
-		}
-
-		outCore = true;
+		);
 	}
-
-	type = sky.GetType();
-	Star::AddLog("[Sky] -> Successfully loaded.");
+}
+void Sky::ReleaseTexture()
+{
+	if (texture)
+		texture->Release();
+	texture = nullptr;
+}
+SkyType Sky::GetType()
+{
+	return type;
+}
+Vector3 Sky::GetSolidColor()
+{
+	return solidColor;
 }

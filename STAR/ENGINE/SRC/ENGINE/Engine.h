@@ -38,6 +38,7 @@ public:
 		                   bool game);
 	bool FindGoodCamera(Matrix& _ProjectionMatrix, Matrix& _ViewMatrix);
 	void CloseSafeEngine();
+	Vector4 GetClearColor();
 
 private:
 	Vector4 clearColor = Vector4(0.1f, 0.1f, 0.1f, 1.0f);

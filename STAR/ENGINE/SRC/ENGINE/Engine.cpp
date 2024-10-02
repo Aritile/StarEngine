@@ -63,11 +63,13 @@ void Engine::SetRenderTarget(Vector4 _Color)
 
 void Engine::EngineStart()
 {
+    // topology
     dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    SkyFile skyFile;
-    skyFile.SetSphereMap("data\\hdr\\overcast_soil_puresky_4k.hdr");
-    sky->SetSky(skyFile);
+    // sky
+    //sky->SetSolidColor(Vector3(0.5f, 0.5f, 0.5f));
+    sky->LoadTexture("data\\hdr\\overcast_soil_puresky_4k.hdr");
+    //sky->SetNone(); // default
 
     playerPrefs->Load();
     game->InitTime();
@@ -107,29 +109,6 @@ void Engine::EngineStart()
         Star::AddLog("[Engine] -> Failed to initialize Module System!");
 #endif
     /* --------------------------- */
-
-    // cute job test
-    job->CreateJob<void>(
-        []() {
-            std::this_thread::sleep_for(std::chrono::seconds(3));
-        },
-        []() {
-        }
-    );
-    job->CreateJob<void>(
-        []() {
-            std::this_thread::sleep_for(std::chrono::seconds(6));
-        },
-        []() {
-        }
-    );
-    job->CreateJob<void>(
-        []() {
-            std::this_thread::sleep_for(std::chrono::seconds(9));
-        },
-        []() {
-        }
-    );
 
     // strdx
     widgets->Init();
@@ -210,7 +189,7 @@ void Engine::EngineProcess()
     // render sky, models to render target
     RenderEnvironment(viewportWindow->GetPerspectiveProjectionMatrix(),
                       viewportWindow->GetPerspectiveViewMatrix(),
-                      clearColor,
+                      GetClearColor(),
                       (ID3D11RenderTargetView*)widgets->GetRenderTarget(),
                       (ID3D11DepthStencilView*)widgets->GetDepthStencil(),
                       viewportWindow->GetViewport(),
@@ -223,6 +202,7 @@ void Engine::EngineProcess()
         ID3D11DepthStencilView* depthStencilView = viewportWindow->GetDepthStencilView();
         D3D11_VIEWPORT viewport = viewportWindow->GetViewport();
         dx->dxDeviceContext->OMSetRenderTargets(1, &renderTargetView, NULL);
+        Vector4 clearColor = GetClearColor();
         dx->dxDeviceContext->ClearRenderTargetView(renderTargetView, (float*)&clearColor);
         //dx->dxDeviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
         dx->dxDeviceContext->RSSetViewports(1, &viewport);
@@ -243,7 +223,7 @@ void Engine::EngineProcess()
             {
                 RenderEnvironment(projectionMatrix,
                                   viewMatrix,
-                                  clearColor,
+                                  GetClearColor(),
                                   game->GetRenderTargetView(),
                                   game->GetDepthStencilView(),
                                   game->GetViewport(),
@@ -272,7 +252,7 @@ void Engine::EngineShutdown()
 
     editor->Shutdown();
     modelSystem->Shutdown();
-    sky->Shutdown();
+    sky->Release();
     physicsSystem->Shutdown();
     widgets->Release();
     userInput->Release();
@@ -347,7 +327,7 @@ void Engine::GamePlayFixedUpdate()
 
 void Engine::RenderToMainBuffer()
 {
-    SetRenderTarget(clearColor);
+    SetRenderTarget(GetClearColor());
     editor->Render();
 }
 
@@ -434,4 +414,16 @@ void Engine::CloseSafeEngine()
     if (!job->IsDone())
         Star::AddLog("[Window] -> Please wait. Some of the jobs are still running.");
     close = true;
+}
+Vector4 Engine::GetClearColor()
+{
+    if (sky->GetType() == SkySolidColor)
+    {
+        Vector3 solidColor = sky->GetSolidColor();
+        return Vector4(solidColor.x, solidColor.y, solidColor.z, 1.0f);
+    }
+    else
+    {
+        return clearColor;
+    }
 }

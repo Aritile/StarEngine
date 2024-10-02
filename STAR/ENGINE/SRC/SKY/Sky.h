@@ -4,64 +4,27 @@
 #include "../XTK/TEX/DirectXTex.h"
 #include <mutex>
 
-enum SkyType : unsigned char
-{
-	SkyNone = 0x00,
-	SkySolidColor = 0x01,
-	SkySphereMap = 0x02,
-};
-
 using namespace DirectX::SimpleMath;
 
-struct SkyFile
+enum SkyType
 {
-private:
-	//// TYPE ////
-	unsigned char type = SkyType::SkyNone;
-	//// SOLID_COLOR ////
-	Vector3 solidColor = Vector3(0.0f);
-	//// SPHERE_MAP ////
-	std::string spherePath;
-
-public:
-	unsigned char GetType()
-	{
-		return type;
-	}
-
-	Vector3 GetSolidColor()
-	{
-		return solidColor;
-	}
-
-	std::string GetSpherePath()
-	{
-		return spherePath;
-	}
-
-public:
-	void SetSolidColor(Vector3 rgb)
-	{
-		type = SkyType::SkySolidColor;
-		solidColor = rgb;
-	}
-
-	void SetSphereMap(std::string path)
-	{
-		type = SkyType::SkySphereMap;
-		spherePath = path;
-	}
+	SkyNone,
+	SkySolidColor,
+	SkyTexture
 };
 
 class Sky
 {
 public:
 	bool Init();
-	void Render(DirectX::XMMATRIX view, DirectX::XMMATRIX projection);
-	void Shutdown();
-
-public:
-	bool SetSky(SkyFile sky);
+	void Render(DirectX::XMMATRIX _View, DirectX::XMMATRIX _Projection);
+	void Release();
+	void SetNone();
+	void SetSolidColor(Vector3 _SolidColor);
+	void LoadTexture(const char* _Path);
+	void ReleaseTexture();
+	SkyType GetType();
+	Vector3 GetSolidColor();
 
 private:
 	ID3DBlob*                VS              = nullptr;   // raw shader data
@@ -75,21 +38,15 @@ private:
 	ID3D11SamplerState*      pSamplerState   = nullptr;   // -//-
 
 private:
-	unsigned char type = SkyType::SkyNone;
+	SkyType type = SkyNone;
 
 private:
-	DirectX::ScratchImage sphere_image;
-	ID3D11ShaderResourceView* sphere_texture = nullptr;
+	ID3D11ShaderResourceView* texture = nullptr;
+	Vector3 solidColor;
 	ModelStorageBuffer* modelStorageBuffer = nullptr;
 	MeshStorageBuffer* meshStorageBuffer = nullptr;
-	std::mutex mutex;
 
 public:
 	float exposure = 1.0f;
-
 	static Sky* GetSingleton();
-
-private:
-	void OutCore(SkyFile sky);
-	bool outCore = true;
 };

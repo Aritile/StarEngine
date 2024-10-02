@@ -152,9 +152,9 @@ void MeshComponent::DrawMesh(DirectX::XMMATRIX view, DirectX::XMMATRIX projectio
 	{
 		auto& transComp = ecs->registry.get<TransformComponent>(entity);
 
-		cb.sProjection = DirectX::XMMatrixTranspose(projection);
-		cb.sView = DirectX::XMMatrixTranspose(view);
-		cb.sModel = DirectX::XMMatrixTranspose(transComp.GetTransform());
+		cb.sProjection = projection;
+		cb.sView = view;
+		cb.sModel = transComp.GetTransform();
 		if (viewportWindow->GetRenderState() == RenderState::Position)
 			cb.renderState = 3;
 		else if (viewportWindow->GetRenderState() == RenderState::Normal)

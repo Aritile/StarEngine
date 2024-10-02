@@ -1,5 +1,5 @@
 # do not edit
-# Aug 22 2024 20:43:13
+# Oct  2 2024 19:13:27
 Star:
   Version:
     Major: 1
@@ -27,7 +27,7 @@ Star:
                   Static: false
                 TransformComponent:
                   Position: [0, 0, 0]
-                  Rotation: [-0, 0, 0, 1]
+                  Rotation: [0, 0, 0, 1]
                   Scale: [1, 1, 1]
                   Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
                 MeshComponent:
@@ -38,24 +38,6 @@ Star:
                   VerticesSize: 24
                   IndicesSize: 36
                   FacesSize: 12
-                RigidbodyComponent:
-                  Mass: 1
-                  LinearDamping: 0
-                  AngularDamping: 0.0500000007
-                  UseGravity: false
-                  IsKinematic: true
-                  Freeze:
-                    Position: [false, false, false]
-                    Rotation: [false, false, false]
-                Colliders:
-                  - BoxCollider:
-                      Active: true
-                      Center: [0, 0, 0]
-                      Size: [1, 1, 1]
-                      Material:
-                        StaticFriction: 0.5
-                        DynamicFriction: 0.5
-                        Restitution: 0.100000001
             - Entity:
                 GeneralComponent:
                   Name: Camera
@@ -75,33 +57,3 @@ Star:
                   Far: 100
                   AutomaticAspect: true
                   Aspect: [0, 0]
-            - Entity:
-                GeneralComponent:
-                  Name: Capsule
-                  Tag: Empty
-                  Active: true
-                  Static: false
-                TransformComponent:
-                  Position: [0, 3.93248701, 0]
-                  Rotation: [-0, 0, 0, 1]
-                  Scale: [1, 1, 1]
-                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 3.93248701, 0, 1]
-                MeshComponent:
-                  IsActive: true
-                  ModelPath: data\model\capsule.obj
-                  MaterialPath: data\model\capsule\Capsule.mat
-                  MeshIndex: 0
-                  VerticesSize: 2176
-                  IndicesSize: 3252
-                  FacesSize: 1084
-                RigidbodyComponent:
-                  Mass: 1
-                  LinearDamping: 0
-                  AngularDamping: 0.0500000007
-                  UseGravity: true
-                  IsKinematic: false
-                  Freeze:
-                    Position: [false, false, false]
-                    Rotation: [false, false, false]
-                Colliders:
-                  []
