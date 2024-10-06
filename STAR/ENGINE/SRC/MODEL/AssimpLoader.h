@@ -16,7 +16,7 @@ class AssimpLoader
 {
 public:
 	std::vector<Mesh> LoadRawModel(std::string path);
-	void LoadModel(const char* path, entt::entity entity);
+	void LoadModel(const char* path, entt::entity entity, unsigned int flags = 0);
 
 private:
 	void ProcessRawNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& arg);

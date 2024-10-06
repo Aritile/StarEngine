@@ -45,14 +45,14 @@ struct ModelStorageBuffer
 	bool ReleaseMesh(UINT _Index);
 	void ReleaseAllMeshes();
 
-	void OpenModel(const char* _Path);
+	void OpenModel(const char* _Path, unsigned int flags = 0);
 	void CloseModel();
 };
 
 class MeshStorage
 {
 public:
-	bool LoadModel(const char* _Path, ModelStorageBuffer** _ModelStorageBuffer);
+	bool LoadModel(const char* _Path, ModelStorageBuffer** _ModelStorageBuffer, unsigned int flags = 0);
 	bool GetModel(const char* _Path, ModelStorageBuffer** _ModelStorageBuffer);
 	bool IsModelAlreadyLoaded(const char* _Path);
 	bool ReleaseModel(const char* _Path);

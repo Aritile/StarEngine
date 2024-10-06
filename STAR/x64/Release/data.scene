@@ -1,0 +1,59 @@
+# do not edit
+# Oct  2 2024 19:13:27
+Star:
+  Version:
+    Major: 1
+    Minor: 3
+    Patch: 3
+  Data:
+    Hierarchy:
+      - Entity:
+          GeneralComponent:
+            Name: Scene
+            Tag: Empty
+            Active: true
+            Static: false
+          TransformComponent:
+            Position: [0, 0, 0]
+            Rotation: [0, 0, 0, 1]
+            Scale: [1, 1, 1]
+            Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+          Children:
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Camera
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, -5]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -5, 1]
+                CameraComponent:
+                  Active: true
+                  Perspective:
+                    Fov: 45
+                  Near: 0.100000001
+                  Far: 100
+                  AutomaticAspect: true
+                  Aspect: [0, 0]

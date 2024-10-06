@@ -89,4 +89,8 @@ namespace Star
 	void ShowCursor(bool _Show);
 	bool IsCursorShowed();
 	bool ImageFormatCheck(std::string _FileType);
+
+	// add exe path + create relative path
+	std::string FixPath(std::string _Filename);
+	void HelpMarker(const char* desc);
 }

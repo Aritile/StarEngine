@@ -19,6 +19,7 @@
 #include "../WINDOW/MainWindow.h"
 #include "WINDOW/Profiler.h"
 #include "../JOB/Job.h"
+#include "WINDOW/Importer.h"
 
 Editor* Editor::GetSingleton()
 {
@@ -28,6 +29,7 @@ Editor* Editor::GetSingleton()
 
 ///////////////////////////////////////////////////////////////
 
+// singleton stuff
 static DX*                 dx = DX::GetSingleton();
 static Entity*             ecs = Entity::GetSingleton();
 static AssetsWindow*       assetsWindow = AssetsWindow::GetSingleton();
@@ -48,6 +50,7 @@ static MainWindow*         mainWindow = MainWindow::GetSingleton();
 static ProfilerWindow*     profilerWindow = ProfilerWindow::GetSingleton();
 static Job*                job = Job::GetSingleton();
 static Engine*             engine = Engine::GetSingleton();
+static Importer*           importer = Importer::GetSingleton();
 
 static ImVec2 mainMenuBarSize = ImVec2(NULL, NULL);
 
@@ -102,6 +105,7 @@ void Editor::Render()
 		aboutWindow->Render();
 		settingsWindow->Render();
 		profilerWindow->Render();
+		importer->Render();
 
 		//if (module) module->myFunc(ImGui::GetCurrentContext());
 		//ImGui::ShowDemoWindow();

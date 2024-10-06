@@ -108,12 +108,12 @@ bool ModelStorageBuffer::IsMeshAlreadyLoaded(UINT _Index)
 	// mesh missing
 	return false;
 }
-void ModelStorageBuffer::OpenModel(const char* _Path)
+void ModelStorageBuffer::OpenModel(const char* _Path, unsigned int flags)
 {
 	if (!importer.GetScene())
 	{
 		Star::AddLog("[MeshStorage] -> Opening model.. %s", _Path);
-		importer.ReadFile(_Path, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
+		importer.ReadFile(_Path, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded | flags);
 	}
 	else
 	{
@@ -325,7 +325,7 @@ void MeshStorage::ReleaseAllModels()
 
 	modelStorageBuffers.clear();
 }
-bool MeshStorage::LoadModel(const char* _Path, ModelStorageBuffer** _ModelStorageBuffer)
+bool MeshStorage::LoadModel(const char* _Path, ModelStorageBuffer** _ModelStorageBuffer, unsigned int flags)
 {
 	if (IsModelAlreadyLoaded(_Path))
 	{
@@ -337,7 +337,7 @@ bool MeshStorage::LoadModel(const char* _Path, ModelStorageBuffer** _ModelStorag
 	{
 		modelStorageBuffers.emplace_back();
 		ModelStorageBuffer* modelStorageBuffer = &modelStorageBuffers.back();
-		modelStorageBuffer->OpenModel(_Path);
+		modelStorageBuffer->OpenModel(_Path, flags);
 		if (modelStorageBuffer->importer.GetScene())
 		{
 			modelStorageBuffer->path = _Path;

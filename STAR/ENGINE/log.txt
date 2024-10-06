@@ -3,7 +3,7 @@
 [SwapChain] -> Creating main SwapChain..
 [SwapChain] -> Creating render target view..
 [SwapChain] -> Creating depth stencil view..
-[Sky] -> Loading.. data\hdr\overcast_soil_puresky_4k.hdr
+[Sky] -> Loading texture.. data\hdr\overcast_soil_puresky_4k.hdr
 [Engine] -> Initializing User Input System..
 [Engine] -> Initializing Model System..
 [Engine] -> Initializing Sky System..
@@ -17,6 +17,8 @@
 [MeshStorage] -> Closing model..
 [Engine] -> Initializing Lua Script System..
 [Engine] -> Initializing Module System..
+[Module] -> Loading module.. ImGui.dll
+[Module] -> Failed to load Dynamic Link Library!
 [Engine] -> Resizing SwapChain Buffer..
-[Sky] -> Successfully loaded.
+[Sky] -> Texture successfully loaded.
 [Engine] -> Shutting/Cleaning..

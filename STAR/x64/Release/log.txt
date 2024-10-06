@@ -1,0 +1,50 @@
+[Engine] -> Engine version: 1.3.3
+[Window] -> Creating main window..
+[SwapChain] -> Creating main SwapChain..
+[SwapChain] -> Creating render target view..
+[SwapChain] -> Creating depth stencil view..
+[Sky] -> Loading texture.. data\hdr\overcast_soil_puresky_4k.hdr
+[Engine] -> Initializing User Input System..
+[Engine] -> Initializing Model System..
+[Engine] -> Initializing Sky System..
+[MeshStorage] -> Opening model.. data\model\sphere.obj
+[MeshStorage] -> Loading mesh.. 0
+[Engine] -> Initializing Editor System..
+[Engine] -> Initializing Physics System..
+[Engine] -> Initializing Entity Component System..
+[MeshStorage] -> Opening model.. data\model\cube.obj
+[MeshStorage] -> Loading mesh.. 0
+[MeshStorage] -> Closing model..
+[Engine] -> Initializing Lua Script System..
+[Engine] -> Initializing Module System..
+[Module] -> Loading module.. ImGui.dll
+[Module] -> Failed to load Dynamic Link Library!
+[Engine] -> Resizing SwapChain Buffer..
+[Sky] -> Texture successfully loaded.
+[MeshStorage] -> Opening model.. assets\boombox_2k.fbx
+[MeshStorage] -> Loading mesh.. 0
+[TextureStorage] -> Loading texture.. assets\textures/boombox_diff_2k.jpg
+[Material] -> Serializing material.. assets\boombox_2k\boombox.mat
+[MeshStorage] -> Loading mesh.. 1
+[TextureStorage] -> Loading texture.. assets\textures/boombox_speakers_diff_2k.png
+[Material] -> Serializing material.. assets\boombox_2k\boombox_speakers.mat
+[MeshStorage] -> Closing model..
+[MeshStorage] -> Model is already loaded.
+[MeshStorage] -> Mesh is already loaded.
+[TextureStorage] -> Texture is already loaded.
+[Material] -> Serializing material.. assets\boombox_2k\boombox.mat
+[MeshStorage] -> Mesh is already loaded.
+[TextureStorage] -> Texture is already loaded.
+[Material] -> Serializing material.. assets\boombox_2k\boombox_speakers.mat
+[MeshStorage] -> Model is already closed.
+[MeshStorage] -> Opening model.. assets\CoffeeCart_01_2k.fbx
+[MeshStorage] -> Loading mesh.. 0
+[TextureStorage] -> Loading texture.. assets\textures\CoffeeCart_01_cart_diff_2k.png
+[Material] -> Serializing material.. assets\CoffeeCart_01_2k\CoffeeCart_01_cart.mat
+[MeshStorage] -> Loading mesh.. 1
+[TextureStorage] -> Loading texture.. assets\textures\CoffeeCart_01_props_diff_2k.png
+[Material] -> Serializing material.. assets\CoffeeCart_01_2k\CoffeeCart_01_props.mat
+[MeshStorage] -> Loading mesh.. 2
+[Material] -> Serializing material.. assets\CoffeeCart_01_2k\CoffeeCart_01_mugs.mat
+[MeshStorage] -> Closing model..
+[Engine] -> Shutting/Cleaning..

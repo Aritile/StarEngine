@@ -15,6 +15,7 @@
 static DX* dx = DX::GetSingleton();
 static MainWindow* mainWindow = MainWindow::GetSingleton();
 static Engine* engine = Engine::GetSingleton();
+static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 
 UINT Star::GetDisplayWidth()
 {
@@ -562,4 +563,22 @@ bool Star::ImageFormatCheck(std::string _FileType)
 		return true;
 
 	return false;
+}
+std::string Star::FixPath(std::string _Filename)
+{
+	std::string buffer = assetsWindow->GetNowDirPath() + "\\" + _Filename;
+	std::string exe = Star::GetParent(Star::GetExecutablePath());
+	std::string x = Star::GetRelativePath(buffer, exe);
+	return x;
+}
+void Star::HelpMarker(const char* desc)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort) && ImGui::BeginTooltip())
+	{
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
 }

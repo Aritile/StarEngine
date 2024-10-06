@@ -89,7 +89,7 @@ Mesh AssimpLoader::ProcessRawMesh(aiNode* node, aiMesh* mesh, const aiScene* sce
 
 	return buffer;
 }
-void AssimpLoader::LoadModel(const char* path, entt::entity entity)
+void AssimpLoader::LoadModel(const char* path, entt::entity entity, unsigned int flags)
 {
 	if (!path)
 		return;

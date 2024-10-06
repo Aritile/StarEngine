@@ -5,11 +5,13 @@
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../EDITOR/WINDOW/Console.h"
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
+#include "../WINDOW/Importer.h"
 
 static AssetsWindow* assetsWindow = AssetsWindow::GetSingleton();
 static ConsoleWindow* consoleWindow = ConsoleWindow::GetSingleton();
 static AssimpLoader* assimpLoader = AssimpLoader::GetSingleton();
 static ViewportWindow* viewportWindow = ViewportWindow::GetSingleton();
+static Importer* importer = Importer::GetSingleton();
 
 HierarchyWindow* HierarchyWindow::GetSingleton()
 {
@@ -106,11 +108,14 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 			FILEs payload_n = *(FILEs*)payload->Data;
 			if (payload_n.file_type == OBJ || payload_n.file_type == FBX)
 			{
-				std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
-				std::string exe = Star::GetParent(Star::GetExecutablePath());
-				std::string x = Star::GetRelativePath(buffer, exe);
-
-				assimpLoader->LoadModel(x.c_str(), entity);
+				// old
+				//std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;
+				//std::string exe = Star::GetParent(Star::GetExecutablePath());
+				//std::string x = Star::GetRelativePath(buffer, exe);
+				//assimpLoader->LoadModel(x.c_str(), entity);
+				
+				std::string path = Star::FixPath(payload_n.file_name);
+				importer->ImportModel(path.c_str(), entity);
 			}
 		}
 		ImGui::EndDragDropTarget();

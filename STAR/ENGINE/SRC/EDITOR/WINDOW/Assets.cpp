@@ -5,6 +5,7 @@
 #include <fstream>
 #include "../../ENTITY/COMPONENT/GeneralComponent.h"
 #include "Settings.h"
+#include "Importer.h"
 
 AssetsWindow* AssetsWindow::GetSingleton()
 {
@@ -20,6 +21,7 @@ static Editor* editor = Editor::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
 static AssimpLoader* assimpLoader = AssimpLoader::GetSingleton();
 static SettingsWindow* settingsWindow = SettingsWindow::GetSingleton();
+static Importer* importer = Importer::GetSingleton();
 
 #define FOLDER_ICON_PATH   L"data\\icon\\folder.dds"   /**/
 #define IMAGE_ICON_PATH    L"data\\icon\\image.dds"    /**/
@@ -353,9 +355,18 @@ void AssetsWindow::Render()
 											if (type.compare(OBJ) == 0 || type.compare(FBX) == 0)
 											{
 												if (ecs->selected != entt::null)
-													assimpLoader->LoadModel(x.c_str(), ecs->selected);
+												{
+													// old
+													//assimpLoader->LoadModel(x.c_str(), ecs->selected);
+													importer->ImportModel(x.c_str(), ecs->selected);
+
+												}
 												else
-													assimpLoader->LoadModel(x.c_str(), ecs->root);
+												{
+													// old
+													//assimpLoader->LoadModel(x.c_str(), ecs->root);
+													importer->ImportModel(x.c_str(), ecs->root);
+												}
 											}
 
 											if (type.compare(LUA) == 0)
