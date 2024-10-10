@@ -85,8 +85,8 @@ void InspectorWindow::RenderAdd()
 				ecs->registry.get<PhysicsComponent>(ecs->selected).AddBoxCollider();
 			if (ImGui::MenuItem("Sphere"))
 				ecs->registry.get<PhysicsComponent>(ecs->selected).AddSphereCollider();
-			//if (ImGui::MenuItem("Capsule"))
-				//ecs->registry.get<PhysicsComponent>(ecs->selected).AddCapsuleCollider();
+			if (ImGui::MenuItem("Capsule"))
+				ecs->registry.get<PhysicsComponent>(ecs->selected).AddCapsuleCollider();
 
 			ImGui::EndMenu();
 		}

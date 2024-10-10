@@ -17,10 +17,22 @@ public:
 public:
 	bool CreateShape(float _Radius, float _Height);
 	void Render(std::vector<CapsuleColliderComponent>* ccc, size_t index);
+	void SetCenter(Vector3 value);
+	Vector3 GetCenter() const;
+	void SetRadius(float value);
+	float GetRadius();
+	void Update();
+	void SetExtent(float value);
+	float GetExtent();
+	void SetHeight(float value);
+	float GetHeight();
 
 private:
 	physx::PxShape* pxShape = NULL;
 	PhysicsMaterialComponent physicsMaterialComponent;
+	float lastRadius = 1.0f;
+	float lastExtent = 1.0f;
+	float lastHeight = 1.0f;
 
 public:
 	physx::PxShape* GetShape();

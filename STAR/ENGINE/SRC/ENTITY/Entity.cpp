@@ -112,6 +112,8 @@ void Entity::CreateCapsuleEntity(entt::entity entity)
     meshComponent.ApplyMesh(meshStorageBuffer);
 
     modelStorageBuffer->CloseModel();
+    DirectX::BoundingBox boundingBox = DirectX::BoundingBox(Vector3(0.0f, 0.0f, 0.0f), Vector3(2.0f, 1.0f, 1.0f));
+    GetComponent<TransformComponent>(entity).SetBoundingBox(boundingBox);
     GetComponent<GeneralComponent>(root).AddChild(entity);
 }
 void Entity::CreatePlaneEntity(entt::entity entity)

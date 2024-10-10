@@ -28,7 +28,7 @@ bool PhysicsSystem::Init()
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, physx::PxTolerancesScale(), true, gPvd);
 
 	sceneDesc = new physx::PxSceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc->gravity = EARTH_GRAVITY;
+	sceneDesc->gravity = NONE_GRAVITY;
 
 	if (physicsProcesor == PhysicsProcesor::xCPU)
 	{
@@ -205,7 +205,7 @@ void PhysicsComponent::DeserializeComponent(YAML::Node& in)
 			if (capsuleCollider)
 			{
 				AddCapsuleCollider();
-				capsule_colliders.back().DeserializeComponent(sphereCollider);
+				capsule_colliders.back().DeserializeComponent(capsuleCollider);
 			}
 		}
 	}

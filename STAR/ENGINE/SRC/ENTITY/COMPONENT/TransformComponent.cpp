@@ -184,6 +184,7 @@ void TransformComponent::UpdateTransformFromPositionRotationScale()
 		auto& physicsComponent = ecs->GetComponent<PhysicsComponent>(entity);
 		std::vector<BoxColliderComponent>* boxColliderComponent = physicsComponent.GetBoxColliders();
 		std::vector<SphereColliderComponent>* sphereColliderComponent = physicsComponent.GetSphereColliders();
+		std::vector<CapsuleColliderComponent>* capsuleColliderComponent = physicsComponent.GetCapsuleColliders();
 		for (size_t i = 0; i < boxColliderComponent->size(); i++)
 		{
 			BoxColliderComponent* index = &physicsComponent.GetBoxColliders()->at(i);
@@ -196,6 +197,16 @@ void TransformComponent::UpdateTransformFromPositionRotationScale()
 		for (size_t i = 0; i < sphereColliderComponent->size(); i++)
 		{
 			SphereColliderComponent* index = &physicsComponent.GetSphereColliders()->at(i);
+			float extent = std::max(std::max(GetScale().x, GetScale().y), GetScale().z);
+			if (index->GetExtent() != extent) // loop fix
+			{
+				index->SetExtent(extent); // is this good solution?
+				index->Update();
+			}
+		}
+		for (size_t i = 0; i < capsuleColliderComponent->size(); i++)
+		{
+			CapsuleColliderComponent* index = &physicsComponent.GetCapsuleColliders()->at(i);
 			float extent = std::max(std::max(GetScale().x, GetScale().y), GetScale().z);
 			if (index->GetExtent() != extent) // loop fix
 			{

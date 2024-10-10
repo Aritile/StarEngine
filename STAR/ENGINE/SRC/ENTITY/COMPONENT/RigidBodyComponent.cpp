@@ -133,8 +133,7 @@ void RigidbodyComponent::CreateActor()
 				if (index.GetShape())
 					pxRigidBody->attachShape(*index.GetShape());
 				else
-					consoleWindow->AddWarningMessage("[RigidBody] -> Failed to attach shape to the RigidBody!");
-				//printf("Attaching shape\n");
+					consoleWindow->AddWarningMessage("[Rigidbody] -> Failed to attach box shape to the Rigidbody!");
 			}
 			for (size_t i = 0; i < physicsComponent.GetSphereColliders()->size(); i++)
 			{
@@ -142,8 +141,15 @@ void RigidbodyComponent::CreateActor()
 				if (index.GetShape())
 					pxRigidBody->attachShape(*index.GetShape());
 				else
-					consoleWindow->AddWarningMessage("[RigidBody] -> Failed to attach shape to the RigidBody!");
-				//printf("Attaching shape\n");
+					consoleWindow->AddWarningMessage("[Rigidbody] -> Failed to attach sphere shape to the Rigidbody!");
+			}
+			for (size_t i = 0; i < physicsComponent.GetCapsuleColliders()->size(); i++)
+			{
+				CapsuleColliderComponent index = physicsComponent.GetCapsuleColliders()->at(i);
+				if (index.GetShape())
+					pxRigidBody->attachShape(*index.GetShape());
+				else
+					consoleWindow->AddWarningMessage("[Rigidbody] -> Failed to attach capsule shape to the Rigidbody!");
 			}
 		}
 	}

@@ -15,8 +15,8 @@ Texture2D sTexture2D;
 float4 main(float4 pos : SV_POSITION, float3 normal : NORMAL, float2 texcoord : TEXCOORD) : SV_TARGET
 {
     float3 lightPos = float3(2.0f, 2.0f, -2.0f);
-    float3 lightColor = float3(0.6f, 0.8f, 1.0f);
-    float3 objectColor = float3(0.6f, 0.6f, 0.6f);
+    float3 lightColor = float3(1.0f, 1.0f, 1.0f);
+    float3 objectColor = float3(1.0f, 1.0f, 1.0f);
     
     // ambient
     float ambientStrength = 0.4;

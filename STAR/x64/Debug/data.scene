@@ -1,5 +1,5 @@
 # do not edit
-# Aug 22 2024 13:08:51
+# Oct  9 2024 20:50:10
 Star:
   Version:
     Major: 1
@@ -28,8 +28,8 @@ Star:
                 TransformComponent:
                   Position: [0, 0, 0]
                   Rotation: [-0, 0, 0, 1]
-                  Scale: [5.00000048, 0.999997497, 1]
-                  Matrix: [5.00000048, 0, 0, 0, 0, 0.999997497, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
                 MeshComponent:
                   IsActive: true
                   ModelPath: data\model\cube.obj
@@ -42,8 +42,8 @@ Star:
                   Mass: 1
                   LinearDamping: 0
                   AngularDamping: 0.0500000007
-                  UseGravity: false
-                  IsKinematic: true
+                  UseGravity: true
+                  IsKinematic: false
                   Freeze:
                     Position: [false, false, false]
                     Rotation: [false, false, false]
@@ -77,15 +77,23 @@ Star:
                   Aspect: [0, 0]
             - Entity:
                 GeneralComponent:
-                  Name: garden_gnome_1k
+                  Name: Cube
                   Tag: Empty
                   Active: true
                   Static: false
                 TransformComponent:
-                  Position: [-1.34665966, 6, -1.19976818e-07]
-                  Rotation: [0.707106829, 0, 0, 0.707106829]
-                  Scale: [5, 5.00000668, 5.00000668]
-                  Matrix: [5, 0, 0, 0, 0, -5.96047244e-07, 5.00000715, 0, 0, -5.00000715, -5.96047244e-07, 0, -1.34665966, 6, -1.19976818e-07, 1]
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
                 RigidbodyComponent:
                   Mass: 1
                   LinearDamping: 0
@@ -96,155 +104,714 @@ Star:
                     Position: [false, false, false]
                     Rotation: [false, false, false]
                 Colliders:
-                  - SphereCollider:
+                  - BoxCollider:
                       Active: true
                       Center: [0, 0, 0]
-                      Radius: 1
+                      Size: [1, 1, 1]
                       Material:
                         StaticFriction: 0.5
                         DynamicFriction: 0.5
                         Restitution: 0.100000001
-                Children:
-                  - Entity:
-                      GeneralComponent:
-                        Name: garden_gnome_01
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [-0, 0, -0, 1]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\garden_gnome_1k.fbx
-                        MaterialPath: assets\garden_gnome_1k\garden_gnome_01.mat
-                        MeshIndex: 0
-                        VerticesSize: 59054
-                        IndicesSize: 86574
-                        FacesSize: 28858
             - Entity:
                 GeneralComponent:
-                  Name: garden_gnome_1k
+                  Name: Cube
                   Tag: Empty
                   Active: true
                   Static: false
                 TransformComponent:
-                  Position: [-0.274992704, 1.78303695, -1.06277284e-07]
-                  Rotation: [0.707106769, 0, -0, 0.707106769]
-                  Scale: [5, 4.99999952, 4.99999952]
-                  Matrix: [5, 0, 0, 0, 0, 2.98023224e-07, 4.99999952, 0, 0, -4.99999952, 2.98023224e-07, 0, -0.274992704, 1.78303695, -1.06277284e-07, 1]
-                Children:
-                  - Entity:
-                      GeneralComponent:
-                        Name: garden_gnome_01
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [-0, 0, -0, 1]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\garden_gnome_1k.fbx
-                        MaterialPath: assets\garden_gnome_1k\garden_gnome_01.mat
-                        MeshIndex: 0
-                        VerticesSize: 59054
-                        IndicesSize: 86574
-                        FacesSize: 28858
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
             - Entity:
                 GeneralComponent:
-                  Name: garden_gnome_1k
+                  Name: Cube
                   Tag: Empty
                   Active: true
                   Static: false
                 TransformComponent:
-                  Position: [0.657923102, 0, 0]
-                  Rotation: [0.707106769, 0, -0, 0.707106769]
-                  Scale: [5, 4.99999952, 4.99999952]
-                  Matrix: [5, 0, 0, 0, 0, 2.98023224e-07, 4.99999952, 0, 0, -4.99999952, 2.98023224e-07, 0, 0.657923102, 0, 0, 1]
-                Children:
-                  - Entity:
-                      GeneralComponent:
-                        Name: garden_gnome_01
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [-0, 0, -0, 1]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\garden_gnome_1k.fbx
-                        MaterialPath: assets\garden_gnome_1k\garden_gnome_01.mat
-                        MeshIndex: 0
-                        VerticesSize: 59054
-                        IndicesSize: 86574
-                        FacesSize: 28858
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
             - Entity:
                 GeneralComponent:
-                  Name: garden_gnome_1k
+                  Name: Cube
                   Tag: Empty
                   Active: true
                   Static: false
                 TransformComponent:
-                  Position: [-2.71653652, 0, 0]
-                  Rotation: [0.707106769, 0, -0, 0.707106769]
-                  Scale: [5, 4.99999952, 4.99999952]
-                  Matrix: [5, 0, 0, 0, 0, 2.98023224e-07, 4.99999952, 0, 0, -4.99999952, 2.98023224e-07, 0, -2.71653652, 0, 0, 1]
-                Children:
-                  - Entity:
-                      GeneralComponent:
-                        Name: garden_gnome_01
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [-0, 0, -0, 1]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\garden_gnome_1k.fbx
-                        MaterialPath: assets\garden_gnome_1k\garden_gnome_01.mat
-                        MeshIndex: 0
-                        VerticesSize: 59054
-                        IndicesSize: 86574
-                        FacesSize: 28858
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
             - Entity:
                 GeneralComponent:
-                  Name: garden_gnome_1k
+                  Name: Cube
                   Tag: Empty
                   Active: true
                   Static: false
                 TransformComponent:
-                  Position: [1.31707716, 0, 0]
-                  Rotation: [0.707106769, 0, -0, 0.707106769]
-                  Scale: [5, 4.99999952, 4.99999952]
-                  Matrix: [5, 0, 0, 0, 0, 2.98023224e-07, 4.99999952, 0, 0, -4.99999952, 2.98023224e-07, 0, 1.31707716, 0, 0, 1]
-                Children:
-                  - Entity:
-                      GeneralComponent:
-                        Name: garden_gnome_01
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [-0, 0, -0, 1]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\garden_gnome_1k.fbx
-                        MaterialPath: assets\garden_gnome_1k\garden_gnome_01.mat
-                        MeshIndex: 0
-                        VerticesSize: 59054
-                        IndicesSize: 86574
-                        FacesSize: 28858
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
+            - Entity:
+                GeneralComponent:
+                  Name: Cube
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [-0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+                RigidbodyComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        StaticFriction: 0.5
+                        DynamicFriction: 0.5
+                        Restitution: 0.100000001
