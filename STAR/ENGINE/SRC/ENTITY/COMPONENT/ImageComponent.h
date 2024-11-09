@@ -7,6 +7,8 @@ struct ImageComponent
 public:
 	void Render();
 	TextureStorageBuffer* GetTextureStorageBuffer();
+	void SetActive(bool _Active);
+	bool IsActive();
 
 private:
 	bool activeComponent = true;

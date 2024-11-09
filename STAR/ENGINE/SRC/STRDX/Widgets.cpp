@@ -666,7 +666,7 @@ void Widgets::InitImage()
 		imageShader->AddIndex(2);
 		imageShader->AddIndex(3);
 
-		imageShader->CreateVertexBuffer<POSTEX>(vertices);
+		imageShader->CreateVertexBuffer<POSTEX>(vertices, true);
 		imageShader->CreateIndexBuffer();
 
 		imageShader->ReleaseVertexBlob();
@@ -678,6 +678,10 @@ void Widgets::RenderImage(entt::entity entity)
 	if (ecs->HasComponent<ImageComponent>(entity))
 	{
 		auto& imageComponent = ecs->GetComponent<ImageComponent>(entity);
+
+		if (!imageComponent.IsActive())
+			return;
+
 		if (imageComponent.GetTextureStorageBuffer())
 		{
 			if (imageShader)
@@ -688,24 +692,43 @@ void Widgets::RenderImage(entt::entity entity)
 
 				float screenWidth = 1280.0f;
 				float screenHeight = 720.0f;
-				float scaleFactor = 256.0f;
+				float scaleFactor = 1024.0f;
 				float nearZ = 0.01f;
 				float farZ = 100.0f;
 
 				Matrix view = Matrix::Identity;
 				Matrix proj = DirectX::XMMatrixOrthographicLH(screenWidth / scaleFactor, screenHeight / scaleFactor, nearZ, farZ);
 				auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
-				Matrix world = transformComponent.GetTransform();
+
+				float angle = DirectX::XM_PIDIV2 + DirectX::XM_PIDIV2; // 90 + 90
+				Matrix rotationZ = DirectX::XMMatrixRotationZ(angle);
+				Matrix world = transformComponent.GetTransform() * rotationZ;
 
 				cb.SetProjection(proj);
 				cb.SetView(view);
 				cb.SetWorld(world);
 				constantBuffer->Update(&cb);
 
-				// ShaderResourceID is just pointer mask
+				// pointer mask
 				context->SetPixelShaderResource((ShaderResourceID*)imageComponent.GetTextureStorageBuffer()->texture, 0);
 				context->SetPixelSampler(samplerState, 0);
 
+				auto& texMetadata = imageComponent.GetTextureStorageBuffer()->texMetadata;
+				float imageWidth = (float)texMetadata.width;
+				float imageHeight = (float)texMetadata.height;
+
+				float aspectRatio = imageWidth / imageHeight;
+
+				float normalizedWidth = 1.0f;
+				float normalizedHeight = 1.0f / aspectRatio;
+
+				std::vector<POSTEX> vertices;
+				vertices.push_back(POSTEX(-normalizedWidth * 0.5f, -normalizedHeight * 0.5f, 0.0f, 0.0f, 0.0f));
+				vertices.push_back(POSTEX(-normalizedWidth * 0.5f, normalizedHeight * 0.5f, 0.0f, 0.0f, 1.0f));
+				vertices.push_back(POSTEX(normalizedWidth * 0.5f, normalizedHeight * 0.5f, 0.0f, 1.0f, 1.0f));
+				vertices.push_back(POSTEX(normalizedWidth * 0.5f, -normalizedHeight * 0.5f, 0.0f, 1.0f, 0.0f));
+
+				context->UpdateVertexBuffer<POSTEX>(imageShader, vertices);
 				context->Draw(imageShader);
 			}
 		}

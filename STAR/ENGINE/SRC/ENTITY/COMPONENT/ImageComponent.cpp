@@ -65,3 +65,12 @@ TextureStorageBuffer* ImageComponent::GetTextureStorageBuffer()
 {
 	return textureStorageBuffer;
 }
+
+void ImageComponent::SetActive(bool _Active)
+{
+	activeComponent = _Active;
+}
+bool ImageComponent::IsActive()
+{
+	return activeComponent;
+}

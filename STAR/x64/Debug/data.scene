@@ -1,5 +1,5 @@
 # do not edit
-# Nov  9 2024 13:15:51
+# Nov  9 2024 22:29:39
 Star:
   Version:
     Major: 1
@@ -31,7 +31,7 @@ Star:
                   Scale: [1, 1, 1]
                   Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
                 MeshComponent:
-                  IsActive: false
+                  IsActive: true
                   ModelPath: data\model\cube.obj
                   MaterialPath: data\model\cube\Cube.mat
                   MeshIndex: 0
@@ -57,14 +57,3 @@ Star:
                   Far: 100
                   AutomaticAspect: true
                   Aspect: [0, 0]
-            - Entity:
-                GeneralComponent:
-                  Name: Empty
-                  Tag: Empty
-                  Active: true
-                  Static: false
-                TransformComponent:
-                  Position: [0, 0, 0]
-                  Rotation: [0, 0, 0, 1]
-                  Scale: [1, 1, 1]
-                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]

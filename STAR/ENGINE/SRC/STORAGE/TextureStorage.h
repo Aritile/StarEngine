@@ -3,6 +3,7 @@
 #include <list>
 #include <string>
 #include <d3d11.h>
+#include "../XTK/TEX/DirectXTex.h"
 
 struct TextureStorageBuffer
 {
@@ -10,6 +11,7 @@ struct TextureStorageBuffer
 
 	std::string path = "";
 	ID3D11ShaderResourceView* texture = nullptr;
+	DirectX::TexMetadata texMetadata;
 };
 
 class TextureStorage
