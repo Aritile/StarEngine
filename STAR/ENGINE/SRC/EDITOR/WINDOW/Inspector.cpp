@@ -9,6 +9,7 @@
 #include "../../SYSTEM/ScriptingSystem.h"
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../SYSTEM/PhysicsSystem.h"
+#include "../../ENTITY/COMPONENT/ImageComponent.h"
 
 InspectorWindow* InspectorWindow::GetSingleton()
 {
@@ -38,6 +39,7 @@ void InspectorWindow::Render()
 			RenderComponent<RigidbodyComponent>(ecs->selected);
 			RenderComponent<ScriptingComponent>(ecs->selected);
 			RenderComponent<PhysicsComponent>(ecs->selected);
+			RenderComponent<ImageComponent>(ecs->selected);
 			RenderAdd();
 		}
 	}
@@ -62,6 +64,15 @@ void InspectorWindow::RenderAdd()
 		{
 			if (!ecs->HasComponent<TextMeshComponent>(ecs->selected))
 				ecs->AddComponent<TextMeshComponent>(ecs->selected);
+		}
+		ImGui::Separator();
+		{
+			if (ImGui::BeginMenu("UI"))
+			{
+				if (ImGui::MenuItem("Image"))
+					ecs->AddComponent<ImageComponent>(ecs->selected);
+				ImGui::EndMenu();
+			}
 		}
 		ImGui::Separator();
 		if (ImGui::Selectable("CameraComponent"))

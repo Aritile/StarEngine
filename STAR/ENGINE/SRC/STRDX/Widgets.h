@@ -28,6 +28,11 @@ public:
 	void InitPerspectiveFrustumWidget();
 	void InitOrthographicFrustumWidget();
 
+	// UI
+	void InitImage();
+	void RenderImage(entt::entity entity);
+	Shader* imageShader = nullptr;
+
 	void InitRenderTarget(unsigned int _MultisamplingCount);
 	void SetRenderTarget();
 	void UnsetRenderTarget();
@@ -81,4 +86,5 @@ private:
 	ConstantBuffer* rectangleConstantBuffer = nullptr;
 	RasterizerState* rasterizerState = nullptr;
 	Vector2 bufferSize;
+	SamplerState* samplerState = nullptr;
 };

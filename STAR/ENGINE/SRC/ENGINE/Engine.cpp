@@ -116,6 +116,7 @@ void Engine::EngineStart()
     widgets->InitGridWidget();
     widgets->InitPerspectiveFrustumWidget();
     widgets->InitOrthographicFrustumWidget();
+    widgets->InitImage();
     widgets->InitRenderTarget(multisamplingCount);
 
 #if !defined(GAME) // this is only for engine
@@ -370,6 +371,10 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
                 }
             }
         }
+
+        // UI
+        if (game)
+            widgets->RenderImage(entity);
     }
 
     if (!game)

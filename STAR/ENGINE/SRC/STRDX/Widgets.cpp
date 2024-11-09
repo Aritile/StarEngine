@@ -6,6 +6,7 @@
 // components
 #include "../ENTITY/COMPONENT/GeneralComponent.h"
 #include "../ENTITY/COMPONENT/CameraComponent.h"
+#include "../ENTITY/COMPONENT/ImageComponent.h"
 
 // strdx
 #include "context.h"
@@ -186,6 +187,8 @@ void Widgets::Release()
 	if (renderTarget) renderTarget->Release();
 	if (rectangle) rectangle->Release();
 	if (rectangleConstantBuffer) rectangleConstantBuffer->Release();
+	if (imageShader) imageShader->Release();
+	if (samplerState) samplerState->Release();
 }
 void Widgets::Init()
 {
@@ -622,4 +625,91 @@ void Widgets::ResizeRenderTarget(Vector2 _Size, unsigned int _MultisamplingCount
 
 	bufferSize = Vector2(_Size.x, _Size.y);
 	renderTarget = RenderTarget::Create((UINT)_Size.x, (UINT)_Size.y, _MultisamplingCount);
+}
+void Widgets::InitImage()
+{
+	samplerState = SamplerState::Create();
+	imageShader = Shader::Create();
+
+	if (imageShader)
+	{
+		imageShader->LoadVertex("data\\shader\\image\\vertex.hlsl", true);
+		imageShader->LoadPixel("data\\shader\\image\\pixel.hlsl", true);
+
+		// compile shaders
+		imageShader->CompileVertex();
+		imageShader->CompilePixel();
+
+		// save shaders
+		//shader->SaveVertex("vertex.bin");
+		//shader->SavePixel("pixel.bin");
+
+		// create shaders
+		imageShader->CreateVertex();
+		imageShader->CreatePixel();
+
+		imageShader->AddLayout("POSITION", 0, 3, 0, 0);
+		imageShader->AddLayout("TEXCOORD", 0, 2, 0, 12);
+		imageShader->CreateLayout();
+
+		// x, y, z coords
+		std::vector<POSTEX> vertices;
+		vertices.push_back(POSTEX(-0.5f, -0.5f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(POSTEX(-0.5f, 0.5f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(POSTEX(0.5f, 0.5f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(POSTEX(0.5f, -0.5f, 0.0f, 0.0f, 1.0f));
+
+		imageShader->AddIndex(0);
+		imageShader->AddIndex(1);
+		imageShader->AddIndex(2);
+		imageShader->AddIndex(0);
+		imageShader->AddIndex(2);
+		imageShader->AddIndex(3);
+
+		imageShader->CreateVertexBuffer<POSTEX>(vertices);
+		imageShader->CreateIndexBuffer();
+
+		imageShader->ReleaseVertexBlob();
+		imageShader->ReleasePixelBlob();
+	}
+}
+void Widgets::RenderImage(entt::entity entity)
+{
+	if (ecs->HasComponent<ImageComponent>(entity))
+	{
+		auto& imageComponent = ecs->GetComponent<ImageComponent>(entity);
+		if (imageComponent.GetTextureStorageBuffer())
+		{
+			if (imageShader)
+			{
+				context->Set(imageShader);
+				context->SetVertexConstantBuffer(constantBuffer, 0);
+				context->SetPixelConstantBuffer(constantBuffer, 0);
+
+				float screenWidth = 1280.0f;
+				float screenHeight = 720.0f;
+				float scaleFactor = 256.0f;
+				float nearZ = 0.01f;
+				float farZ = 100.0f;
+
+				Matrix view = Matrix::Identity;
+				Matrix proj = DirectX::XMMatrixOrthographicLH(screenWidth / scaleFactor, screenHeight / scaleFactor, nearZ, farZ);
+				auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
+				Matrix world = transformComponent.GetTransform();
+
+				cb.SetProjection(proj);
+				cb.SetView(view);
+				cb.SetWorld(world);
+				constantBuffer->Update(&cb);
+
+				// ShaderResourceID is just pointer mask
+				context->SetPixelShaderResource((ShaderResourceID*)imageComponent.GetTextureStorageBuffer()->texture, 0);
+				context->SetPixelSampler(samplerState, 0);
+
+				context->Draw(imageShader);
+			}
+		}
+	}
+
+	dx->UnbindAll(0, 1);
 }
