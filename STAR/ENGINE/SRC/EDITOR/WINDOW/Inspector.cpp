@@ -10,6 +10,7 @@
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../SYSTEM/PhysicsSystem.h"
 #include "../../ENTITY/COMPONENT/ImageComponent.h"
+#include "../../ENTITY/COMPONENT/OpacityComponent.h"
 
 InspectorWindow* InspectorWindow::GetSingleton()
 {
@@ -40,6 +41,7 @@ void InspectorWindow::Render()
 			RenderComponent<ScriptingComponent>(ecs->selected);
 			RenderComponent<PhysicsComponent>(ecs->selected);
 			RenderComponent<ImageComponent>(ecs->selected);
+			RenderComponent<OpacityComponent>(ecs->selected);
 			RenderAdd();
 		}
 	}
@@ -55,12 +57,12 @@ void InspectorWindow::RenderAdd()
 
 	if (ImGui::BeginPopup("addComp", ImGuiWindowFlags_NoMove))
 	{
-		if (ImGui::Selectable("MeshComponent"))
+		if (ImGui::Selectable("Mesh"))
 		{
 			if (!ecs->HasComponent<MeshComponent>(ecs->selected))
 				ecs->AddComponent<MeshComponent>(ecs->selected);
 		}
-		if (ImGui::Selectable("TextMeshComponent"))
+		if (ImGui::Selectable("TextMesh"))
 		{
 			if (!ecs->HasComponent<TextMeshComponent>(ecs->selected))
 				ecs->AddComponent<TextMeshComponent>(ecs->selected);
@@ -71,17 +73,20 @@ void InspectorWindow::RenderAdd()
 			{
 				if (ImGui::MenuItem("Image"))
 					ecs->AddComponent<ImageComponent>(ecs->selected);
+				ImGui::Separator();
+				if (ImGui::MenuItem("Opacity"))
+					ecs->AddComponent<OpacityComponent>(ecs->selected);
 				ImGui::EndMenu();
 			}
 		}
 		ImGui::Separator();
-		if (ImGui::Selectable("CameraComponent"))
+		if (ImGui::Selectable("Camera"))
 		{
 			if (!ecs->HasComponent<CameraComponent>(ecs->selected))
 				ecs->AddComponent<CameraComponent>(ecs->selected);
 		}
 		ImGui::Separator();
-		if (ImGui::Selectable("RigidbodyComponent"))
+		if (ImGui::Selectable("Rigidbody"))
 		{
 			if (!ecs->HasComponent<RigidbodyComponent>(ecs->selected))
 			{

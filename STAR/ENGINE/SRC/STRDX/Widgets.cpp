@@ -7,6 +7,7 @@
 #include "../ENTITY/COMPONENT/GeneralComponent.h"
 #include "../ENTITY/COMPONENT/CameraComponent.h"
 #include "../ENTITY/COMPONENT/ImageComponent.h"
+#include "../ENTITY/COMPONENT/OpacityComponent.h"
 
 // strdx
 #include "context.h"
@@ -189,11 +190,13 @@ void Widgets::Release()
 	if (rectangleConstantBuffer) rectangleConstantBuffer->Release();
 	if (imageShader) imageShader->Release();
 	if (samplerState) samplerState->Release();
+	if (imageConstantBuffer) imageConstantBuffer->Release();
 }
 void Widgets::Init()
 {
 	rasterizerState = RasterizerState::Create();
 	constantBuffer = ConstantBuffer::Create(sizeof(CB));
+	imageConstantBuffer = ConstantBuffer::Create(sizeof(CBImage));
 }
 void Widgets::InitPerspectiveFrustumWidget()
 {
@@ -687,8 +690,8 @@ void Widgets::RenderImage(entt::entity entity)
 			if (imageShader)
 			{
 				context->Set(imageShader);
-				context->SetVertexConstantBuffer(constantBuffer, 0);
-				context->SetPixelConstantBuffer(constantBuffer, 0);
+				context->SetVertexConstantBuffer(imageConstantBuffer, 0);
+				context->SetPixelConstantBuffer(imageConstantBuffer, 0);
 
 				float screenWidth = 1280.0f;
 				float screenHeight = 720.0f;
@@ -704,10 +707,17 @@ void Widgets::RenderImage(entt::entity entity)
 				Matrix rotationZ = DirectX::XMMatrixRotationZ(angle);
 				Matrix world = transformComponent.GetTransform() * rotationZ;
 
-				cb.SetProjection(proj);
-				cb.SetView(view);
-				cb.SetWorld(world);
-				constantBuffer->Update(&cb);
+				cbImage.iProjection = proj;
+				cbImage.iView = view;
+				cbImage.iWorld = world;
+				if (ecs->HasComponent<OpacityComponent>(entity))
+				{
+					auto& opacityComponent = ecs->GetComponent<OpacityComponent>(entity);
+					cbImage.iOpacity = opacityComponent.GetOpacity();
+				}
+				else cbImage.iOpacity = 1.0f;
+
+				imageConstantBuffer->Update(&cbImage);
 
 				// pointer mask
 				context->SetPixelShaderResource((ShaderResourceID*)imageComponent.GetTextureStorageBuffer()->texture, 0);

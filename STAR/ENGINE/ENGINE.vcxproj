@@ -35,6 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\OpacityComponent.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\ImageComponent.h" />
     <ClInclude Include="SRC\EDITOR\WINDOW\Importer.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\CapsuleColliderComponent.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="SRC\VERTEX\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\OpacityComponent.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\ImageComponent.cpp" />
     <ClCompile Include="SRC\EDITOR\WINDOW\Importer.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\CapsuleColliderComponent.cpp" />

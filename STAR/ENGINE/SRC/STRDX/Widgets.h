@@ -16,6 +16,14 @@ struct CBRectangle
 	DirectX::XMMATRIX padding;
 };
 
+struct CBImage
+{
+	DirectX::XMMATRIX iWorld;
+	DirectX::XMMATRIX iView;
+	DirectX::XMMATRIX iProjection;
+	float iOpacity = 1.0f;
+};
+
 class Widgets
 {
 public:
@@ -83,6 +91,8 @@ private:
 	Shader* rectangle = nullptr;
 	CB cb;
 	CBRectangle cbRectangle;
+	CBImage cbImage;
+	ConstantBuffer* imageConstantBuffer = nullptr;
 	ConstantBuffer* rectangleConstantBuffer = nullptr;
 	RasterizerState* rasterizerState = nullptr;
 	Vector2 bufferSize;

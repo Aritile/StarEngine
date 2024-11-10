@@ -201,6 +201,11 @@ void Engine::EngineProcess()
         // render rectangle with render target texture
         ID3D11RenderTargetView* renderTargetView = viewportWindow->GetRenderTargetView();
         ID3D11DepthStencilView* depthStencilView = viewportWindow->GetDepthStencilView();
+
+        // alpha fix
+        float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+        dx->dxDeviceContext->OMSetBlendState(dx->dxBlendState, blendFactor, 0xffffffff);
+
         D3D11_VIEWPORT viewport = viewportWindow->GetViewport();
         dx->dxDeviceContext->OMSetRenderTargets(1, &renderTargetView, NULL);
         Vector4 clearColor = GetClearColor();

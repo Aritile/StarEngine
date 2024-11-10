@@ -16,6 +16,7 @@ public:
 	ID3D11DeviceContext* dxDeviceContext = NULL;
 	ID3D11RenderTargetView* dxRenderTargetView = NULL;
 	ID3D11DepthStencilView* dxDepthStencilView = NULL;
+	ID3D11BlendState* dxBlendState = NULL;
 
 public:
 	static DX* GetSingleton();
@@ -28,4 +29,5 @@ public:
 	void Release();
 	void UnbindAll(UINT StartSlot, UINT NumBuffers);
 	void ReportLiveObjects();
+	void CreateBlendState();
 };
