@@ -137,6 +137,7 @@ bool DX::CreateContext(UINT _Width, UINT _Height)
     /*---*/
 
     CreateBlendState();
+    CreateDepthStencilState();
 
     return true;
 }
@@ -162,6 +163,8 @@ void DX::Release()
     if (dxDeviceContext) dxDeviceContext->Release();
     if (dxRenderTargetView) dxRenderTargetView->Release();
     if (dxDepthStencilView) dxDepthStencilView->Release();
+    if (dxBlendState) dxBlendState->Release();
+    if (dxDepthStencilState) dxDepthStencilState->Release();
 }
 void DX::UnbindAll(UINT StartSlot, UINT NumBuffers)
 {
@@ -214,4 +217,20 @@ void DX::ReportLiveObjects()
             pD3DDebug->Release();
         }
     }
+}
+bool DX::CreateDepthStencilState()
+{
+    D3D11_DEPTH_STENCIL_DESC desc;
+    ZeroMemory(&desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+
+    desc.DepthEnable = TRUE;
+    desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+    desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+    desc.StencilEnable = FALSE;
+
+    ID3D11DepthStencilState* pDepthStencilState = nullptr;
+    if (FAILED(dxDevice->CreateDepthStencilState(&desc, &pDepthStencilState)))
+        return false;
+
+    return true;
 }

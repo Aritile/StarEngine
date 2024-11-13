@@ -35,6 +35,7 @@ public:
 	void InitGridWidget();
 	void InitPerspectiveFrustumWidget();
 	void InitOrthographicFrustumWidget();
+	void InitCanvas();
 
 	// UI
 	void InitImage();
@@ -58,6 +59,7 @@ public:
 	void SetRasterizerState();
 	void UnsetRasterizerState();
 	void RenderRectangle(bool _EnableMultisampling, unsigned int _MultisamplingCount);
+	void RenderCanvas();
 
 public:
 	void SetRenderGrid(bool _Render);
@@ -97,4 +99,5 @@ private:
 	RasterizerState* rasterizerState = nullptr;
 	Vector2 bufferSize;
 	SamplerState* samplerState = nullptr;
+	Shader* canvasShader = nullptr;
 };

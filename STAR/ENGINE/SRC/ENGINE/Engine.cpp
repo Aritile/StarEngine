@@ -118,6 +118,7 @@ void Engine::EngineStart()
     widgets->InitOrthographicFrustumWidget();
     widgets->InitImage();
     widgets->InitRenderTarget(multisamplingCount);
+    widgets->InitCanvas();
 
 #if !defined(GAME) // this is only for engine
     physicsTiming = timing->AddTimer("Physics");
@@ -391,6 +392,8 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
         widgets->RenderGridWidget();
         widgets->RenderPerspectiveFrustumWidget();
         widgets->RenderOrthographicFrustumWidget();
+        // EXPERIMENTAL FEATURE
+        //widgets->RenderCanvas();
         if (enableAntialiasing)
             widgets->UnsetRasterizerState();
         viewportWindow->RefreshRenderState();

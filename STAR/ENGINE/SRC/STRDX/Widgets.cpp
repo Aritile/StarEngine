@@ -191,6 +191,7 @@ void Widgets::Release()
 	if (imageShader) imageShader->Release();
 	if (samplerState) samplerState->Release();
 	if (imageConstantBuffer) imageConstantBuffer->Release();
+	if (canvasShader) canvasShader->Release();
 }
 void Widgets::Init()
 {
@@ -636,8 +637,8 @@ void Widgets::InitImage()
 
 	if (imageShader)
 	{
-		imageShader->LoadVertex("data\\shader\\image\\vertex.hlsl", true);
-		imageShader->LoadPixel("data\\shader\\image\\pixel.hlsl", true);
+		imageShader->LoadVertex("data\\shader\\widget\\image\\vertex.hlsl", true);
+		imageShader->LoadPixel("data\\shader\\widget\\image\\pixel.hlsl", true);
 
 		// compile shaders
 		imageShader->CompileVertex();
@@ -739,9 +740,68 @@ void Widgets::RenderImage(entt::entity entity)
 				vertices.push_back(POSTEX(normalizedWidth * 0.5f, -normalizedHeight * 0.5f, 0.0f, 1.0f, 0.0f));
 
 				context->UpdateVertexBuffer<POSTEX>(imageShader, vertices);
+
+				// fix alpha
+				//dx->dxDeviceContext->OMSetDepthStencilState(dx->dxDepthStencilState, 1);
 				context->Draw(imageShader);
+				//dx->dxDeviceContext->OMSetDepthStencilState(NULL, 0);
 			}
 		}
+	}
+
+	dx->UnbindAll(0, 1);
+}
+
+void Widgets::InitCanvas()
+{
+	canvasShader = Shader::Create();
+	if (canvasShader)
+	{
+		canvasShader->LoadVertex("data\\shader\\widget\\canvas\\vertex.hlsl", true);
+		canvasShader->LoadPixel("data\\shader\\widget\\canvas\\pixel.hlsl", true);
+
+		canvasShader->CompileVertex();
+		canvasShader->CompilePixel();
+
+		canvasShader->CreateVertex();
+		canvasShader->CreatePixel();
+
+		canvasShader->AddLayout("POSITION", 0, 3, 0, 0);
+		canvasShader->CreateLayout();
+
+		std::vector<POS> vertices;
+		vertices.push_back(POS(0.0f, -1.0f, 0.0f));
+		vertices.push_back(POS(1280.0f, -1.0f, 0.0f));
+		vertices.push_back(POS(1280.0f, -1.0f, 0.0f));
+		vertices.push_back(POS(1280.0f, 720.0f, 0.0f));
+		vertices.push_back(POS(1280.0f, 720.0f, 0.0f));
+		vertices.push_back(POS(0.0f, 720.0f, 0.0f));
+		vertices.push_back(POS(0.0f, 720.0f, 0.0f));
+		vertices.push_back(POS(0.0f, -1.0f, 0.0f));
+		canvasShader->CreateVertexBuffer<POS>(vertices);
+
+		canvasShader->ReleaseVertexBlob();
+		canvasShader->ReleasePixelBlob();
+	}
+}
+
+void Widgets::RenderCanvas()
+{
+	if (canvasShader)
+	{
+		context->Set(canvasShader);
+		context->SetVertexConstantBuffer(constantBuffer, 0);
+
+		DirectX::XMMATRIX view = viewportWindow->GetPerspectiveViewMatrix();
+		DirectX::XMMATRIX proj = viewportWindow->GetPerspectiveProjectionMatrix();
+		Matrix matrix = Matrix::Identity;
+
+		cb.SetProjection(proj);
+		cb.SetView(view);
+		cb.SetWorld(matrix);
+		constantBuffer->Update(&cb);
+
+		context->Draw(canvasShader);
 	}
 
 	dx->UnbindAll(0, 1);
