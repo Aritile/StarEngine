@@ -1,16 +1,23 @@
 #include "Inspector.h"
+
+// entity
 #include "../../ENTITY/Entity.h"
+
+// components
 #include "../../ENTITY/COMPONENT/GeneralComponent.h"
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
 #include "../../ENTITY/COMPONENT/MeshComponent.h"
 #include "../../ENTITY/COMPONENT/CameraComponent.h"
 #include "../../ENTITY/COMPONENT/TextMeshComponent.h"
 #include "../../ENTITY/COMPONENT/RigidbodyComponent.h"
+#include "../../ENTITY/COMPONENT/ImageComponent.h"
+#include "../../ENTITY/COMPONENT/OpacityComponent.h"
+#include "../../ENTITY/COMPONENT/RectangleComponent.h"
+
+// stuff
 #include "../../SYSTEM/ScriptingSystem.h"
 #include "../../EDITOR/WINDOW/Assets.h"
 #include "../../SYSTEM/PhysicsSystem.h"
-#include "../../ENTITY/COMPONENT/ImageComponent.h"
-#include "../../ENTITY/COMPONENT/OpacityComponent.h"
 
 InspectorWindow* InspectorWindow::GetSingleton()
 {
@@ -42,6 +49,7 @@ void InspectorWindow::Render()
 			RenderComponent<PhysicsComponent>(ecs->selected);
 			RenderComponent<ImageComponent>(ecs->selected);
 			RenderComponent<OpacityComponent>(ecs->selected);
+			RenderComponent<RectangleComponent>(ecs->selected);
 			RenderAdd();
 		}
 	}
@@ -71,6 +79,8 @@ void InspectorWindow::RenderAdd()
 		{
 			if (ImGui::BeginMenu("UI"))
 			{
+				if (ImGui::MenuItem("Rectangle"))
+					ecs->AddComponent<RectangleComponent>(ecs->selected);
 				if (ImGui::MenuItem("Image"))
 					ecs->AddComponent<ImageComponent>(ecs->selected);
 				ImGui::Separator();

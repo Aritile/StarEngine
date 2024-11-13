@@ -1,5 +1,5 @@
 # do not edit
-# Nov 13 2024 15:58:54
+# Nov 13 2024 21:15:40
 Star:
   Version:
     Major: 1
@@ -57,3 +57,14 @@ Star:
                   Far: 100
                   AutomaticAspect: true
                   Aspect: [0, 0]
+            - Entity:
+                GeneralComponent:
+                  Name: Empty
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]

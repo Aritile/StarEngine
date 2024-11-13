@@ -63,6 +63,10 @@ void Engine::SetRenderTarget(Vector4 _Color)
 
 void Engine::EngineStart()
 {
+#if defined(_DEBUG)
+    std::filesystem::current_path("..\\x64\\Debug");
+#endif
+
     // topology
     dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -117,6 +121,7 @@ void Engine::EngineStart()
     widgets->InitPerspectiveFrustumWidget();
     widgets->InitOrthographicFrustumWidget();
     widgets->InitImage();
+    widgets->InitRectangle();
     widgets->InitRenderTarget(multisamplingCount);
     widgets->InitCanvas();
 
@@ -270,7 +275,7 @@ void Engine::EngineShutdown()
     module->DestroyModules();
     job->Release();
 
-    //dx->ReportLiveObjects();
+    dx->ReportLiveObjects();
     dx->Release();
 }
 
@@ -380,7 +385,10 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
 
         // UI
         if (game)
+        {
             widgets->RenderImage(entity);
+            widgets->RenderRectangle(entity);
+        }
     }
 
     if (!game)

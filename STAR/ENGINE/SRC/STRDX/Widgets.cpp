@@ -8,6 +8,7 @@
 #include "../ENTITY/COMPONENT/CameraComponent.h"
 #include "../ENTITY/COMPONENT/ImageComponent.h"
 #include "../ENTITY/COMPONENT/OpacityComponent.h"
+#include "../ENTITY/COMPONENT/RectangleComponent.h"
 
 // strdx
 #include "context.h"
@@ -192,12 +193,15 @@ void Widgets::Release()
 	if (samplerState) samplerState->Release();
 	if (imageConstantBuffer) imageConstantBuffer->Release();
 	if (canvasShader) canvasShader->Release();
+	if (rectangle2) rectangle2->Release();
+	if (rectangle2ConstantBuffer) rectangle2ConstantBuffer->Release();
 }
 void Widgets::Init()
 {
 	rasterizerState = RasterizerState::Create();
 	constantBuffer = ConstantBuffer::Create(sizeof(CB));
 	imageConstantBuffer = ConstantBuffer::Create(sizeof(CBImage));
+	rectangle2ConstantBuffer = ConstantBuffer::Create(sizeof(CBRectangle2));
 }
 void Widgets::InitPerspectiveFrustumWidget()
 {
@@ -533,8 +537,8 @@ void Widgets::InitRenderTarget(unsigned int _MultisamplingCount)
 
 	if (rectangle)
 	{
-		rectangle->LoadVertex("data\\shader\\rectangle\\vertex.hlsl", true);
-		rectangle->LoadPixel("data\\shader\\rectangle\\pixel.hlsl", true);
+		rectangle->LoadVertex("data\\shader\\widget\\rectangle\\vertex.hlsl", true);
+		rectangle->LoadPixel("data\\shader\\widget\\rectangle\\pixel.hlsl", true);
 
 		// compile shaders
 		rectangle->CompileVertex();
@@ -805,4 +809,100 @@ void Widgets::RenderCanvas()
 	}
 
 	dx->UnbindAll(0, 1);
+}
+
+void Widgets::RenderRectangle(entt::entity entity)
+{
+	if (ecs->HasComponent<RectangleComponent>(entity))
+	{
+		auto& rectangleComponent = ecs->GetComponent<RectangleComponent>(entity);
+
+		if (!rectangleComponent.IsActive())
+			return;
+
+		if (rectangle2)
+		{
+			context->Set(rectangle2);
+			context->SetVertexConstantBuffer(rectangle2ConstantBuffer, 0);
+			context->SetPixelConstantBuffer(rectangle2ConstantBuffer, 0);
+
+			// remove this
+			float screenWidth = 1280.0f;
+			float screenHeight = 720.0f;
+			float scaleFactor = 1024.0f;
+			float nearZ = 0.01f;
+			float farZ = 100.0f;
+
+			Matrix view = Matrix::Identity;
+			Matrix proj = DirectX::XMMatrixOrthographicLH(screenWidth / scaleFactor, screenHeight / scaleFactor, nearZ, farZ);
+			auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
+			Matrix world = transformComponent.GetTransform();
+
+			cbRectangle2.iProjection = proj;
+			cbRectangle2.iView = view;
+			cbRectangle2.iWorld = world;
+			if (ecs->HasComponent<OpacityComponent>(entity))
+			{
+				auto& opacityComponent = ecs->GetComponent<OpacityComponent>(entity);
+				cbRectangle2.iOpacity = opacityComponent.GetOpacity();
+			}
+			else cbRectangle2.iOpacity = 1.0f;
+			cbRectangle2.iColor = rectangleComponent.GetColor();
+
+			rectangle2ConstantBuffer->Update(&cbRectangle2);
+
+
+			// fix alpha
+			//dx->dxDeviceContext->OMSetDepthStencilState(dx->dxDepthStencilState, 1);
+			context->Draw(rectangle2);
+			//dx->dxDeviceContext->OMSetDepthStencilState(NULL, 0);
+		}
+	}
+
+	dx->UnbindAll(0, 1);
+}
+void Widgets::InitRectangle()
+{
+	rectangle2 = Shader::Create();
+
+	if (rectangle2)
+	{
+		rectangle2->LoadVertex("data\\shader\\widget\\rectangle2\\vertex.hlsl", true);
+		rectangle2->LoadPixel("data\\shader\\widget\\rectangle2\\pixel.hlsl", true);
+
+		// compile shaders
+		rectangle2->CompileVertex();
+		rectangle2->CompilePixel();
+
+		// save shaders
+		//shader->SaveVertex("vertex.bin");
+		//shader->SavePixel("pixel.bin");
+
+		// create shaders
+		rectangle2->CreateVertex();
+		rectangle2->CreatePixel();
+
+		rectangle2->AddLayout("POSITION", 0, 3, 0, 0);
+		rectangle2->CreateLayout();
+
+		// x, y, z coords
+		std::vector<POS> vertices;
+		vertices.push_back(POS(-0.5f, -0.5f, 0.0f));
+		vertices.push_back(POS(-0.5f, 0.5f, 0.0f));
+		vertices.push_back(POS(0.5f, 0.5f, 0.0f));
+		vertices.push_back(POS(0.5f, -0.5f, 0.0f));
+
+		rectangle2->AddIndex(0);
+		rectangle2->AddIndex(1);
+		rectangle2->AddIndex(2);
+		rectangle2->AddIndex(0);
+		rectangle2->AddIndex(2);
+		rectangle2->AddIndex(3);
+
+		rectangle2->CreateVertexBuffer<POS>(vertices);
+		rectangle2->CreateIndexBuffer();
+		
+		rectangle2->ReleaseVertexBlob();
+		rectangle2->ReleasePixelBlob();
+	}
 }

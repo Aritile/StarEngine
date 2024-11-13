@@ -11,17 +11,24 @@
 
 struct CBRectangle
 {
-	DirectX::XMFLOAT2 iResolution;
-	int sampleCount;
-	DirectX::XMMATRIX padding;
+	DirectX::XMFLOAT2 iResolution = DirectX::XMFLOAT2(0.0f, 0.0f);
+	int sampleCount = 0;
+	DirectX::XMMATRIX padding = DirectX::XMMatrixIdentity();
 };
-
 struct CBImage
 {
-	DirectX::XMMATRIX iWorld;
-	DirectX::XMMATRIX iView;
-	DirectX::XMMATRIX iProjection;
+	DirectX::XMMATRIX iWorld = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX iView = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX iProjection = DirectX::XMMatrixIdentity();
 	float iOpacity = 1.0f;
+};
+struct CBRectangle2
+{
+	DirectX::XMMATRIX iWorld = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX iView = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX iProjection = DirectX::XMMatrixIdentity();
+	float iOpacity = 1.0f;
+	DirectX::XMFLOAT3 iColor = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 };
 
 class Widgets
@@ -39,7 +46,9 @@ public:
 
 	// UI
 	void InitImage();
+	void InitRectangle();
 	void RenderImage(entt::entity entity);
+	void RenderRectangle(entt::entity entity);
 	Shader* imageShader = nullptr;
 
 	void InitRenderTarget(unsigned int _MultisamplingCount);
@@ -91,11 +100,14 @@ private:
 	ConstantBuffer* constantBuffer = nullptr;
 	RenderTarget* renderTarget = nullptr;
 	Shader* rectangle = nullptr;
+	Shader* rectangle2 = nullptr;
 	CB cb;
 	CBRectangle cbRectangle;
 	CBImage cbImage;
+	CBRectangle2 cbRectangle2;
 	ConstantBuffer* imageConstantBuffer = nullptr;
 	ConstantBuffer* rectangleConstantBuffer = nullptr;
+	ConstantBuffer* rectangle2ConstantBuffer = nullptr;
 	RasterizerState* rasterizerState = nullptr;
 	Vector2 bufferSize;
 	SamplerState* samplerState = nullptr;

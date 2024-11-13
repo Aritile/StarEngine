@@ -315,6 +315,9 @@
     <ClInclude Include="SRC\ENTITY\COMPONENT\OpacityComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\RectangleComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SRC\MAIN\Main.cpp">
@@ -636,6 +639,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\ENTITY\COMPONENT\OpacityComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\RectangleComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
