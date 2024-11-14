@@ -275,6 +275,9 @@ void Engine::EngineShutdown()
     module->DestroyModules();
     job->Release();
 
+    dx->dxDeviceContext->ClearState();
+    dx->dxDeviceContext->Flush();
+
     dx->ReportLiveObjects();
     dx->Release();
 }
