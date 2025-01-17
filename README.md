@@ -61,6 +61,7 @@ zlib https://zlib.net/ \
 LuaSocket https://github.com/lunarmodules/luasocket \
 ACES Filmic https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/ \
 Font Awesome https://fontawesome.com/ \
+imoguizmo https://github.com/fknfilewalker/imoguizmo \
 ![](/images/entt.png)
 ![](/images/physx.png)
 ![](/images/lua.png)
