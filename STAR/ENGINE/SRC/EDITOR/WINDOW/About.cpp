@@ -54,6 +54,7 @@ void AboutWindow::Render()
 			ImGui::Text("LuaSocket https://github.com/lunarmodules/luasocket");
 			ImGui::Text("ACES Filmic https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/");
 			ImGui::Text("Font Awesome https://fontawesome.com/");
+			ImGui::Text("imoguizmo https://github.com/fknfilewalker/imoguizmo");
 		}
 		ImGui::EndChild();
 		float _X = windowPadding.x + ImGui::CalcTextSize("Made in Slovakia").x;

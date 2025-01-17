@@ -13,6 +13,7 @@
 #include "../../STORAGE/TextureStorage.h"
 #include "../../STRDX/Widgets.h"
 #include "../../ENGINE/Engine.h"
+#include <imoguizmo/imoguizmo.hpp>
 
 static DX*             dx = DX::GetSingleton();
 static Game*           game = Game::GetSingleton();
@@ -360,6 +361,62 @@ void ViewportWindow::RenderWidget()
 				}
 			}
 		}
+	}
+
+	// config
+	ImOGuizmo::config.lineThicknessScale = 0.1f;
+	ImOGuizmo::config.positiveRadiusScale = 0.15f;
+	ImOGuizmo::config.negativeRadiusScale = 0.15f;
+	ImOGuizmo::config.hoverCircleRadiusScale = 2.1f;
+
+	// front
+	ImOGuizmo::config.xCircleFrontColor = IM_COL32(0xE2, 0x52, 0x52, 0xFF);
+	ImOGuizmo::config.yCircleFrontColor = IM_COL32(0x52, 0xE2, 0x52, 0xFF);
+	ImOGuizmo::config.zCircleFrontColor = IM_COL32(0x52, 0x52, 0xE2, 0xFF);
+
+	// back
+	ImOGuizmo::config.xCircleBackColor = IM_COL32(0xE2, 0x52, 0x52, 0xFF);
+	ImOGuizmo::config.yCircleBackColor = IM_COL32(0x52, 0xE2, 0x52, 0xFF);
+	ImOGuizmo::config.zCircleBackColor = IM_COL32(0x52, 0x52, 0xE2, 0xFF);
+
+	ImOGuizmo::SetDrawList();
+	float space = 16.0f;
+	ImOGuizmo::SetRect(windowPos.x + windowSize.x - 64.0f - space, (windowPos.y + windowCursorPos.y - 40.0f + space) + 64.0f, 40.0f);
+	ImOGuizmo::BeginFrame();
+	int coord = ImOGuizmo::DrawGizmo((float*)&view, (float*)&projection, 1.0f);
+	// x
+	if (coord == 0)
+	{
+
+	}
+	// y
+	else if (coord == 1)
+	{
+
+	}
+	// z
+	else if (coord == 2)
+	{
+
+	}
+	// -x
+	else if (coord == 3)
+	{
+
+	}
+	// -y
+	else if (coord == 4)
+	{
+
+	}
+	// -z
+	else if (coord == 5)
+	{
+
+	}
+	else
+	{
+		// ?
 	}
 }
 
