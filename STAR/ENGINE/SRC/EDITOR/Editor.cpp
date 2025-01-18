@@ -77,6 +77,7 @@ bool Editor::Init()
 	consoleWindow->Init();
 	aboutWindow->Init();
 	settingsWindow->Init();
+	viewportWindow->Init();
 
 	start_time = std::chrono::steady_clock::now();
 

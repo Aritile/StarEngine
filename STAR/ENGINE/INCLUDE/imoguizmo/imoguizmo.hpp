@@ -202,6 +202,21 @@ namespace ImOGuizmo {
 		ImGui::End();
 	}
 
+	inline bool CheckInside()
+	{
+		const float size = internal::config.mSize;
+		const float hSize = size * 0.5f;
+		const auto center = ImVec2{ internal::config.mX + hSize, internal::config.mY + hSize };
+
+		const ImVec2 mousePos = ImGui::GetIO().MousePos;
+		const float hoverCircleRadius = hSize * config.hoverCircleRadiusScale;
+
+		if (internal::checkInsideCircle(center, hoverCircleRadius, mousePos))
+			return true;
+
+		return false;
+	}
+
 	inline int DrawGizmo(float* const viewMatrix, const float* const projectionMatrix, const float pivotDistance = 0.0f) {
 		const float size = internal::config.mSize;
 		const float hSize = size * 0.5f;

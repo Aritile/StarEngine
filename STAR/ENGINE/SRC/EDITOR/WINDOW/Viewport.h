@@ -86,7 +86,7 @@ public:
 	Matrix GetPerspectiveViewMatrix();
 
 public:
-	void LookAt(Vector3 lookAt);
+	void LookAt(Vector3 targetPos, DirectX::BoundingBox boundingBox, float distanceFactor, float offset);
 	void LookAtEntity(entt::entity entity);
 
 	POINT cursorPosition = { 0 };
@@ -132,6 +132,10 @@ private:
 	bool PointInTriangle(DirectX::XMVECTOR& triV1, DirectX::XMVECTOR& triV2, DirectX::XMVECTOR& triV3, DirectX::XMVECTOR& point);
 	float PickMesh(DirectX::XMVECTOR pickRayInWorldSpacePos, DirectX::XMVECTOR pickRayInWorldSpaceDir, const std::vector<Vertex>& vertPosArray, const std::vector<UINT>& indexPosArray, DirectX::XMMATRIX worldSpace);
 	entt::entity RunRay(bool select);
+	void GuizmoSystem(int _Value, float _Offset, Matrix _Backup);
+
+	public:
+	void Init();
 
 public:
 	static ViewportWindow* GetSingleton();

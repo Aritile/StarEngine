@@ -265,7 +265,7 @@ void ViewportWindow::UpdateMovement()
 	using namespace DirectX;
 
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && cursorOnWindow)
-		if (!ImGuizmo::IsUsing())
+		if (!ImGuizmo::IsUsing() && !ImOGuizmo::CheckInside())
 			RunRay(true);
 
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && cursorOnWindow)
@@ -363,6 +363,19 @@ void ViewportWindow::RenderWidget()
 		}
 	}
 
+	static const float space = 16.0f;
+	static const float offset = 0.0f;
+
+	ImOGuizmo::SetDrawList();
+	ImOGuizmo::SetRect(windowPos.x + windowSize.x - 64.0f - space, (windowPos.y + windowCursorPos.y - 40.0f + space) + 64.0f, 40.0f);
+	ImOGuizmo::BeginFrame();
+	Matrix backup = view; // call before DrawGizmo()
+	int coord = ImOGuizmo::DrawGizmo((float*)&view, (float*)&projection, 1.0f);
+	GuizmoSystem(coord, offset, backup);
+}
+
+void ViewportWindow::Init()
+{
 	// config
 	ImOGuizmo::config.lineThicknessScale = 0.1f;
 	ImOGuizmo::config.positiveRadiusScale = 0.15f;
@@ -378,45 +391,80 @@ void ViewportWindow::RenderWidget()
 	ImOGuizmo::config.xCircleBackColor = IM_COL32(0xE2, 0x52, 0x52, 0xFF);
 	ImOGuizmo::config.yCircleBackColor = IM_COL32(0x52, 0xE2, 0x52, 0xFF);
 	ImOGuizmo::config.zCircleBackColor = IM_COL32(0x52, 0x52, 0xE2, 0xFF);
+}
 
-	ImOGuizmo::SetDrawList();
-	float space = 16.0f;
-	ImOGuizmo::SetRect(windowPos.x + windowSize.x - 64.0f - space, (windowPos.y + windowCursorPos.y - 40.0f + space) + 64.0f, 40.0f);
-	ImOGuizmo::BeginFrame();
-	int coord = ImOGuizmo::DrawGizmo((float*)&view, (float*)&projection, 1.0f);
-	// x
-	if (coord == 0)
+void ViewportWindow::GuizmoSystem(int _Value, float _Offset, Matrix _Backup)
+{
+	if (_Value == -1)
+		return;
+
+	if (ecs->selected != entt::null)
 	{
+		if (ecs->HasComponent<TransformComponent>(ecs->selected))
+		{
+			auto& transformComponent = ecs->GetComponent<TransformComponent>(ecs->selected);
 
-	}
-	// y
-	else if (coord == 1)
-	{
+			// Get the bounding box
+			DirectX::BoundingBox boundingBox = transformComponent.GetBoundingBox();
 
-	}
-	// z
-	else if (coord == 2)
-	{
+			// Calculate bounding box radius
+			Vector3 extents = boundingBox.Extents;
+			float radius = std::sqrt(extents.x * extents.x + extents.y * extents.y + extents.z * extents.z);
 
-	}
-	// -x
-	else if (coord == 3)
-	{
+			// Extract transform components
+			Vector3 targetPos;
+			Quaternion rot;
+			Vector3 scale;
+			transformComponent.GetTransform().Decompose(scale, rot, targetPos);
 
-	}
-	// -y
-	else if (coord == 4)
-	{
+			// Calculate the camera position
+			float distanceFactor = 2.5f; // Adjust this to fit the object comfortably
+			Vector3 cameraPos;
 
-	}
-	// -z
-	else if (coord == 5)
-	{
+			if (_Value == 0) // X
+				cameraPos = targetPos + Vector3(radius * distanceFactor + _Offset, 0.0f, 0.0f);
+			else if (_Value == 1) // Y
+				cameraPos = targetPos + Vector3(0.0f, radius * distanceFactor + _Offset, 0.0f);
+			else if (_Value == 2) // Z
+				cameraPos = targetPos + Vector3(0.0f, 0.0f, radius * distanceFactor + _Offset);
+			else if (_Value == 3) // -X
+				cameraPos = targetPos + Vector3(-radius * distanceFactor + _Offset, 0.0f, 0.0f);
+			else if (_Value == 4) // -Y
+				cameraPos = targetPos + Vector3(0.0f, -radius * distanceFactor + _Offset, 0.0f);
+			else if (_Value == 5) // -Z
+				cameraPos = targetPos + Vector3(0.0f, 0.0f, -radius * distanceFactor + _Offset);
 
+			// Set the adjusted camera position
+			sPos = cameraPos;
+
+			// Calculate the look-at direction
+			Vector3 lookAtDirection = (targetPos - cameraPos);
+			lookAtDirection.Normalize();
+
+			// Calculate the camera right and up vectors
+			Vector3 upDirection = Vector3::Up;
+			Vector3 rightDirection = upDirection.Cross(lookAtDirection);
+			rightDirection.Normalize();
+			upDirection.Cross(lookAtDirection, rightDirection);
+			upDirection.Normalize();
+
+			// Create rotation quaternion
+			Matrix lookAtMatrix = Matrix::CreateLookAt(cameraPos, targetPos, upDirection);
+			Quaternion lookAtQuat = Quaternion::CreateFromRotationMatrix(lookAtMatrix);
+
+			if (_Value == 2 || _Value == 5)
+			{
+				Quaternion reverseYRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, DirectX::XM_PI);
+				lookAtQuat = reverseYRotation * lookAtQuat;
+			}
+
+			// Set the camera rotation
+			sRot = lookAtQuat;
+		}
 	}
 	else
 	{
-		// ?
+		view = _Backup;
 	}
 }
 
@@ -650,13 +698,29 @@ ID3D11ShaderResourceView* ViewportWindow::GetShaderResourceView()
 	return s_ShaderResourceView;
 }
 
-void ViewportWindow::LookAt(Vector3 lookAt)
+void ViewportWindow::LookAt(Vector3 targetPos, DirectX::BoundingBox boundingBox, float distanceFactor, float offset)
 {
-	if (pos == lookAt)
-		return;
+	// Calculate bounding box radius
+    Vector3 extents = boundingBox.Extents;
+    float radius = std::sqrt(extents.x * extents.x + extents.y * extents.y + extents.z * extents.z);
 
-	Vector3 forward = lookAt - pos;
-	sRot = Quaternion::LookRotation(-forward, Vector3::Up);
+    // Calculate forward vector
+    Vector3 forward = (targetPos - sPos);
+    forward.Normalize();
+
+    // Calculate a suitable camera position
+    float distance = radius * distanceFactor + offset;
+    Vector3 cameraPos = targetPos - (forward * distance);
+
+    // Apply the calculated position
+    sPos = cameraPos;
+	sPos.y = targetPos.y;
+
+	Vector3 forward2 = (targetPos - sPos);
+	forward.Normalize();
+
+    // Orient the camera to look at the target position
+    sRot = Quaternion::LookRotation(-forward2, Vector3::Up);
 }
 void ViewportWindow::LookAtEntity(entt::entity entity)
 {
@@ -664,13 +728,10 @@ void ViewportWindow::LookAtEntity(entt::entity entity)
 	if (!ecs->HasComponent<TransformComponent>(entity)) return;
 
 	auto& transformComponent = ecs->GetComponent<TransformComponent>(entity);
-	LookAt(transformComponent.GetPosition());
+	LookAt(transformComponent.GetPosition(), transformComponent.GetBoundingBox(), 2.5f, 0.0f);
 
-	/*
-	DirectX::BoundingBox boundingBox = transformComponent.GetBoundingBox();
-	Vector3 center = boundingBox.Center;
-	Vector3 extents = boundingBox.Extents;
-	*/
+	// because why not
+	LookAt(transformComponent.GetPosition(), transformComponent.GetBoundingBox(), 2.5f, 0.0f);
 }
 void ViewportWindow::SetDefaultCam()
 {
