@@ -29,6 +29,8 @@ YouTube https://www.youtube.com/@starengine
 ## Gallery
 ![](/images/image_9_fix.png)
 ![](/images/image_cat.png)
+![](https://media.discordapp.net/attachments/939209350029901874/1330272403757989898/ezgif-7-75f6b6848f.gif?ex=67b2f2f8&is=67b1a178&hm=e5534fdd8eef4bfaa32b1f1c8ae888970c8fa5e5269116125ad6eb6c4542b120&=)
+![](/images/text_test.png)
 ![](/images/engine_8.png)
 ![](/images/engine_1.png)
 ![](/images/engine_4.png)
