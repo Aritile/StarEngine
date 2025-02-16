@@ -2,8 +2,8 @@
 #include "../../DX/DX.h"
 #include "../../MAIN/Main.h"
 #include "../../STAR/Star.h"
-#include "../../XTK/TEX/DirectXTex.h"
-#include "../../XTK/WICTextureLoader11.h"
+#include <DirectXTex.h>
+#include <WICTextureLoader11.h>
 
 AboutWindow* AboutWindow::GetSingleton()
 {

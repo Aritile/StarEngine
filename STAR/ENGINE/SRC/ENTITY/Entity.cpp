@@ -2,7 +2,7 @@
 #include <vector>
 #include "../STAR/Star.h"
 #include "COMPONENT/MeshComponent.h"
-#include "../XTK/WICTextureLoader11.h"
+#include <WICTextureLoader11.h>
 #include "COMPONENT/GeneralComponent.h"
 #include "COMPONENT/TransformComponent.h"
 #include "COMPONENT/RigidbodyComponent.h"

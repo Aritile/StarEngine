@@ -3,7 +3,7 @@
 #include <list>
 #include <string>
 #include <d3d11.h>
-#include "../XTK/TEX/DirectXTex.h"
+#include <DirectXTex.h>
 
 struct TextureStorageBuffer
 {

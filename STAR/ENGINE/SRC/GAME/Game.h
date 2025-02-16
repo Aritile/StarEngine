@@ -8,7 +8,7 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
-#include "../XTK/MATH/SimpleMath.h"
+#include <SimpleMath.h>
 using namespace DirectX::SimpleMath;
 
 enum GameState : unsigned char

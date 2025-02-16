@@ -1,7 +1,7 @@
 #pragma once
 
 #include <physx/PxPhysicsAPI.h>
-#include "../../XTK/MATH/SimpleMath.h"
+#include <SimpleMath.h>
 #include <yaml-cpp/yaml.h>
 #include <sol/sol.hpp>
 

@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
-#include "../XTK/MATH/SimpleMath.h"
+#include "SimpleMath.h"
 #include <physx/PxPhysicsAPI.h>
 #include <yaml-cpp/yaml.h>
 #include <zlib/zlib.h>

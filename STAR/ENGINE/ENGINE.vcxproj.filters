@@ -30,39 +30,6 @@
     <ClInclude Include="SRC\EDITOR\Editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SRC\XTK\AUDIO\WAVFileReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\MATH\SimpleMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\TEX\BC.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\TEX\d3dx12.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\TEX\DDS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\TEX\DirectXTex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\TEX\DirectXTexP.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\TEX\filters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\TEX\scoped.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\DDSTextureLoader11.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\WICTextureLoader11.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SRC\IMGUI\imconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -115,9 +82,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SRC\IMGUIZMO\ImGuizmo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SRC\XTK\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SRC\EDITOR\WINDOW\File.h">
@@ -318,6 +282,12 @@
     <ClInclude Include="SRC\ENTITY\COMPONENT\RectangleComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\TextComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\STORAGE\SpriteStorage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SRC\MAIN\Main.cpp">
@@ -333,75 +303,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\EDITOR\Editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\AUDIO\WAVFileReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\MATH\SimpleMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\BC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\BC4BC5.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\BC6HBC7.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexCompress.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexConvert.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexD3D11.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexD3D12.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexDDS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexFlipRotate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexHDR.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexMipmaps.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexMisc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexNormalMaps.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexPMAlpha.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexResize.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexTGA.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexWIC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\DDSTextureLoader11.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\WICTextureLoader11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\IMGUI\imgui.cpp">
@@ -453,9 +354,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\IMGUIZMO\ImGuizmo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\XTK\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\EDITOR\WINDOW\File.cpp">
@@ -644,13 +542,11 @@
     <ClCompile Include="SRC\ENTITY\COMPONENT\RectangleComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SRC\XTK\MATH\SimpleMath.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="SRC\XTK\TEX\DirectXTex.inl">
-      <Filter>Header Files</Filter>
-    </None>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\TextComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\STORAGE\SpriteStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../STAR/Star.h"
-#include "../../XTK/MATH/SimpleMath.h"
+#include <SimpleMath.h>
 #include "../../EDITOR/WINDOW/Viewport.h"
 #include <yaml-cpp/yaml.h>
 

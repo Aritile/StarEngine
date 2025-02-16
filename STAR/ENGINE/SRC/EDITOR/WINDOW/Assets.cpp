@@ -238,11 +238,11 @@ void AssetsWindow::Render()
 									{
 										ImGui::ImageButton((void*)luaTexture, ImVec2(size, size));
 									}
-									else if (files[i].file_type == OBJ || files[i].file_type == FBX)
+									else if (files[i].file_type == OBJ || files[i].file_type == FBX || files[i].file_type == GLTF || files[i].file_type == GLB)
 									{
 										ImGui::ImageButton((void*)modelTexture, ImVec2(size, size));
 									}
-									else if (files[i].file_type == TTF)
+									else if (files[i].file_type == TTF || files[i].file_type == SPRITEFONT)
 									{
 										ImGui::ImageButton((void*)ttfTexture, ImVec2(size, size));
 									}
@@ -291,11 +291,11 @@ void AssetsWindow::Render()
 										{
 											ImGui::Image((void*)luaTexture, ImVec2(size, size));
 										}
-										else if (files[i].file_type == OBJ || files[i].file_type == FBX)
+										else if (files[i].file_type == OBJ || files[i].file_type == FBX || files[i].file_type == GLTF || files[i].file_type == GLB)
 										{
 											ImGui::Image((void*)modelTexture, ImVec2(size, size));
 										}
-										else if (files[i].file_type == TTF)
+										else if (files[i].file_type == TTF || files[i].file_type == SPRITEFONT)
 										{
 											ImGui::Image((void*)ttfTexture, ImVec2(size, size));
 										}
@@ -440,7 +440,11 @@ void AssetsWindow::Render()
 void AssetsWindow::OpenDir(std::string path)
 {
 	assert(!path.empty());
-	assert(std::filesystem::exists(path));
+
+	if (!std::filesystem::exists(path))
+		std::filesystem::create_directories(path);
+
+	//assert(std::filesystem::exists(path));
 
 	if (!outCore)
 		return;

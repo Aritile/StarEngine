@@ -3,7 +3,7 @@
 #include "physx/PxPhysics.h"
 #include <entt/entt.hpp>
 #include <yaml-cpp/yaml.h>
-#include "../../XTK/MATH/SimpleMath.h"
+#include <SimpleMath.h>
 #include "PhysicsMaterialComponent.h"
 
 using namespace DirectX::SimpleMath;

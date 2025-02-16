@@ -1,5 +1,5 @@
 #include "LuaBoundingBox.h"
-#include "../../XTK/MATH/SimpleMath.h"
+#include <SimpleMath.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

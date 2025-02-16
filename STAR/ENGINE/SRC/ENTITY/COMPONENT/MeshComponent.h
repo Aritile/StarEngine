@@ -6,7 +6,7 @@
 #include "../../DX/DX.h"
 #include "../../IMGUI/imgui.h"
 #include "../../ENTITY/Entity.h"
-#include "../../XTK/MATH/SimpleMath.h"
+#include <SimpleMath.h>
 #include "../../IMGUI/imgui_stdlib.h"
 #include <yaml-cpp/yaml.h>
 #include <wrl/client.h>

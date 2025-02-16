@@ -1,21 +1,33 @@
 #include "Engine.h"
-#include "../EDITOR/WINDOW/Viewport.h"
+
+// component
 #include "../ENTITY/COMPONENT/GeneralComponent.h"
 #include "../ENTITY/COMPONENT/CameraComponent.h"
 #include "../ENTITY/COMPONENT/TransformComponent.h"
-#include "../GAME/Game.h"
+#include "../ENTITY/COMPONENT/TextComponent.h"
 #include "../ENTITY/COMPONENT/RigidbodyComponent.h"
+
+// system
 #include "../SYSTEM/PhysicsSystem.h"
 #include "../SYSTEM/ModelSystem.h"
 #include "../SYSTEM/ScriptingSystem.h"
+#include "../SYSTEM/PlayerPrefs.h"
+
+// editor
+#include "../EDITOR/WINDOW/Viewport.h"
+#include "../EDITOR/WINDOW/Settings.h"
+
+// storage
+#include "../STORAGE/TextureStorage.h"
+#include "../STORAGE/MeshStorage.h"
+#include "../STORAGE/SpriteStorage.h"
+
+// other
 #include "../MODULE/Module.h"
 #include "../STRDX/Widgets.h"
-#include "../SYSTEM/PlayerPrefs.h"
-#include "../EDITOR/WINDOW/Settings.h"
-#include "../STORAGE/TextureStorage.h"
+#include "../GAME/Game.h"
 #include "../WINDOW/MainWindow.h"
 #include "../USERINPUT/UserInput.h"
-#include "../STORAGE/MeshStorage.h"
 #include "../JOB/Job.h"
 
 #define ENABLE_MODULES
@@ -39,6 +51,7 @@ static UserInput* userInput = UserInput::GetSingleton();
 static MeshStorage* meshStorage = MeshStorage::GetSingleton();
 static Timing* timing = Timing::GetSingleton();
 static Job* job = Job::GetSingleton();
+static SpriteStorage* spriteStorage = SpriteStorage::GetSingleton();
 
 Engine* Engine::GetSingleton()
 {
@@ -77,6 +90,7 @@ void Engine::EngineStart()
 
     playerPrefs->Load();
     game->InitTime();
+    spriteStorage->Init();
 
     /* --------------------------- */
     Star::AddLog("[Engine] -> Initializing User Input System..");
@@ -274,11 +288,12 @@ void Engine::EngineShutdown()
     module->EngineReleaseModules();
     module->DestroyModules();
     job->Release();
+    spriteStorage->Release();
 
     dx->dxDeviceContext->ClearState();
     dx->dxDeviceContext->Flush();
 
-    dx->ReportLiveObjects();
+    //dx->ReportLiveObjects();
     dx->Release();
 }
 
@@ -391,6 +406,12 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
         {
             widgets->RenderImage(entity);
             widgets->RenderRectangle(entity);
+
+            if (ecs->HasComponent<TextComponent>(entity))
+            {
+                auto& textComponent = ecs->GetComponent<TextComponent>(entity);
+                textComponent.RenderText();
+            }
         }
     }
 

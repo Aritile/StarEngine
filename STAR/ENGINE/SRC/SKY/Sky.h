@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../MODEL/AssimpLoader.h"
-#include "../XTK/TEX/DirectXTex.h"
+#include <DirectXTex.h>
 #include <mutex>
 
 using namespace DirectX::SimpleMath;

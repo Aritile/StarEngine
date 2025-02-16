@@ -35,6 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SRC\STORAGE\SpriteStorage.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\RectangleComponent.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\OpacityComponent.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\ImageComponent.h" />
@@ -114,18 +115,6 @@
     <ClInclude Include="SRC\IMGUI\imstb_truetype.h" />
     <ClInclude Include="SRC\MAIN\Main.h" />
     <ClInclude Include="SRC\TTF2MESH\ttf2mesh.h" />
-    <ClInclude Include="SRC\XTK\AUDIO\WAVFileReader.h" />
-    <ClInclude Include="SRC\XTK\DDSTextureLoader11.h" />
-    <ClInclude Include="SRC\XTK\MATH\SimpleMath.h" />
-    <ClInclude Include="SRC\XTK\pch.h" />
-    <ClInclude Include="SRC\XTK\TEX\BC.h" />
-    <ClInclude Include="SRC\XTK\TEX\d3dx12.h" />
-    <ClInclude Include="SRC\XTK\TEX\DDS.h" />
-    <ClInclude Include="SRC\XTK\TEX\DirectXTex.h" />
-    <ClInclude Include="SRC\XTK\TEX\DirectXTexP.h" />
-    <ClInclude Include="SRC\XTK\TEX\filters.h" />
-    <ClInclude Include="SRC\XTK\TEX\scoped.h" />
-    <ClInclude Include="SRC\XTK\WICTextureLoader11.h" />
     <ClInclude Include="SRC\EDITOR\WINDOW\Viewport.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\TransformComponent.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\TextMeshComponent.h" />
@@ -136,8 +125,10 @@
     <ClInclude Include="SRC\STORAGE\TextureStorage.h" />
     <ClInclude Include="SRC\USERINPUT\UserInput.h" />
     <ClInclude Include="SRC\VERTEX\Vertex.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\TextComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\STORAGE\SpriteStorage.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\RectangleComponent.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\OpacityComponent.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\ImageComponent.cpp" />
@@ -212,30 +203,6 @@
     <ClCompile Include="SRC\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="SRC\MAIN\Main.cpp" />
     <ClCompile Include="SRC\TTF2MESH\ttf2mesh.c" />
-    <ClCompile Include="SRC\XTK\AUDIO\WAVFileReader.cpp" />
-    <ClCompile Include="SRC\XTK\DDSTextureLoader11.cpp" />
-    <ClCompile Include="SRC\XTK\MATH\SimpleMath.cpp" />
-    <ClCompile Include="SRC\XTK\pch.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\BC.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\BC4BC5.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\BC6HBC7.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexCompress.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexConvert.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexD3D11.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexD3D12.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexDDS.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexFlipRotate.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexHDR.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexImage.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexMipmaps.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexMisc.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexNormalMaps.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexPMAlpha.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexResize.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexTGA.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexUtil.cpp" />
-    <ClCompile Include="SRC\XTK\TEX\DirectXTexWIC.cpp" />
-    <ClCompile Include="SRC\XTK\WICTextureLoader11.cpp" />
     <ClCompile Include="SRC\EDITOR\WINDOW\Viewport.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\TransformComponent.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\TextMeshComponent.cpp" />
@@ -246,10 +213,7 @@
     <ClCompile Include="SRC\STORAGE\TextureStorage.cpp" />
     <ClCompile Include="SRC\USERINPUT\UserInput.cpp" />
     <ClCompile Include="SRC\VERTEX\Vertex.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SRC\XTK\MATH\SimpleMath.inl" />
-    <None Include="SRC\XTK\TEX\DirectXTex.inl" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\TextComponent.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -416,15 +380,15 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\INCLUDE\lua;$(ProjectDir)\INCLUDE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\x\StarEngine\STAR\ENGINE\DirectXTex\DDSTextureLoader;C:\x\StarEngine\STAR\ENGINE\DirectXTex\WICTextureLoader;C:\x\StarEngine\STAR\ENGINE\DirectXTex\DirectXTex;C:\x\StarEngine\STAR\ENGINE\DirectXTK\Src;C:\x\StarEngine\STAR\ENGINE\DirectXTK\Inc;$(ProjectDir)\INCLUDE\lua;$(ProjectDir)\INCLUDE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Debug\\PhysX_64.lib;Debug\\PhysXFoundation_64.lib;Debug\\PhysXCommon_64.lib;Debug\\PhysXPvdSDK_static_64.lib;Debug\\PhysXCooking_64.lib;Debug\\PhysXExtensions_static_64.lib;Debug\\yaml-cppd.lib;Debug\\lua-5.4.4.lib;Debug\\assimp-vc143-mtd.lib;Debug\\zlibd.lib;d3d11.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\x\StarEngine\STAR\ENGINE\DirectXTK\Bin\Desktop_2022\x64\Debug;C:\x\StarEngine\STAR\ENGINE\DirectXTex\DirectXTex\Bin\Desktop_2022\x64\Debug;$(ProjectDir)\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Debug\\PhysX_64.lib;Debug\\PhysXFoundation_64.lib;Debug\\PhysXCommon_64.lib;Debug\\PhysXPvdSDK_static_64.lib;Debug\\PhysXCooking_64.lib;Debug\\PhysXExtensions_static_64.lib;Debug\\yaml-cppd.lib;Debug\\lua-5.4.4.lib;Debug\\assimp-vc143-mtd.lib;Debug\\zlibd.lib;d3d11.lib;dxguid.lib;dinput8.lib;DirectXTex.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">

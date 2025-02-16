@@ -9,10 +9,10 @@
 #include "../../DX/DX.h"
 #include "../../SKY/Sky.h"
 #include "../../IMGUI/imgui.h"
-#include "../../XTK/TEX/DirectXTex.h"
-#include "../../XTK/MATH/SimpleMath.h"
-#include "../../XTK/WICTextureLoader11.h"
-#include "../../XTK/DDSTextureLoader11.h"
+#include <DirectXTex.h>
+#include <SimpleMath.h>
+#include <WICTextureLoader11.h>
+#include <DDSTextureLoader11.h>
 
 #define LUA ".lua" // script
 #define JPEG ".jpeg" // image
@@ -27,6 +27,9 @@
 #define TTF ".ttf" // font
 #define SKY ".sky" // sky
 #define MAT ".mat" // material
+#define SPRITEFONT ".spritefont" // sprite font
+#define GLTF ".gltf" // model, ascii
+#define GLB ".glb" // same as gltf but in binary format
 
 #define FOLDER "\\assets"
 

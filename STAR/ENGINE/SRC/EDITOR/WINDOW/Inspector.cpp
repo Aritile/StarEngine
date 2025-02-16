@@ -13,6 +13,7 @@
 #include "../../ENTITY/COMPONENT/ImageComponent.h"
 #include "../../ENTITY/COMPONENT/OpacityComponent.h"
 #include "../../ENTITY/COMPONENT/RectangleComponent.h"
+#include "../../ENTITY/COMPONENT/TextComponent.h"
 
 // stuff
 #include "../../SYSTEM/ScriptingSystem.h"
@@ -50,6 +51,7 @@ void InspectorWindow::Render()
 			RenderComponent<ImageComponent>(ecs->selected);
 			RenderComponent<OpacityComponent>(ecs->selected);
 			RenderComponent<RectangleComponent>(ecs->selected);
+			RenderComponent<TextComponent>(ecs->selected);
 			RenderAdd();
 		}
 	}
@@ -83,7 +85,9 @@ void InspectorWindow::RenderAdd()
 					ecs->AddComponent<RectangleComponent>(ecs->selected);
 				if (ImGui::MenuItem("Image"))
 					ecs->AddComponent<ImageComponent>(ecs->selected);
-				ImGui::Separator();
+				if (ImGui::MenuItem("Text"))
+					ecs->AddComponent<TextComponent>(ecs->selected);
+				ImGui::SeparatorText("Effects");
 				if (ImGui::MenuItem("Opacity"))
 					ecs->AddComponent<OpacityComponent>(ecs->selected);
 				ImGui::EndMenu();

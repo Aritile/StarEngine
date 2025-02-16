@@ -2,7 +2,7 @@
 
 #include <entt/entt.hpp>
 #include <physx/PxPhysicsAPI.h>
-#include "../XTK/MATH/SimpleMath.h"
+#include <SimpleMath.h>
 #include <yaml-cpp/yaml.h>
 #include "../ENTITY/COMPONENT/BoxColliderComponent.h"
 #include "../ENTITY/COMPONENT/SphereColliderComponent.h"
@@ -43,13 +43,13 @@ public:
 private:
 	physx::PxDefaultAllocator	   gAllocator;
 	physx::PxDefaultErrorCallback  gErrorCallback;
-	physx::PxFoundation*           gFoundation = NULL;
-	physx::PxPhysics*              gPhysics = NULL;
+	physx::PxFoundation* gFoundation = NULL;
+	physx::PxPhysics* gPhysics = NULL;
 	physx::PxDefaultCpuDispatcher* gDispatcher = NULL;
-	physx::PxScene*                gScene = NULL;
-	physx::PxPvd*                  gPvd = NULL;
-	physx::PxPvdTransport*         transport = NULL;
-	physx::PxCudaContextManager*   gCudaContextManager = NULL;
+	physx::PxScene* gScene = NULL;
+	physx::PxPvd* gPvd = NULL;
+	physx::PxPvdTransport* transport = NULL;
+	physx::PxCudaContextManager* gCudaContextManager = NULL;
 
 	physx::PxSceneDesc* sceneDesc;
 
