@@ -96,7 +96,7 @@ void TextComponent::Render()
 				//ImGui::DragFloat("##RotationTextComponent", &rotation, 0.1f);
 				//ImGui::DragFloat("##ScaleTextComponent", &scale, 0.1f);
 				ImGui::DragFloat2("##OriginTextComponent", (float*)&origin, 0.1f);
-				ImGui::ColorEdit4("##ColorTextComponent", (float*)&color, 0.1f);
+				ImGui::ColorEdit4("##ColorTextComponent", (float*)&color);
 			}
 			ImGui::PopItemWidth();
 			ImGui::EndTable();

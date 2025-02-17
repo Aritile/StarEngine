@@ -106,7 +106,7 @@ void HierarchyWindow::RenderTree(entt::entity entity)
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_ASS"))
 		{
 			FILEs payload_n = *(FILEs*)payload->Data;
-			if (payload_n.file_type == OBJ || payload_n.file_type == FBX)
+			if (payload_n.file_type == OBJ || payload_n.file_type == FBX || payload_n.file_type == GLTF || payload_n.file_type == GLB)
 			{
 				// old
 				//std::string buffer = assetsWindow->GetNowDirPath() + "\\" + payload_n.file_name;

@@ -209,13 +209,13 @@ void Engine::EngineProcess()
 
     // render sky, models to render target
     RenderEnvironment(viewportWindow->GetPerspectiveProjectionMatrix(),
-                      viewportWindow->GetPerspectiveViewMatrix(),
-                      GetClearColor(),
-                      (ID3D11RenderTargetView*)widgets->GetRenderTarget(),
-                      (ID3D11DepthStencilView*)widgets->GetDepthStencil(),
-                      viewportWindow->GetViewport(),
-                      dx->dxSwapChain,
-                      false);
+        viewportWindow->GetPerspectiveViewMatrix(),
+        GetClearColor(),
+        (ID3D11RenderTargetView*)widgets->GetRenderTarget(),
+        (ID3D11DepthStencilView*)widgets->GetDepthStencil(),
+        viewportWindow->GetViewport(),
+        dx->dxSwapChain,
+        false);
 
     {
         // render rectangle with render target texture
@@ -248,13 +248,13 @@ void Engine::EngineProcess()
             game->BeginTime();
             {
                 RenderEnvironment(projectionMatrix,
-                                  viewMatrix,
-                                  GetClearColor(),
-                                  game->GetRenderTargetView(),
-                                  game->GetDepthStencilView(),
-                                  game->GetViewport(),
-                                  game->GetSwapChain(),
-                                  true);
+                    viewMatrix,
+                    GetClearColor(),
+                    game->GetRenderTargetView(),
+                    game->GetDepthStencilView(),
+                    game->GetViewport(),
+                    game->GetSwapChain(),
+                    true);
             }
             game->EndTime();
         }
@@ -361,7 +361,14 @@ void Engine::RenderToMainBuffer()
     editor->Render();
 }
 
-void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vector4 _Color, ID3D11RenderTargetView* _RenderTargetView, ID3D11DepthStencilView* _DepthStencilView, D3D11_VIEWPORT _Viewport, IDXGISwapChain* _SwapChain, bool game)
+void Engine::RenderEnvironment(Matrix _ProjectionMatrix,
+    Matrix _ViewMatrix,
+    Vector4 _Color,
+    ID3D11RenderTargetView* _RenderTargetView,
+    ID3D11DepthStencilView* _DepthStencilView,
+    D3D11_VIEWPORT _Viewport,
+    IDXGISwapChain* _SwapChain,
+    bool _Game)
 {
     if (!_RenderTargetView) return;
     if (!_DepthStencilView) return;
@@ -373,47 +380,8 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
     dx->dxDeviceContext->RSSetViewports(1, &_Viewport);
 
     sky->Render(_ViewMatrix, _ProjectionMatrix);
-
     if (drawTiming) drawTiming->SetTotalTime(0.0f);
-
-    auto view = ecs->registry.view<GeneralComponent>();
-    for (auto entity : view)
-    {
-        if (entity == ecs->root) continue;
-        //if (!ecs->IsValid(entity)) continue;
-        if (!ecs->GetComponent<GeneralComponent>(entity).IsActive()) continue;
-
-        if (ecs->HasComponent<RigidbodyComponent>(entity))
-            ecs->GetComponent<RigidbodyComponent>(entity).UpdateActor();
-
-        if (ecs->HasComponent<MeshComponent>(entity))
-        {
-            auto& meshComponent = ecs->GetComponent<MeshComponent>(entity);
-            if (meshComponent.IsActive())
-            {
-                if (drawTiming) drawTiming->StartTimer();
-                meshComponent.DrawMesh(_ViewMatrix, _ProjectionMatrix);
-                if (drawTiming)
-                {
-                    drawTiming->StopTimer();
-                    drawTiming->AddTotalTime(drawTiming->GetElapsedTime());
-                }
-            }
-        }
-
-        // UI
-        if (game)
-        {
-            widgets->RenderImage(entity);
-            widgets->RenderRectangle(entity);
-
-            if (ecs->HasComponent<TextComponent>(entity))
-            {
-                auto& textComponent = ecs->GetComponent<TextComponent>(entity);
-                textComponent.RenderText();
-            }
-        }
-    }
+    TraverseEntity(ecs->root, _ViewMatrix, _ProjectionMatrix, _Game);
 
     if (!game)
     {
@@ -436,6 +404,51 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix, Matrix _ViewMatrix, Vec
     }
 
     if (_SwapChain) _SwapChain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
+}
+
+void Engine::TraverseEntity(entt::entity entity, Matrix _ViewMatrix, Matrix _ProjectionMatrix, bool _Game)
+{
+    auto& generalComponent = ecs->GetComponent<GeneralComponent>(entity);
+
+    for (auto child : generalComponent.GetChildren())
+    {
+        //if (child == ecs->root) continue; // skip if entity is root
+        //if (!ecs->IsValid(child)) continue; // skip if entity is not vaild
+        if (!ecs->GetComponent<GeneralComponent>(child).IsActive()) continue;
+
+        if (ecs->HasComponent<RigidbodyComponent>(child))
+            ecs->GetComponent<RigidbodyComponent>(child).UpdateActor();
+
+        if (ecs->HasComponent<MeshComponent>(child))
+        {
+            auto& meshComponent = ecs->GetComponent<MeshComponent>(child);
+            if (meshComponent.IsActive())
+            {
+                if (drawTiming) drawTiming->StartTimer();
+                meshComponent.DrawMesh(_ViewMatrix, _ProjectionMatrix);
+                if (drawTiming)
+                {
+                    drawTiming->StopTimer();
+                    drawTiming->AddTotalTime(drawTiming->GetElapsedTime());
+                }
+            }
+        }
+
+        // UI
+        if (_Game) // render only in game window
+        {
+            widgets->RenderImage(child);
+            widgets->RenderRectangle(child);
+
+            if (ecs->HasComponent<TextComponent>(child))
+            {
+                auto& textComponent = ecs->GetComponent<TextComponent>(child);
+                textComponent.RenderText();
+            }
+        }
+
+        TraverseEntity(child, _ViewMatrix, _ProjectionMatrix, _Game);
+    }
 }
 
 bool Engine::FindGoodCamera(Matrix& _ProjectionMatrix, Matrix& _ViewMatrix)

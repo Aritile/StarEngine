@@ -352,7 +352,7 @@ void AssetsWindow::Render()
 											std::string exe = Star::GetParent(Star::GetExecutablePath());
 											std::string x = Star::GetRelativePath(buffer, exe);
 
-											if (type.compare(OBJ) == 0 || type.compare(FBX) == 0)
+											if (type.compare(OBJ) == 0 || type.compare(FBX) == 0 || type.compare(GLTF) == 0 || type.compare(GLB) == 0)
 											{
 												if (ecs->selected != entt::null)
 												{

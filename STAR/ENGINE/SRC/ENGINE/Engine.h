@@ -36,10 +36,11 @@ public:
 		                   ID3D11DepthStencilView* _DepthStencilView,
 		                   D3D11_VIEWPORT _Viewport,
 		                   IDXGISwapChain* _SwapChain,
-		                   bool game);
+		                   bool _Game);
 	bool FindGoodCamera(Matrix& _ProjectionMatrix, Matrix& _ViewMatrix);
 	void CloseSafeEngine();
 	Vector4 GetClearColor();
+	void TraverseEntity(entt::entity entity, Matrix _ViewMatrix, Matrix _ProjectionMatrix, bool _Game);
 
 private:
 	Vector4 clearColor = Vector4(0.1f, 0.1f, 0.1f, 1.0f);
