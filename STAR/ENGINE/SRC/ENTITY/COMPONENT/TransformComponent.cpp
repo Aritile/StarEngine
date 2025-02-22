@@ -1,6 +1,6 @@
 #include "TransformComponent.h"
 #include "GeneralComponent.h"
-#include "RigidbodyComponent.h"
+#include "RigidDynamicComponent.h"
 #include "../../SYSTEM/PhysicsSystem.h"
 
 static Entity* ecs = Entity::GetSingleton();
@@ -46,9 +46,9 @@ void TransformComponent::Render()
 					entt::entity entity = entt::to_entity(ecs->registry, *this);
 					if (ecs->IsValid(entity))
 					{
-						if (ecs->HasComponent<RigidbodyComponent>(entity))
+						if (ecs->HasComponent<RigidDynamicComponent>(entity))
 						{
-							auto& rigidBodyComponent = ecs->GetComponent<RigidbodyComponent>(entity);
+							auto& rigidBodyComponent = ecs->GetComponent<RigidDynamicComponent>(entity);
 							rigidBodyComponent.SetTransform(GetTransform());
 						}
 					}
@@ -62,9 +62,9 @@ void TransformComponent::Render()
 					entt::entity entity = entt::to_entity(ecs->registry, *this);
 					if (ecs->IsValid(entity))
 					{
-						if (ecs->HasComponent<RigidbodyComponent>(entity))
+						if (ecs->HasComponent<RigidDynamicComponent>(entity))
 						{
-							auto& rigidBodyComponent = ecs->GetComponent<RigidbodyComponent>(entity);
+							auto& rigidBodyComponent = ecs->GetComponent<RigidDynamicComponent>(entity);
 							rigidBodyComponent.SetTransform(GetTransform());
 						}
 					}

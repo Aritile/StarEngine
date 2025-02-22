@@ -6,7 +6,7 @@
 #include <fstream>
 #include "../MAIN/Main.h"
 #include "../ENTITY/COMPONENT/CameraComponent.h"
-#include "../ENTITY/COMPONENT/RigidBodyComponent.h"
+#include "../ENTITY/COMPONENT/RigidDynamicComponent.h"
 #include "PhysicsSystem.h"
 #include "ScriptingSystem.h"
 
@@ -91,8 +91,8 @@ void ProjectSceneSystem::SerializeEntity(YAML::Emitter& out, entt::entity entity
 				ecs->GetComponent<MeshComponent>(entity).SerializeComponent(out);
 			if (ecs->HasComponent<CameraComponent>(entity))
 				ecs->GetComponent<CameraComponent>(entity).SerializeComponent(out);
-			if (ecs->HasComponent<RigidbodyComponent>(entity))
-				ecs->GetComponent<RigidbodyComponent>(entity).SerializeComponent(out);
+			if (ecs->HasComponent<RigidDynamicComponent>(entity))
+				ecs->GetComponent<RigidDynamicComponent>(entity).SerializeComponent(out);
 			if (ecs->HasComponent<PhysicsComponent>(entity))
 				ecs->GetComponent<PhysicsComponent>(entity).SerializeComponent(out);
 			if (ecs->HasComponent<ScriptingComponent>(entity))
@@ -195,9 +195,9 @@ void ProjectSceneSystem::DeserializeEntity(YAML::Node& in, entt::entity parent)
 				
 				if (childNode["RigidbodyComponent"])
 				{
-					ecs->AddComponent<RigidbodyComponent>(entity);
-					ecs->GetComponent<RigidbodyComponent>(entity).CreateActor(); // !
-					ecs->GetComponent<RigidbodyComponent>(entity).DeserializeComponent(childNode);
+					ecs->AddComponent<RigidDynamicComponent>(entity);
+					ecs->GetComponent<RigidDynamicComponent>(entity).CreateActor(); // !
+					ecs->GetComponent<RigidDynamicComponent>(entity).DeserializeComponent(childNode);
 				}
 				
 				if (childNode["Colliders"])

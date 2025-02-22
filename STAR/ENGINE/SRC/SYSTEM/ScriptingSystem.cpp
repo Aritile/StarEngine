@@ -8,7 +8,7 @@
 #include "../GAME/Game.h"
 #include "../ENTITY/COMPONENT/TransformComponent.h"
 #include "../ENTITY/COMPONENT/CameraComponent.h"
-#include "../ENTITY/COMPONENT/RigidbodyComponent.h"
+#include "../ENTITY/COMPONENT/RigidDynamicComponent.h"
 #include "../ENTITY/COMPONENT/TextMeshComponent.h"
 #include "ProjectSceneSystem.h"
 #include "PlayerPrefs.h"
@@ -86,7 +86,7 @@ bool ScriptingSystem::Init()
 	GeneralComponent::LuaAdd(lua);
 	TransformComponent::LuaAdd(lua);
 	CameraComponent::LuaAdd(lua);
-	RigidbodyComponent::LuaAdd(lua);
+	RigidDynamicComponent::LuaAdd(lua);
 	MeshComponent::LuaAdd(lua);
 	TextMeshComponent::LuaAdd(lua);
 	PlayerPrefs::LuaAdd(lua);
@@ -240,10 +240,10 @@ void EntityX::AddComponent(const char* component_name)
 	}
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
 	{
-		if (!ecs->HasComponent<RigidbodyComponent>(entity))
+		if (!ecs->HasComponent<RigidDynamicComponent>(entity))
 		{
-			ecs->AddComponent<RigidbodyComponent>(entity);
-			ecs->GetComponent<RigidbodyComponent>(entity).CreateActor();
+			ecs->AddComponent<RigidDynamicComponent>(entity);
+			ecs->GetComponent<RigidDynamicComponent>(entity).CreateActor();
 		}
 	}
 	// START TESTING
@@ -323,9 +323,9 @@ sol::object EntityX::GetComponent(const char* component_name)
 	}
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
 	{
-		if (ecs->HasComponent<RigidbodyComponent>(entity))
+		if (ecs->HasComponent<RigidDynamicComponent>(entity))
 		{
-			auto& entt_comp = ecs->GetComponent<RigidbodyComponent>(entity);
+			auto& entt_comp = ecs->GetComponent<RigidDynamicComponent>(entity);
 			component = sol::make_object(scriptingSystem->GetState(), &entt_comp);
 		}
 		else consoleWindow->AddWarningMessage(COMPONENT_ERROR, component_name);
@@ -369,7 +369,7 @@ bool EntityX::HasComponent(const char* component_name)
 	else if (strcmp(component_name, "CameraComponent") == 0)
 		return ecs->HasComponent<CameraComponent>(entity);
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
-		return ecs->HasComponent<RigidbodyComponent>(entity);
+		return ecs->HasComponent<RigidDynamicComponent>(entity);
 	// START TESTING
 	else if (strcmp(component_name, "BoxColliderComponent") == 0)
 		return !ecs->GetComponent<PhysicsComponent>(entity).GetBoxColliders()->empty();
@@ -395,7 +395,7 @@ void EntityX::RemoveComponent(const char* component_name)
 	else if (strcmp(component_name, "CameraComponent") == 0)
 		ecs->RemoveComponent<CameraComponent>(entity);
 	else if (strcmp(component_name, "RigidbodyComponent") == 0)
-		ecs->RemoveComponent<RigidbodyComponent>(entity);
+		ecs->RemoveComponent<RigidDynamicComponent>(entity);
 	// START TESTING
 	else if (strcmp(component_name, "BoxColliderComponent") == 0)
 		ecs->GetComponent<PhysicsComponent>(entity).GetBoxColliders()->clear();

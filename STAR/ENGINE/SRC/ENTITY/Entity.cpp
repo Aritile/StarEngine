@@ -7,7 +7,7 @@
 #include "COMPONENT/MeshComponent.h"
 #include "COMPONENT/GeneralComponent.h"
 #include "COMPONENT/TransformComponent.h"
-#include "COMPONENT/RigidbodyComponent.h"
+#include "COMPONENT/RigidDynamicComponent.h"
 #include "COMPONENT/CameraComponent.h"
 #include "COMPONENT/TextMeshComponent.h"
 #include "COMPONENT/RectangleComponent.h"
@@ -388,9 +388,9 @@ void Entity::Cleanup(entt::entity entity)
     if (!IsValid(entity))
         return;
 
-    if (HasComponent<RigidbodyComponent>(entity))
+    if (HasComponent<RigidDynamicComponent>(entity))
     {
-        auto& rigidBodyComponent = GetComponent<RigidbodyComponent>(entity);
+        auto& rigidBodyComponent = GetComponent<RigidDynamicComponent>(entity);
         rigidBodyComponent.ReleaseActor();
     }
     if (HasComponent<PhysicsComponent>(entity))
@@ -448,13 +448,13 @@ entt::entity Entity::CopyEntity(entt::entity _Entity)
             }
         }
 
-        if (HasComponent<RigidbodyComponent>(_Entity))
+        if (HasComponent<RigidDynamicComponent>(_Entity))
         {
-            CopyComponent<RigidbodyComponent>(_Entity, entity);
-            GetComponent<RigidbodyComponent>(entity).SetNullActor(); // set null, but do not release actor
-            GetComponent<RigidbodyComponent>(entity).CreateActor(); // and now create new actor
-            auto& _RigidbodyComponent = GetComponent<RigidbodyComponent>(_Entity);
-            auto& rigidbodyComponent = GetComponent<RigidbodyComponent>(entity);
+            CopyComponent<RigidDynamicComponent>(_Entity, entity);
+            GetComponent<RigidDynamicComponent>(entity).SetNullActor(); // set null, but do not release actor
+            GetComponent<RigidDynamicComponent>(entity).CreateActor(); // and now create new actor
+            auto& _RigidbodyComponent = GetComponent<RigidDynamicComponent>(_Entity);
+            auto& rigidbodyComponent = GetComponent<RigidDynamicComponent>(entity);
             rigidbodyComponent.SetMass(_RigidbodyComponent.GetMass());
             rigidbodyComponent.SetLinearDamping(_RigidbodyComponent.GetLinearDamping());
             rigidbodyComponent.SetAngularDamping(_RigidbodyComponent.GetAngularDamping());

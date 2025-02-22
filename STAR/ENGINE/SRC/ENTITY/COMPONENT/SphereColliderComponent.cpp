@@ -3,7 +3,7 @@
 #include "../../ENTITY/Entity.h"
 #include "../../SYSTEM/PhysicsSystem.h"
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
-#include "../../ENTITY/COMPONENT/RigidBodyComponent.h"
+#include "../../ENTITY/COMPONENT/RigidDynamicComponent.h"
 
 static Entity* ecs = Entity::GetSingleton();
 static PhysicsSystem* physicsSystem = PhysicsSystem::GetSingleton();
@@ -32,9 +32,12 @@ float SphereColliderComponent::GetExtent()
 }
 void SphereColliderComponent::CreateShape(float _Radius)
 {
-	if (GetShape()) pxShape->release();
-	if (physicsMaterialComponent.GetMaterial()) physicsMaterialComponent.ReleaseMaterial();
-	physicsMaterialComponent.CreateMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
+	if (!ecs->HasComponent<PhysicsMaterialComponent>(entity))
+	{
+		ecs->AddComponent<PhysicsMaterialComponent>(entity);
+		ecs->GetComponent<PhysicsMaterialComponent>(entity).CreateMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
+	}
+	auto& physicsMaterialComponent = ecs->GetComponent<PhysicsMaterialComponent>(entity);
 
 	pxShape = physicsSystem->GetPhysics()->createShape(physx::PxSphereGeometry(
 		Star::FloatToPhysics(_Radius)),
@@ -63,9 +66,9 @@ void SphereColliderComponent::SerializeComponent(YAML::Emitter& out)
 	out << YAML::Key << "Center"; Star::SerializeVector3(out, GetCenter());
 	out << YAML::Key << "Radius" << YAML::Value << GetRadius();
 	out << YAML::Key << "Material" << YAML::Value << YAML::BeginMap;
-	out << YAML::Key << "StaticFriction" << YAML::Value << physicsMaterialComponent.GetStaticFriction();
-	out << YAML::Key << "DynamicFriction" << YAML::Value << physicsMaterialComponent.GetDynamicFriction();
-	out << YAML::Key << "Restitution" << YAML::Value << physicsMaterialComponent.GetRestitution();
+	//out << YAML::Key << "StaticFriction" << YAML::Value << physicsMaterialComponent.GetStaticFriction();
+	//out << YAML::Key << "DynamicFriction" << YAML::Value << physicsMaterialComponent.GetDynamicFriction();
+	//out << YAML::Key << "Restitution" << YAML::Value << physicsMaterialComponent.GetRestitution();
 	out << YAML::EndMap;
 	out << YAML::EndMap;
 	out << YAML::EndMap;
@@ -77,9 +80,9 @@ void SphereColliderComponent::DeserializeComponent(YAML::Node& in)
 	SetCenter(Star::DeserializeVector3(center));
 	SetRadius(in["Radius"].as<float>());
 	auto material = in["Material"];
-	physicsMaterialComponent.SetStaticFriction(material["StaticFriction"].as<float>());
-	physicsMaterialComponent.SetDynamicFriction(material["DynamicFriction"].as<float>());
-	physicsMaterialComponent.SetRestitution(material["Restitution"].as<float>());
+	//physicsMaterialComponent.SetStaticFriction(material["StaticFriction"].as<float>());
+	//physicsMaterialComponent.SetDynamicFriction(material["DynamicFriction"].as<float>());
+	//physicsMaterialComponent.SetRestitution(material["Restitution"].as<float>());
 }
 void SphereColliderComponent::SetRadius(float value)
 {
@@ -93,7 +96,7 @@ void SphereColliderComponent::Render(std::vector<SphereColliderComponent>* bcc, 
 {
 	ImGui::Checkbox("##SPHERECOLLIDER", &activeComponent);
 	ImGui::SameLine();
-	if (ImGui::CollapsingHeader("SPHERECOLLIDER", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("SPHERE COLLIDER", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		if (ImGui::BeginPopupContextItem())
 		{
@@ -102,8 +105,8 @@ void SphereColliderComponent::Render(std::vector<SphereColliderComponent>* bcc, 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Remove"))
 			{
-				if (ecs->registry.any_of<RigidbodyComponent>(ecs->selected))
-					ecs->registry.get<RigidbodyComponent>(ecs->selected).GetRigidBody()->detachShape(*GetShape());
+				if (ecs->registry.any_of<RigidDynamicComponent>(ecs->selected))
+					ecs->registry.get<RigidDynamicComponent>(ecs->selected).GetRigidDynamic()->detachShape(*GetShape());
 				Release();
 				bcc->erase(bcc->begin() + index);
 				ImGui::EndPopup();
@@ -117,8 +120,6 @@ void SphereColliderComponent::Render(std::vector<SphereColliderComponent>* bcc, 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
 			{
-				physicsMaterialComponent.RenderLeft(true);
-
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
 				ImGui::Text("Center");
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
@@ -127,8 +128,6 @@ void SphereColliderComponent::Render(std::vector<SphereColliderComponent>* bcc, 
 			ImGui::TableNextColumn();
 			ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 			{
-				physicsMaterialComponent.RenderRight();
-
 				Vector3 _Center = GetCenter();
 				if (ImGui::DragFloat3("##CenterPhysicsComponent", (float*)&_Center, 0.1f))
 					SetCenter(_Center);
@@ -147,6 +146,6 @@ void SphereColliderComponent::Render(std::vector<SphereColliderComponent>* bcc, 
 }
 void SphereColliderComponent::Release()
 {
-	if (GetShape()) GetShape()->release();
-	if (physicsMaterialComponent.GetMaterial()) physicsMaterialComponent.ReleaseMaterial();
+	if (GetShape())
+		GetShape()->release();
 }

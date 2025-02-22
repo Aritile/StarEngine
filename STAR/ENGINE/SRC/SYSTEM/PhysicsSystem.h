@@ -41,15 +41,16 @@ public:
 	PhysicsProcesor GetProcesor();
 
 private:
-	physx::PxDefaultAllocator	   gAllocator;
-	physx::PxDefaultErrorCallback  gErrorCallback;
-	physx::PxFoundation* gFoundation = NULL;
-	physx::PxPhysics* gPhysics = NULL;
-	physx::PxDefaultCpuDispatcher* gDispatcher = NULL;
-	physx::PxScene* gScene = NULL;
-	physx::PxPvd* gPvd = NULL;
-	physx::PxPvdTransport* transport = NULL;
-	physx::PxCudaContextManager* gCudaContextManager = NULL;
+	physx::PxDefaultAllocator gAllocator;
+	physx::PxDefaultErrorCallback gErrorCallback;
+	physx::PxFoundation* gFoundation = nullptr;
+	physx::PxPhysics* gPhysics = nullptr;
+	physx::PxDefaultCpuDispatcher* gDispatcher = nullptr;
+	physx::PxScene* gScene = nullptr;
+	physx::PxPvd* gPvd = nullptr;
+	physx::PxPvdTransport* transport = nullptr;
+	physx::PxCudaContextManager* gCudaContextManager = nullptr;
+	physx::PxCooking* gCooking = nullptr;
 
 	physx::PxSceneDesc* sceneDesc;
 
@@ -59,6 +60,7 @@ private:
 public:
 	physx::PxPhysics* GetPhysics();
 	physx::PxScene* GetScene();
+	physx::PxCooking* GetCooking();
 
 public:
 	static PhysicsSystem* GetSingleton();

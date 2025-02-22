@@ -3,16 +3,19 @@
 #include "../../STAR/Star.h"
 #include "../../IMGUI/imgui.h"
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
-#include "../../ENTITY/COMPONENT/RigidBodyComponent.h"
+#include "../../ENTITY/COMPONENT/RigidDynamicComponent.h"
 
 static PhysicsSystem* physicsSystem = PhysicsSystem::GetSingleton();
 static Entity* ecs = Entity::GetSingleton();
 
 bool CapsuleColliderComponent::CreateShape(float _Radius, float _Height)
 {
-	if (pxShape) pxShape->release();
-	if (physicsMaterialComponent.GetMaterial()) physicsMaterialComponent.ReleaseMaterial();
-	physicsMaterialComponent.CreateMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
+	if (!ecs->HasComponent<PhysicsMaterialComponent>(entity))
+	{
+		ecs->AddComponent<PhysicsMaterialComponent>(entity);
+		ecs->GetComponent<PhysicsMaterialComponent>(entity).CreateMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
+	}
+	auto& physicsMaterialComponent = ecs->GetComponent<PhysicsMaterialComponent>(entity);
 
 	pxShape = physicsSystem->GetPhysics()->createShape(physx::PxCapsuleGeometry(
 		_Radius,
@@ -37,7 +40,7 @@ void CapsuleColliderComponent::Render(std::vector<CapsuleColliderComponent>* ccc
 {
 	ImGui::Checkbox("##CAPSULECOLLIDER", &activeComponent);
 	ImGui::SameLine();
-	if (ImGui::CollapsingHeader("CAPSULECOLLIDER", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("CAPSULE COLLIDER", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		if (ImGui::BeginPopupContextItem())
 		{
@@ -46,8 +49,8 @@ void CapsuleColliderComponent::Render(std::vector<CapsuleColliderComponent>* ccc
 			ImGui::Separator();
 			if (ImGui::MenuItem("Remove"))
 			{
-				if (ecs->registry.any_of<RigidbodyComponent>(ecs->selected))
-					ecs->registry.get<RigidbodyComponent>(ecs->selected).GetRigidBody()->detachShape(*GetShape());
+				if (ecs->registry.any_of<RigidDynamicComponent>(ecs->selected))
+					ecs->registry.get<RigidDynamicComponent>(ecs->selected).GetRigidDynamic()->detachShape(*GetShape());
 				Release();
 				ccc->erase(ccc->begin() + index);
 				ImGui::EndPopup();
@@ -61,8 +64,6 @@ void CapsuleColliderComponent::Render(std::vector<CapsuleColliderComponent>* ccc
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
 			{
-				physicsMaterialComponent.RenderLeft(true);
-
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
 				ImGui::Text("Center");
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2 + 4);
@@ -73,8 +74,6 @@ void CapsuleColliderComponent::Render(std::vector<CapsuleColliderComponent>* ccc
 			ImGui::TableNextColumn();
 			ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 			{
-				physicsMaterialComponent.RenderRight();
-
 				Vector3 _Center = GetCenter();
 				if (ImGui::DragFloat3("##CenterCapsuleColliderComponent", (float*)&_Center, 0.1f))
 					SetCenter(_Center);
@@ -104,8 +103,8 @@ physx::PxShape* CapsuleColliderComponent::GetShape()
 }
 void CapsuleColliderComponent::Release()
 {
-	if (GetShape()) GetShape()->release();
-	if (physicsMaterialComponent.GetMaterial()) physicsMaterialComponent.ReleaseMaterial();
+	if (GetShape())
+		GetShape()->release();
 }
 void CapsuleColliderComponent::SerializeComponent(YAML::Emitter& out)
 {
@@ -116,9 +115,9 @@ void CapsuleColliderComponent::SerializeComponent(YAML::Emitter& out)
 	out << YAML::Key << "Radius" << YAML::Value << GetRadius();
 	out << YAML::Key << "Height" << YAML::Value << GetHeight();
 	out << YAML::Key << "Material" << YAML::Value << YAML::BeginMap;
-	out << YAML::Key << "StaticFriction" << YAML::Value << physicsMaterialComponent.GetStaticFriction();
-	out << YAML::Key << "DynamicFriction" << YAML::Value << physicsMaterialComponent.GetDynamicFriction();
-	out << YAML::Key << "Restitution" << YAML::Value << physicsMaterialComponent.GetRestitution();
+	//out << YAML::Key << "StaticFriction" << YAML::Value << physicsMaterialComponent.GetStaticFriction();
+	//out << YAML::Key << "DynamicFriction" << YAML::Value << physicsMaterialComponent.GetDynamicFriction();
+	//out << YAML::Key << "Restitution" << YAML::Value << physicsMaterialComponent.GetRestitution();
 	out << YAML::EndMap;
 	out << YAML::EndMap;
 	out << YAML::EndMap;
@@ -131,9 +130,9 @@ void CapsuleColliderComponent::DeserializeComponent(YAML::Node& in)
 	SetRadius(in["Radius"].as<float>());
 	SetHeight(in["Height"].as<float>());
 	auto material = in["Material"];
-	physicsMaterialComponent.SetStaticFriction(material["StaticFriction"].as<float>());
-	physicsMaterialComponent.SetDynamicFriction(material["DynamicFriction"].as<float>());
-	physicsMaterialComponent.SetRestitution(material["Restitution"].as<float>());
+	//physicsMaterialComponent.SetStaticFriction(material["StaticFriction"].as<float>());
+	//physicsMaterialComponent.SetDynamicFriction(material["DynamicFriction"].as<float>());
+	//physicsMaterialComponent.SetRestitution(material["Restitution"].as<float>());
 }
 
 void CapsuleColliderComponent::SetCenter(Vector3 value)

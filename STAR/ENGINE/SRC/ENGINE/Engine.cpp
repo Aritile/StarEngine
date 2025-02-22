@@ -5,7 +5,7 @@
 #include "../ENTITY/COMPONENT/CameraComponent.h"
 #include "../ENTITY/COMPONENT/TransformComponent.h"
 #include "../ENTITY/COMPONENT/TextComponent.h"
-#include "../ENTITY/COMPONENT/RigidbodyComponent.h"
+#include "../ENTITY/COMPONENT/RigidDynamicComponent.h"
 
 // system
 #include "../SYSTEM/PhysicsSystem.h"
@@ -272,7 +272,7 @@ void Engine::EngineShutdown()
     playerPrefs->Save();
     settingsWindow->Save();
 
-    auto view = ecs->registry.view<RigidbodyComponent, PhysicsComponent>();
+    auto view = ecs->registry.view<RigidDynamicComponent, PhysicsComponent>();
     for (auto entity : view)
         ecs->Cleanup(entity);
 
@@ -383,7 +383,7 @@ void Engine::RenderEnvironment(Matrix _ProjectionMatrix,
     if (drawTiming) drawTiming->SetTotalTime(0.0f);
     TraverseEntity(ecs->root, _ViewMatrix, _ProjectionMatrix, _Game);
 
-    if (!game)
+    if (!_Game)
     {
         dx->dxDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
         if (enableAntialiasing)
@@ -416,8 +416,8 @@ void Engine::TraverseEntity(entt::entity entity, Matrix _ViewMatrix, Matrix _Pro
         if (!ecs->IsValid(child)) continue; // skip if entity is not vaild, like if you destroy entity, vector is not reorder..
         if (!ecs->GetComponent<GeneralComponent>(child).IsActive()) continue;
 
-        if (ecs->HasComponent<RigidbodyComponent>(child))
-            ecs->GetComponent<RigidbodyComponent>(child).UpdateActor();
+        if (ecs->HasComponent<RigidDynamicComponent>(child))
+            ecs->GetComponent<RigidDynamicComponent>(child).UpdateActor();
 
         if (ecs->HasComponent<MeshComponent>(child))
         {

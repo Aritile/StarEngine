@@ -2,22 +2,20 @@
 
 #include "physx/PxPhysics.h"
 
-// this is not component for entity, do not use AddComponent
 struct PhysicsMaterialComponent
 {
 public:
-	void CreateMaterial(float StaticFriction, float DynamicFriction, float Restitution);
-	void ReleaseMaterial();
-	void RenderLeft(bool begin);
-	void RenderRight();
-	void SetStaticFriction(float value);
+	void CreateMaterial(float _StaticFriction, float _DynamicFriction, float _Restitution);
+	void Release();
+	void SetStaticFriction(float _Value);
 	float GetStaticFriction();
-	void SetDynamicFriction(float value);
+	void SetDynamicFriction(float _Value);
 	float GetDynamicFriction();
-	void SetRestitution(float value);
+	void SetRestitution(float _Value);
 	float GetRestitution();
 	physx::PxMaterial* GetMaterial();
+	void Render();
 
 private:
-	physx::PxMaterial* pxMaterial = NULL;
+	physx::PxMaterial* pxMaterial = nullptr;
 };

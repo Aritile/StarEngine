@@ -35,6 +35,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidStaticComponent.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\ConvexColliderComponent.h" />
     <ClInclude Include="SRC\STORAGE\SpriteStorage.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\RectangleComponent.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\OpacityComponent.h" />
@@ -86,7 +88,7 @@
     <ClInclude Include="SRC\EDITOR\WINDOW\About.h" />
     <ClInclude Include="SRC\SYSTEM\ModelSystem.h" />
     <ClInclude Include="SRC\SYSTEM\PhysicsSystem.h" />
-    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidbodyComponent.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidDynamicComponent.h" />
     <ClInclude Include="SRC\EDITOR\WINDOW\Console.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\CameraComponent.h" />
     <ClInclude Include="SRC\GAME\Game.h" />
@@ -126,8 +128,11 @@
     <ClInclude Include="SRC\USERINPUT\UserInput.h" />
     <ClInclude Include="SRC\VERTEX\Vertex.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\TextComponent.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\TriangleColliderComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidStaticComponent.cpp" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\ConvexColliderComponent.cpp" />
     <ClCompile Include="SRC\STORAGE\SpriteStorage.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\RectangleComponent.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\OpacityComponent.cpp" />
@@ -175,7 +180,7 @@
     <ClCompile Include="SRC\EDITOR\WINDOW\About.cpp" />
     <ClCompile Include="SRC\SYSTEM\ModelSystem.cpp" />
     <ClCompile Include="SRC\SYSTEM\PhysicsSystem.cpp" />
-    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidbodyComponent.cpp" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidDynamicComponent.cpp" />
     <ClCompile Include="SRC\EDITOR\WINDOW\Console.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\CameraComponent.cpp" />
     <ClCompile Include="SRC\GAME\Game.cpp" />
@@ -214,6 +219,7 @@
     <ClCompile Include="SRC\USERINPUT\UserInput.cpp" />
     <ClCompile Include="SRC\VERTEX\Vertex.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\TextComponent.cpp" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\TriangleColliderComponent.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -380,7 +386,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\DirectXTex\DDSTextureLoader;$(ProjectDir)\DirectXTex\WICTextureLoader;$(ProjectDir)\DirectXTex\DirectXTex;$(ProjectDir)\ENGINE\DirectXTK\Src;$(ProjectDir)\DirectXTK\Inc;$(ProjectDir)\INCLUDE\lua;$(ProjectDir)\INCLUDE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\b\StarEngine\STAR\ENGINE\INCLUDE\physx;$(ProjectDir)\DirectXTex\DDSTextureLoader;$(ProjectDir)\DirectXTex\WICTextureLoader;$(ProjectDir)\DirectXTex\DirectXTex;$(ProjectDir)\ENGINE\DirectXTK\Src;$(ProjectDir)\DirectXTK\Inc;$(ProjectDir)\INCLUDE\lua;$(ProjectDir)\INCLUDE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>

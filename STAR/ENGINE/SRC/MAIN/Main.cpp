@@ -26,7 +26,7 @@ int StartEngine(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, PWSTR& pCmdLine,
 	if (!splashScreen->ShowSplashScreen())
 		return 0;
 
-	if (!mainWindow->CreateMainWindow(L"StarEngine", 1280, 720))
+	if (!mainWindow->CreateMainWindow(L"StarEngine", 1600, 900))
 		return 0;
 	
 	UINT width = mainWindow->GetContextWidth();

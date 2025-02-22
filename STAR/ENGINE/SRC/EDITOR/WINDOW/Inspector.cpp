@@ -9,11 +9,15 @@
 #include "../../ENTITY/COMPONENT/MeshComponent.h"
 #include "../../ENTITY/COMPONENT/CameraComponent.h"
 #include "../../ENTITY/COMPONENT/TextMeshComponent.h"
-#include "../../ENTITY/COMPONENT/RigidbodyComponent.h"
+#include "../../ENTITY/COMPONENT/RigidDynamicComponent.h"
 #include "../../ENTITY/COMPONENT/ImageComponent.h"
 #include "../../ENTITY/COMPONENT/OpacityComponent.h"
 #include "../../ENTITY/COMPONENT/RectangleComponent.h"
 #include "../../ENTITY/COMPONENT/TextComponent.h"
+#include "../../ENTITY/COMPONENT/ConvexColliderComponent.h"
+#include "../../ENTITY/COMPONENT/TriangleColliderComponent.h"
+#include "../../ENTITY/COMPONENT/PhysicsMaterialComponent.h"
+#include "../../ENTITY/COMPONENT/RigidStaticComponent.h"
 
 // stuff
 #include "../../SYSTEM/ScriptingSystem.h"
@@ -45,13 +49,17 @@ void InspectorWindow::Render()
 			RenderComponent<MeshComponent>(ecs->selected);
 			RenderComponent<CameraComponent>(ecs->selected);
 			RenderComponent<TextMeshComponent>(ecs->selected);
-			RenderComponent<RigidbodyComponent>(ecs->selected);
+			RenderComponent<RigidDynamicComponent>(ecs->selected);
 			RenderComponent<ScriptingComponent>(ecs->selected);
 			RenderComponent<PhysicsComponent>(ecs->selected);
 			RenderComponent<ImageComponent>(ecs->selected);
 			RenderComponent<OpacityComponent>(ecs->selected);
 			RenderComponent<RectangleComponent>(ecs->selected);
 			RenderComponent<TextComponent>(ecs->selected);
+			RenderComponent<ConvexColliderComponent>(ecs->selected);
+			RenderComponent<TriangleColliderComponent>(ecs->selected);
+			RenderComponent<PhysicsMaterialComponent>(ecs->selected);
+			RenderComponent<RigidStaticComponent>(ecs->selected);
 			RenderAdd();
 		}
 	}
@@ -67,6 +75,8 @@ void InspectorWindow::RenderAdd()
 
 	if (ImGui::BeginPopup("addComp", ImGuiWindowFlags_NoMove))
 	{
+		ImGui::SeparatorText("Mesh");
+
 		if (ImGui::Selectable("Mesh"))
 		{
 			if (!ecs->HasComponent<MeshComponent>(ecs->selected))
@@ -99,24 +109,57 @@ void InspectorWindow::RenderAdd()
 			if (!ecs->HasComponent<CameraComponent>(ecs->selected))
 				ecs->AddComponent<CameraComponent>(ecs->selected);
 		}
-		ImGui::Separator();
-		if (ImGui::Selectable("Rigidbody"))
+		ImGui::SeparatorText("Physics");
+		if (ImGui::Selectable("RigidStatic"))
 		{
-			if (!ecs->HasComponent<RigidbodyComponent>(ecs->selected))
+			if (!ecs->HasComponent<RigidStaticComponent>(ecs->selected))
 			{
-				ecs->AddComponent<RigidbodyComponent>(ecs->selected);
-				ecs->GetComponent<RigidbodyComponent>(ecs->selected).CreateActor();
+				ecs->AddComponent<RigidStaticComponent>(ecs->selected);
+				ecs->GetComponent<RigidStaticComponent>(ecs->selected).CreateActor();
+			}
+		}
+		if (ImGui::Selectable("RigidDynamic"))
+		{
+			if (!ecs->HasComponent<RigidDynamicComponent>(ecs->selected))
+			{
+				ecs->AddComponent<RigidDynamicComponent>(ecs->selected);
+				ecs->GetComponent<RigidDynamicComponent>(ecs->selected).CreateActor();
+			}
+		}
+
+		if (ImGui::Selectable("Material"))
+		{
+			if (!ecs->HasComponent<PhysicsMaterialComponent>(ecs->selected))
+			{
+				ecs->AddComponent<PhysicsMaterialComponent>(ecs->selected);
+				ecs->GetComponent<PhysicsMaterialComponent>(ecs->selected).CreateMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
 			}
 		}
 
 		if (ImGui::BeginMenu("Collider"))
 		{
 			if (ImGui::MenuItem("Box"))
-				ecs->registry.get<PhysicsComponent>(ecs->selected).AddBoxCollider();
+				ecs->GetComponent<PhysicsComponent>(ecs->selected).AddBoxCollider();
 			if (ImGui::MenuItem("Sphere"))
-				ecs->registry.get<PhysicsComponent>(ecs->selected).AddSphereCollider();
+				ecs->GetComponent<PhysicsComponent>(ecs->selected).AddSphereCollider();
 			if (ImGui::MenuItem("Capsule"))
-				ecs->registry.get<PhysicsComponent>(ecs->selected).AddCapsuleCollider();
+				ecs->GetComponent<PhysicsComponent>(ecs->selected).AddCapsuleCollider();
+			if (ImGui::MenuItem("Convex"))
+			{
+				if (!ecs->HasComponent<ConvexColliderComponent>(ecs->selected))
+				{
+					ecs->AddComponent<ConvexColliderComponent>(ecs->selected);
+					ecs->GetComponent<ConvexColliderComponent>(ecs->selected).Create();
+				}
+			}
+			if (ImGui::MenuItem("Triangle"))
+			{
+				if (!ecs->HasComponent<TriangleColliderComponent>(ecs->selected))
+				{
+					ecs->AddComponent<TriangleColliderComponent>(ecs->selected);
+					ecs->GetComponent<TriangleColliderComponent>(ecs->selected).Create();
+				}
+			}
 
 			ImGui::EndMenu();
 		}
@@ -125,6 +168,7 @@ void InspectorWindow::RenderAdd()
 
 		static std::vector<std::pair<std::string, std::string>> data;
 
+		ImGui::SeparatorText("Lua");
 		if (ImGui::BeginMenu("Script"))
 		{
 			if (ImGui::IsWindowAppearing())

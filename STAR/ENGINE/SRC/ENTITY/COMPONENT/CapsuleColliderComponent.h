@@ -26,10 +26,10 @@ public:
 	float GetExtent();
 	void SetHeight(float value);
 	float GetHeight();
+	entt::entity entity = entt::null;
 
 private:
-	physx::PxShape* pxShape = NULL;
-	PhysicsMaterialComponent physicsMaterialComponent;
+	physx::PxShape* pxShape = nullptr;
 	float lastRadius = 1.0f;
 	float lastExtent = 1.0f;
 	float lastHeight = 1.0f;

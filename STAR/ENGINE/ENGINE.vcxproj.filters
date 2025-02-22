@@ -108,7 +108,7 @@
     <ClInclude Include="SRC\EDITOR\WINDOW\Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidbodyComponent.h">
+    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidDynamicComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SRC\SYSTEM\PhysicsSystem.h">
@@ -288,6 +288,15 @@
     <ClInclude Include="SRC\STORAGE\SpriteStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\ConvexColliderComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\TriangleColliderComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\ENTITY\COMPONENT\RigidStaticComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SRC\MAIN\Main.cpp">
@@ -380,7 +389,7 @@
     <ClCompile Include="SRC\EDITOR\WINDOW\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidbodyComponent.cpp">
+    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidDynamicComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\SYSTEM\PhysicsSystem.cpp">
@@ -546,6 +555,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\STORAGE\SpriteStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\ConvexColliderComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\TriangleColliderComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\ENTITY\COMPONENT\RigidStaticComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

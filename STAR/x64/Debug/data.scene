@@ -1,5 +1,5 @@
 # do not edit
-# Feb 21 2025 21:24:14
+# Feb 22 2025 10:54:56
 Star:
   Version:
     Major: 1
@@ -26,10 +26,10 @@ Star:
                   Active: true
                   Static: false
                 TransformComponent:
-                  Position: [0, 0, 0]
-                  Rotation: [0, 0, 0, 1]
+                  Position: [0, 3.40476322, 0]
+                  Rotation: [-0, 0, 0, 1]
                   Scale: [1, 1, 1]
-                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 3.40476322, 0, 1]
                 MeshComponent:
                   IsActive: true
                   ModelPath: data\model\cube.obj
@@ -38,6 +38,22 @@ Star:
                   VerticesSize: 24
                   IndicesSize: 36
                   FacesSize: 12
+                RigidDynamicComponent:
+                  Mass: 1
+                  LinearDamping: 0
+                  AngularDamping: 0.0500000007
+                  UseGravity: true
+                  IsKinematic: false
+                  Freeze:
+                    Position: [false, false, false]
+                    Rotation: [false, false, false]
+                Colliders:
+                  - BoxCollider:
+                      Active: true
+                      Center: [0, 0, 0]
+                      Size: [1, 1, 1]
+                      Material:
+                        {}
             - Entity:
                 GeneralComponent:
                   Name: Camera
@@ -59,7 +75,7 @@ Star:
                   Aspect: [0, 0]
             - Entity:
                 GeneralComponent:
-                  Name: enviroment_-_entrega
+                  Name: untitled
                   Tag: Empty
                   Active: true
                   Static: false
@@ -71,450 +87,20 @@ Star:
                 Children:
                   - Entity:
                       GeneralComponent:
-                        Name: Object_0
+                        Name: Cube.001
                         Tag: Empty
                         Active: true
                         Static: false
                       TransformComponent:
                         Position: [0, 0, 0]
-                        Rotation: [0.707106769, 0, -0, 0.707106769]
-                        Scale: [0.752388179, 0.752388179, 0.752388179]
-                        Matrix: [0.752388179, 0, 0, 0, 0, 1.67063736e-16, 0.752388179, 0, 0, -0.752388179, 1.67063736e-16, 0, 0, 0, 0, 1]
+                        Rotation: [-0, 0, -0.342020184, 0.939692616]
+                        Scale: [5, 1, 1]
+                        Matrix: [3.83022213, -3.21393847, 0, 0, 0.642787695, 0.766044438, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
                       MeshComponent:
                         IsActive: true
-                        ModelPath: assets\enviroment_-_entrega.glb
-                        MaterialPath: assets\enviroment_-_entrega\Object_0.mat
+                        ModelPath: assets\untitled.glb
+                        MaterialPath: assets\untitled\Cube.001.mat
                         MeshIndex: 0
-                        VerticesSize: 9989
-                        IndicesSize: 22938
-                        FacesSize: 7646
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_1
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [0.707106769, 0, -0, 0.707106769]
-                        Scale: [0.752388179, 0.752388179, 0.752388179]
-                        Matrix: [0.752388179, 0, 0, 0, 0, 1.67063736e-16, 0.752388179, 0, 0, -0.752388179, 1.67063736e-16, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\enviroment_-_entrega.glb
-                        MaterialPath: assets\enviroment_-_entrega\Object_1.mat
-                        MeshIndex: 1
-                        VerticesSize: 5884
-                        IndicesSize: 13848
-                        FacesSize: 4616
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_2
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [0.707106769, 0, -0, 0.707106769]
-                        Scale: [0.752388179, 0.752388179, 0.752388179]
-                        Matrix: [0.752388179, 0, 0, 0, 0, 1.67063736e-16, 0.752388179, 0, 0, -0.752388179, 1.67063736e-16, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\enviroment_-_entrega.glb
-                        MaterialPath: assets\enviroment_-_entrega\Object_2.mat
-                        MeshIndex: 2
-                        VerticesSize: 6385
-                        IndicesSize: 16950
-                        FacesSize: 5650
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_3
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [0.707106769, 0, -0, 0.707106769]
-                        Scale: [0.752388179, 0.752388179, 0.752388179]
-                        Matrix: [0.752388179, 0, 0, 0, 0, 1.67063736e-16, 0.752388179, 0, 0, -0.752388179, 1.67063736e-16, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\enviroment_-_entrega.glb
-                        MaterialPath: assets\enviroment_-_entrega\Object_3.mat
-                        MeshIndex: 3
-                        VerticesSize: 65
-                        IndicesSize: 126
-                        FacesSize: 42
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_4
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [0.707106769, 0, -0, 0.707106769]
-                        Scale: [0.752388179, 0.752388179, 0.752388179]
-                        Matrix: [0.752388179, 0, 0, 0, 0, 1.67063736e-16, 0.752388179, 0, 0, -0.752388179, 1.67063736e-16, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\enviroment_-_entrega.glb
-                        MaterialPath: assets\enviroment_-_entrega\Object_4.mat
-                        MeshIndex: 4
-                        VerticesSize: 1856
-                        IndicesSize: 4905
-                        FacesSize: 1635
-            - Entity:
-                GeneralComponent:
-                  Name: gltf_04_vertcols_grey_lm
-                  Tag: Empty
-                  Active: true
-                  Static: false
-                TransformComponent:
-                  Position: [0, 0, 0]
-                  Rotation: [0, 0, 0, 1]
-                  Scale: [1, 1, 1]
-                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                Children:
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_0
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_0.mat
-                        MeshIndex: 0
-                        VerticesSize: 551
-                        IndicesSize: 747
-                        FacesSize: 249
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_1
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_1.mat
-                        MeshIndex: 1
-                        VerticesSize: 2733
-                        IndicesSize: 4764
-                        FacesSize: 1588
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_2
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_2.mat
-                        MeshIndex: 2
-                        VerticesSize: 1020
-                        IndicesSize: 1860
-                        FacesSize: 620
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_3
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_3.mat
-                        MeshIndex: 3
-                        VerticesSize: 162
-                        IndicesSize: 243
-                        FacesSize: 81
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_4
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_4.mat
-                        MeshIndex: 4
-                        VerticesSize: 103
-                        IndicesSize: 195
-                        FacesSize: 65
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_5
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_5.mat
-                        MeshIndex: 5
-                        VerticesSize: 745
-                        IndicesSize: 1392
-                        FacesSize: 464
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_6
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_6.mat
-                        MeshIndex: 6
-                        VerticesSize: 192
-                        IndicesSize: 255
-                        FacesSize: 85
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_7
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_7.mat
-                        MeshIndex: 7
-                        VerticesSize: 3832
-                        IndicesSize: 6870
-                        FacesSize: 2290
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_8
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_8.mat
-                        MeshIndex: 8
-                        VerticesSize: 104
-                        IndicesSize: 156
-                        FacesSize: 52
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_9
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_9.mat
-                        MeshIndex: 9
-                        VerticesSize: 223
-                        IndicesSize: 384
-                        FacesSize: 128
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_10
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_10.mat
-                        MeshIndex: 10
-                        VerticesSize: 276
-                        IndicesSize: 543
-                        FacesSize: 181
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_11
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_11.mat
-                        MeshIndex: 11
-                        VerticesSize: 259
-                        IndicesSize: 480
-                        FacesSize: 160
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_12
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_12.mat
-                        MeshIndex: 12
-                        VerticesSize: 298
-                        IndicesSize: 480
-                        FacesSize: 160
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_13
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_13.mat
-                        MeshIndex: 13
-                        VerticesSize: 164
-                        IndicesSize: 240
-                        FacesSize: 80
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_14
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_14.mat
-                        MeshIndex: 14
-                        VerticesSize: 391
-                        IndicesSize: 636
-                        FacesSize: 212
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_15
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_15.mat
-                        MeshIndex: 15
-                        VerticesSize: 46
-                        IndicesSize: 72
-                        FacesSize: 24
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_16
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_16.mat
-                        MeshIndex: 16
-                        VerticesSize: 127
-                        IndicesSize: 210
-                        FacesSize: 70
-                  - Entity:
-                      GeneralComponent:
-                        Name: Object_17
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, -3, -64]
-                        Rotation: [0.707106829, 0, 0, -0.70710665]
-                        Scale: [1, 1, 1]
-                        Matrix: [1, 0, 0, 0, 0, -1.68587391e-07, -1, 0, 0, 1, -1.68587391e-07, 0, 0, -3, -64, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\gltf_04_vertcols_grey_lm.glb
-                        MaterialPath: assets\gltf_04_vertcols_grey_lm\Object_17.mat
-                        MeshIndex: 17
-                        VerticesSize: 293
-                        IndicesSize: 426
-                        FacesSize: 142
+                        VerticesSize: 24
+                        IndicesSize: 36
+                        FacesSize: 12

@@ -17,12 +17,12 @@ public:
 public:
 	void CreateShape(float _Radius);
 	void Render(std::vector<SphereColliderComponent>* bcc, size_t index);
+	entt::entity entity = entt::null;
 
 private:
 	physx::PxShape* pxShape = NULL;
 	float lastRadius = 1.0f;
 	float lastExtent = 1.0f;
-	PhysicsMaterialComponent physicsMaterialComponent;
 
 public:
 	physx::PxShape* GetShape() const;

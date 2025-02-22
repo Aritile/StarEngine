@@ -1,25 +1,31 @@
 #include "Editor.h"
+
+// window
 #include "WINDOW/File.h"
 #include "WINDOW/Assets.h"
 #include "WINDOW/Viewport.h"
 #include "WINDOW/Inspector.h"
 #include "WINDOW/Hierarchy.h"
-#include "../ENTITY/COMPONENT/GeneralComponent.h"
-#include "../GAME/Game.h"
 #include "WINDOW/Console.h"
-#include "../MAIN/Main.h"
+#include "WINDOW/Settings.h"
 #include "WINDOW/About.h"
+#include "WINDOW/Importer.h"
+#include "WINDOW/Profiler.h"
+#include "../WINDOW/MainWindow.h"
+#include "WINDOW/Project.h"
+
+// system
 #include "../SYSTEM/ProjectSceneSystem.h"
 #include "../SYSTEM/ScriptingSystem.h"
+#include "../SYSTEM/PlayerPrefs.h"
+
+// stuff
+#include "../ENTITY/COMPONENT/GeneralComponent.h"
+#include "../GAME/Game.h"
+#include "../MAIN/Main.h"
 #include <wincodec.h>
 #include "../MODULE/Module.h"
-#include "WINDOW/Project.h"
-#include "../SYSTEM/PlayerPrefs.h"
-#include "WINDOW/Settings.h"
-#include "../WINDOW/MainWindow.h"
-#include "WINDOW/Profiler.h"
 #include "../JOB/Job.h"
-#include "WINDOW/Importer.h"
 
 Editor* Editor::GetSingleton()
 {

@@ -17,12 +17,12 @@ public:
 public:
 	void CreateShape(Vector3 _Size);
 	void Render(std::vector<BoxColliderComponent>* bcc, size_t index);
+	entt::entity entity = entt::null;
 
 private:
-	physx::PxShape* pxShape = NULL;
+	physx::PxShape* pxShape = nullptr;
 	Vector3 lastSize = Vector3(1.0f, 1.0f, 1.0f);
 	Vector3 lastExtents = Vector3(1.0f, 1.0f, 1.0f);
-	PhysicsMaterialComponent physicsMaterialComponent;
 
 public:
 	physx::PxShape* GetShape() const;

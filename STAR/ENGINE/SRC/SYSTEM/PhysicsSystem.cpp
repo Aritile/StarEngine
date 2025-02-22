@@ -1,7 +1,7 @@
 #include "PhysicsSystem.h"
 #include "../IMGUI/imgui.h"
 #include "../ENTITY/Entity.h"
-#include "../ENTITY/COMPONENT/RigidbodyComponent.h"
+#include "../ENTITY/COMPONENT/RigidDynamicComponent.h"
 #include "../STAR/Star.h"
 #include "../EDITOR/WINDOW/Console.h"
 #include "../ENTITY/COMPONENT/TransformComponent.h"
@@ -28,7 +28,7 @@ bool PhysicsSystem::Init()
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, physx::PxTolerancesScale(), true, gPvd);
 
 	sceneDesc = new physx::PxSceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc->gravity = NONE_GRAVITY;
+	sceneDesc->gravity = EARTH_GRAVITY;
 
 	if (physicsProcesor == PhysicsProcesor::xCPU)
 	{
@@ -59,6 +59,13 @@ bool PhysicsSystem::Init()
 	sceneDesc->cpuDispatcher = gDispatcher;
 	sceneDesc->filterShader = physx::PxDefaultSimulationFilterShader;
 
+	// cooking
+	physx::PxCookingParams cookingParams(gPhysics->getTolerancesScale());
+	//cookingParams.buildGPUData = true; // Optional for GPU-based cooking
+	gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, cookingParams);
+	if (!gCooking)
+		Star::AddLog("[PhysX] -> Create Cooking Error!");
+
 	CreateScene();
 	return true;
 }
@@ -77,6 +84,7 @@ void PhysicsSystem::Shutdown()
 	if (gPvd)                gPvd->release();
 	if (transport)           transport->release();
 	if (gCudaContextManager) gCudaContextManager->release();
+	if (gCooking)            gCooking->release();
 	if (gFoundation)         gFoundation->release();
 	if (sceneDesc)
 	{
@@ -99,6 +107,7 @@ void PhysicsComponent::AddBoxCollider()
 	BoxColliderComponent* boxColliderComponent = &box_colliders.back();
 	{
 		entt::entity entity = entt::to_entity(ecs->registry, *this);
+		boxColliderComponent->entity = entity;
 
 		// create shape
 		if (ecs->HasComponent<TransformComponent>(entity))
@@ -108,11 +117,11 @@ void PhysicsComponent::AddBoxCollider()
 		}
 
 		// attach shape
-		if (ecs->registry.any_of<RigidbodyComponent>(entity))
+		if (ecs->registry.any_of<RigidDynamicComponent>(entity))
 		{
-			auto& rigidBodyComponent = ecs->registry.get<RigidbodyComponent>(entity);
-			if (rigidBodyComponent.GetRigidBody())
-				rigidBodyComponent.GetRigidBody()->attachShape(*boxColliderComponent->GetShape());
+			auto& rigidBodyComponent = ecs->registry.get<RigidDynamicComponent>(entity);
+			if (rigidBodyComponent.GetRigidDynamic())
+				rigidBodyComponent.GetRigidDynamic()->attachShape(*boxColliderComponent->GetShape());
 		}
 	}
 }
@@ -248,6 +257,7 @@ void PhysicsComponent::AddSphereCollider()
 	SphereColliderComponent* sphereColliderComponent = &sphere_colliders.back();
 	{
 		entt::entity entity = entt::to_entity(ecs->registry, *this);
+		sphereColliderComponent->entity = entity;
 
 		// create shape
 		if (ecs->HasComponent<TransformComponent>(entity))
@@ -258,11 +268,11 @@ void PhysicsComponent::AddSphereCollider()
 		}
 
 		// attach shape
-		if (ecs->registry.any_of<RigidbodyComponent>(entity))
+		if (ecs->registry.any_of<RigidDynamicComponent>(entity))
 		{
-			auto& rigidBodyComponent = ecs->registry.get<RigidbodyComponent>(entity);
-			if (rigidBodyComponent.GetRigidBody())
-				rigidBodyComponent.GetRigidBody()->attachShape(*sphereColliderComponent->GetShape());
+			auto& rigidBodyComponent = ecs->registry.get<RigidDynamicComponent>(entity);
+			if (rigidBodyComponent.GetRigidDynamic())
+				rigidBodyComponent.GetRigidDynamic()->attachShape(*sphereColliderComponent->GetShape());
 		}
 	}
 }
@@ -300,6 +310,7 @@ void PhysicsComponent::AddCapsuleCollider()
 	CapsuleColliderComponent* capsuleColliderComponent = &capsule_colliders.back();
 	{
 		entt::entity entity = entt::to_entity(ecs->registry, *this);
+		capsuleColliderComponent->entity = entity;
 
 		// create shape
 		if (ecs->HasComponent<TransformComponent>(entity))
@@ -309,11 +320,16 @@ void PhysicsComponent::AddCapsuleCollider()
 		}
 
 		// attach shape
-		if (ecs->registry.any_of<RigidbodyComponent>(entity))
+		if (ecs->registry.any_of<RigidDynamicComponent>(entity))
 		{
-			auto& rigidBodyComponent = ecs->registry.get<RigidbodyComponent>(entity);
-			if (rigidBodyComponent.GetRigidBody())
-				rigidBodyComponent.GetRigidBody()->attachShape(*capsuleColliderComponent->GetShape());
+			auto& rigidBodyComponent = ecs->registry.get<RigidDynamicComponent>(entity);
+			if (rigidBodyComponent.GetRigidDynamic())
+				rigidBodyComponent.GetRigidDynamic()->attachShape(*capsuleColliderComponent->GetShape());
 		}
 	}
+}
+
+physx::PxCooking* PhysicsSystem::GetCooking()
+{
+	return gCooking;
 }

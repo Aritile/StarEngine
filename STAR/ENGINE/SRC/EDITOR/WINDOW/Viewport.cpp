@@ -4,7 +4,7 @@
 #include "../../STAR/Star.h"
 #include "../../ENTITY/COMPONENT/GeneralComponent.h"
 #include "../../ENTITY/COMPONENT/CameraComponent.h"
-#include "../../ENTITY/COMPONENT/RigidBodyComponent.h"
+#include "../../ENTITY/COMPONENT/RigidDynamicComponent.h"
 #include "../../GAME/Game.h"
 #include "../../SYSTEM/PhysicsSystem.h"
 #include "Assets.h"
@@ -684,9 +684,9 @@ void ViewportWindow::RenderManipulateWidget(TransformComponent& transformCompone
 		entt::entity entity = entt::to_entity(ecs->registry, transformComponent);
 		if (ecs->IsValid(entity))
 		{
-			if (ecs->HasComponent<RigidbodyComponent>(entity))
+			if (ecs->HasComponent<RigidDynamicComponent>(entity))
 			{
-				auto& rigidBodyComponent = ecs->GetComponent<RigidbodyComponent>(entity);
+				auto& rigidBodyComponent = ecs->GetComponent<RigidDynamicComponent>(entity);
 				rigidBodyComponent.SetTransform(transformComponent.GetTransform());
 			}
 		}
