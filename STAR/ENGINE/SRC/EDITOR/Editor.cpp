@@ -804,7 +804,7 @@ void Editor::RenderEntityMenuBar()
 				ecs->CreateEmptyEntity(entity);
 				ecs->selected = entity;
 			}
-			ImGui::Separator();
+			ImGui::SeparatorText("3D");
 			if (ImGui::MenuItem("Cube"))
 			{
 				auto entity = ecs->CreateEntity();
@@ -840,6 +840,31 @@ void Editor::RenderEntityMenuBar()
 			{
 				auto entity = ecs->CreateEntity();
 				ecs->CreateTextMeshEntity(entity);
+				ecs->selected = entity;
+			}
+			ImGui::SeparatorText("UI");
+			if (ImGui::MenuItem("Rectangle"))
+			{
+				auto entity = ecs->CreateEntity();
+				ecs->CreateRectangleEntity(entity);
+				ecs->selected = entity;
+			}
+			if (ImGui::MenuItem("Image"))
+			{
+				auto entity = ecs->CreateEntity();
+				ecs->CreateImageEntity(entity);
+				ecs->selected = entity;
+			}
+			if (ImGui::MenuItem("Text"))
+			{
+				auto entity = ecs->CreateEntity();
+				ecs->CreateTextEntity(entity);
+				ecs->selected = entity;
+			}
+			if (ImGui::MenuItem("Button"))
+			{
+				auto entity = ecs->CreateEntity();
+				ecs->CreateButtonEntity(entity);
 				ecs->selected = entity;
 			}
 			ImGui::EndMenu();

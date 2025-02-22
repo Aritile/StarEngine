@@ -18,6 +18,7 @@ class TextureStorage
 {
 public:
 	bool LoadTexture(const char* _Path, TextureStorageBuffer** _Texture);
+	bool CreateTexture(const void* _Data, UINT _Size, UINT _Width, UINT _Height, bool _IsCompressed, TextureStorageBuffer** _Texture);
 	bool GetTexture(const char* _Path, TextureStorageBuffer** _Texture);
 	bool ReleaseTexture(const char* _Path);
 	void ReleaseAllTextures();

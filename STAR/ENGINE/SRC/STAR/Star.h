@@ -93,4 +93,6 @@ namespace Star
 	// add exe path + create relative path
 	std::string FixPath(std::string _Filename);
 	void HelpMarker(const char* desc);
+
+	Matrix AssimpToMatrix(aiMatrix4x4& _Matrix);
 }

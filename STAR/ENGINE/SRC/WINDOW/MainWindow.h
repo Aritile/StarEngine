@@ -26,6 +26,6 @@ public:
 	void HideWindow();
 
 private:
-	HWND hwnd = NULL;
+	HWND hwnd = nullptr;
 	bool isCursorLocked = false;
 };

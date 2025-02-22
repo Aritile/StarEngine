@@ -10,6 +10,12 @@
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
 
+struct MeshMatrix
+{
+	std::string meshName;
+	Matrix meshMatrix;
+};
+
 struct MeshStorageBuffer
 {
 	MeshStorageBuffer() {}
@@ -28,6 +34,8 @@ struct MeshStorageBuffer
 	ID3D11Buffer* vertexBuffer = nullptr;
 	ID3D11Buffer* indexBuffer = nullptr;
 	Material material;
+	UINT materialIndex = 0;
+	MeshMatrix* matrix = nullptr;
 };
 
 struct ModelStorageBuffer
@@ -38,6 +46,7 @@ struct ModelStorageBuffer
 	std::string path;
 	UINT meshNum = 0;
 	std::list<MeshStorageBuffer> meshStorageBuffers;
+	std::list<MeshMatrix> meshMatrices;
 
 	bool LoadMesh(UINT _Index, MeshStorageBuffer** _MeshStorageBuffer);
 	bool GetMesh(UINT _Index, MeshStorageBuffer** _MeshStorageBuffer);

@@ -106,6 +106,13 @@ void AssimpLoader::LoadModel(const char* path, entt::entity entity, unsigned int
 	meshStorage->LoadModel(path, &modelStorageBuffer);
 	if (modelStorageBuffer)
 	{
+		// process matrix
+		if (modelStorageBuffer->importer.GetScene())
+		{
+			const aiScene* scene = modelStorageBuffer->importer.GetScene();
+			ProcessMatrix(scene->mRootNode, scene, aiMatrix4x4(), modelStorageBuffer);
+		}
+
 		for (UINT i = 0; i < modelStorageBuffer->meshNum; i++)
 		{
 			entt::entity child = ecs->CreateEntity();
@@ -115,10 +122,62 @@ void AssimpLoader::LoadModel(const char* path, entt::entity entity, unsigned int
 			MeshStorageBuffer* meshStorageBuffer = nullptr;
 			modelStorageBuffer->LoadMesh(i, &meshStorageBuffer);
 
-			// load textures
+			// find matrix
+			std::list<MeshMatrix>::iterator it;
+			for (it = modelStorageBuffer->meshMatrices.begin(); it != modelStorageBuffer->meshMatrices.end(); ++it)
+			{
+				if (it->meshName == meshStorageBuffer->name)
+				{
+					meshStorageBuffer->matrix = &(*it);
+					break;
+				}
+			}
+
+			// try load file texture
 			TextureStorageBuffer* textureStorageBuffer = nullptr;
 			textureStorage->LoadTexture(meshStorageBuffer->material.diffuse.c_str(), &textureStorageBuffer);
-			meshStorageBuffer->material.diffuseTexture = textureStorageBuffer;
+
+			// get material
+			aiMaterial* material = nullptr;
+			if (modelStorageBuffer->importer.GetScene())
+				material = modelStorageBuffer->importer.GetScene()->mMaterials[meshStorageBuffer->materialIndex];
+
+			// try load base color
+			if (material)
+			{
+				aiColor4D baseColor;
+				if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor))
+				{
+					meshStorageBuffer->material.baseColor.x = baseColor.r;
+					meshStorageBuffer->material.baseColor.y = baseColor.g;
+					meshStorageBuffer->material.baseColor.z = baseColor.b;
+					meshStorageBuffer->material.baseColor.w = baseColor.a;
+				}
+			}
+
+			// try load embedded texture
+			if (!textureStorageBuffer)
+			{
+				if (material)
+				{
+					aiString texturePath;
+					if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS)
+					{
+						const aiTexture* embeddedTexture = modelStorageBuffer->importer.GetScene()->GetEmbeddedTexture(texturePath.C_Str());
+						if (embeddedTexture) // load texture from model
+						{
+							if (embeddedTexture->mHeight == 0) // compressed texture
+								textureStorage->CreateTexture(embeddedTexture->pcData, embeddedTexture->mWidth, 0, 0, true, &textureStorageBuffer);
+							else // raw texture
+								textureStorage->CreateTexture(embeddedTexture->pcData, 0, embeddedTexture->mWidth, embeddedTexture->mHeight, false, &textureStorageBuffer);
+						}
+					}
+				}
+			}
+
+			// apply texture
+			if (textureStorageBuffer)
+				meshStorageBuffer->material.diffuseTexture = textureStorageBuffer;
 
 			// save materials
 			std::string y = Star::GetParent(path) + "\\" + Star::GetFileNameFromPath(path);
@@ -126,11 +185,35 @@ void AssimpLoader::LoadModel(const char* path, entt::entity entity, unsigned int
 			y += "\\" + meshStorageBuffer->material.name + ".mat";
 			meshStorageBuffer->material.SerializeMaterial(y.c_str());
 
+			// apply all
 			ecs->GetComponent<MeshComponent>(child).ApplyModel(modelStorageBuffer);
 			ecs->GetComponent<MeshComponent>(child).ApplyMesh(meshStorageBuffer);
 			ecs->GetComponent<GeneralComponent>(child).SetName(meshStorageBuffer->name);
+			if (meshStorageBuffer->matrix)
+				ecs->GetComponent<TransformComponent>(child).SetTransform(meshStorageBuffer->matrix->meshMatrix);
 			ecs->GetComponent<GeneralComponent>(parent).AddChild(child);
 		}
+
 		modelStorageBuffer->CloseModel();
 	}
+}
+
+void AssimpLoader::ProcessMatrix(aiNode* _Node, const aiScene* _Scene, aiMatrix4x4 parentTransform, ModelStorageBuffer* modelStorageBuffer)
+{
+	aiMatrix4x4 nodeTransform = _Node->mTransformation;
+	aiMatrix4x4 globalTransform = parentTransform * nodeTransform;
+
+	for (UINT i = 0; i < _Node->mNumMeshes; i++)
+	{
+		aiMesh* mesh = _Scene->mMeshes[_Node->mMeshes[i]];
+		MeshMatrix meshMatrix;
+		meshMatrix.meshName = mesh->mName.C_Str();
+		meshMatrix.meshMatrix = Star::AssimpToMatrix(globalTransform);
+
+		// apply
+		modelStorageBuffer->meshMatrices.push_back(meshMatrix);
+	}
+
+	for (UINT i = 0; i < _Node->mNumChildren; i++)
+		ProcessMatrix(_Node->mChildren[i], _Scene, globalTransform, modelStorageBuffer);
 }

@@ -57,10 +57,12 @@ public:
 	void CreateSphereEntity(entt::entity entity);
 	void CreateCapsuleEntity(entt::entity entity);
 	void CreatePlaneEntity(entt::entity entity);
-
-public:
 	void CreateCameraEntity(entt::entity entity);
 	void CreateTextMeshEntity(entt::entity entity);
+	void CreateRectangleEntity(entt::entity entity);
+	void CreateImageEntity(entt::entity entity);
+	void CreateTextEntity(entt::entity entity);
+	void CreateButtonEntity(entt::entity entity);
 
 public:
 	template <typename T>

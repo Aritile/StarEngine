@@ -1,20 +1,29 @@
 #include "Entity.h"
 #include <vector>
 #include "../STAR/Star.h"
-#include "COMPONENT/MeshComponent.h"
 #include <WICTextureLoader11.h>
+
+// component
+#include "COMPONENT/MeshComponent.h"
 #include "COMPONENT/GeneralComponent.h"
 #include "COMPONENT/TransformComponent.h"
 #include "COMPONENT/RigidbodyComponent.h"
 #include "COMPONENT/CameraComponent.h"
 #include "COMPONENT/TextMeshComponent.h"
+#include "COMPONENT/RectangleComponent.h"
+#include "COMPONENT/ImageComponent.h"
+#include "COMPONENT/TextComponent.h"
+
+// system
 #include "../SYSTEM/ProjectSceneSystem.h"
 #include "../SYSTEM/ScriptingSystem.h"
 #include "../SYSTEM/PhysicsSystem.h"
+
 #include "../MODEL/AssimpLoader.h"
 #include "../EDITOR/WINDOW/Console.h"
 #include "../STORAGE/MeshStorage.h"
 
+// model
 #define CUBE_MODEL "data\\model\\cube.obj"
 #define SPHERE_MODEL "data\\model\\sphere.obj"
 #define CAPSULE_MODEL "data\\model\\capsule.obj"
@@ -160,6 +169,67 @@ void Entity::CreateTextMeshEntity(entt::entity entity)
     AddComponent<TextMeshComponent>(entity);
     GetComponent<TextMeshComponent>(entity).SetText("hello");
     GetComponent<GeneralComponent>(root).AddChild(entity);
+}
+
+void Entity::CreateRectangleEntity(entt::entity entity)
+{
+    std::string name = "Rectangle";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
+    AddComponent<RectangleComponent>(entity);
+    GetComponent<GeneralComponent>(root).AddChild(entity);
+}
+
+void Entity::CreateImageEntity(entt::entity entity)
+{
+    std::string name = "Image";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
+    AddComponent<ImageComponent>(entity);
+    GetComponent<GeneralComponent>(root).AddChild(entity);
+}
+
+void Entity::CreateTextEntity(entt::entity entity)
+{
+    std::string name = "Text";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
+    AddComponent<TextComponent>(entity);
+    GetComponent<GeneralComponent>(root).AddChild(entity);
+}
+
+// last code edit
+// check if this working
+// 18.2
+
+void Entity::CreateButtonEntity(entt::entity entity)
+{
+    std::string name = "Button";
+    unsigned int index = GetFreeNameIndex(name.c_str());
+    if (index != 0)
+        name = name + std::to_string(index);
+
+    GetComponent<GeneralComponent>(entity).SetName(name);
+    GetComponent<GeneralComponent>(root).AddChild(entity);
+
+    auto textEntity = CreateEntity();
+    GetComponent<GeneralComponent>(textEntity).SetName("Text");
+    AddComponent<TextComponent>(textEntity);
+    GetComponent<GeneralComponent>(entity).AddChild(textEntity);
+
+    auto rectangleEntity = CreateEntity();
+    GetComponent<GeneralComponent>(rectangleEntity).SetName("Rectangle");
+    AddComponent<RectangleComponent>(rectangleEntity);
+    GetComponent<GeneralComponent>(entity).AddChild(rectangleEntity);
 }
 
 entt::entity Entity::CreateEntity()

@@ -14,6 +14,8 @@
 #include "../../VERTEX/Vertex.h"
 #include "../../MATERIAL/Material.h"
 #include "../../CONSTANTDATA/ConstantData.h"
+
+// assimp
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>

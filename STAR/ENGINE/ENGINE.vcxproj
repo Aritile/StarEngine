@@ -380,14 +380,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\x\StarEngine\STAR\ENGINE\DirectXTex\DDSTextureLoader;C:\x\StarEngine\STAR\ENGINE\DirectXTex\WICTextureLoader;C:\x\StarEngine\STAR\ENGINE\DirectXTex\DirectXTex;C:\x\StarEngine\STAR\ENGINE\DirectXTK\Src;C:\x\StarEngine\STAR\ENGINE\DirectXTK\Inc;$(ProjectDir)\INCLUDE\lua;$(ProjectDir)\INCLUDE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\DirectXTex\DDSTextureLoader;$(ProjectDir)\DirectXTex\WICTextureLoader;$(ProjectDir)\DirectXTex\DirectXTex;$(ProjectDir)\ENGINE\DirectXTK\Src;$(ProjectDir)\DirectXTK\Inc;$(ProjectDir)\INCLUDE\lua;$(ProjectDir)\INCLUDE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\x\StarEngine\STAR\ENGINE\DirectXTK\Bin\Desktop_2022\x64\Debug;C:\x\StarEngine\STAR\ENGINE\DirectXTex\DirectXTex\Bin\Desktop_2022\x64\Debug;$(ProjectDir)\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\DirectXTK\Bin\Desktop_2022\x64\Debug;$(ProjectDir)\DirectXTex\DirectXTex\Bin\Desktop_2022\x64\Debug;$(ProjectDir)\LIB;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Debug\\PhysX_64.lib;Debug\\PhysXFoundation_64.lib;Debug\\PhysXCommon_64.lib;Debug\\PhysXPvdSDK_static_64.lib;Debug\\PhysXCooking_64.lib;Debug\\PhysXExtensions_static_64.lib;Debug\\yaml-cppd.lib;Debug\\lua-5.4.4.lib;Debug\\assimp-vc143-mtd.lib;Debug\\zlibd.lib;d3d11.lib;dxguid.lib;dinput8.lib;DirectXTex.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

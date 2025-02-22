@@ -413,7 +413,7 @@ void Engine::TraverseEntity(entt::entity entity, Matrix _ViewMatrix, Matrix _Pro
     for (auto child : generalComponent.GetChildren())
     {
         //if (child == ecs->root) continue; // skip if entity is root
-        //if (!ecs->IsValid(child)) continue; // skip if entity is not vaild
+        if (!ecs->IsValid(child)) continue; // skip if entity is not vaild, like if you destroy entity, vector is not reorder..
         if (!ecs->GetComponent<GeneralComponent>(child).IsActive()) continue;
 
         if (ecs->HasComponent<RigidbodyComponent>(child))

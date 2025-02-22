@@ -32,7 +32,7 @@ void AboutWindow::Render()
 		ImGui::Text(
 			"Star Engine\n"
 			"%s\n"
-			"Copyright(c) 2022-2024 Hodak.\n"
+			"Copyright(c) 2022-2025 Hodak.\n"
 			"All rights reserved.",
 			_VersionText.c_str());
 		ImGui::Text("Used third party software:");
@@ -47,6 +47,7 @@ void AboutWindow::Render()
 			ImGui::Text("yaml-cpp https://github.com/jbeder/yaml-cpp");
 			ImGui::Text("ttf2mesh https://github.com/fetisov/ttf2mesh");
 			ImGui::Text("ImGuizmo https://github.com/CedricGuillemet/ImGuizmo");
+			ImGui::Text("DirectXTK https://github.com/microsoft/DirectXTK/");
 			ImGui::Text("DirectXTex https://github.com/microsoft/DirectXTex");
 			ImGui::Text("STRDX https://github.com/HODAKdev/STRDX");
 			ImGui::Text("IconFontCppHeaders https://github.com/juliettef/IconFontCppHeaders");

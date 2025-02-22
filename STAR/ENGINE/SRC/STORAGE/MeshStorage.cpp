@@ -200,6 +200,7 @@ bool MeshStorageBuffer::LoadMesh(const aiScene* _Scene, UINT _Index)
 	}
 
 	aiMesh* mesh = _Scene->mMeshes[_Index];
+	materialIndex = mesh->mMaterialIndex;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{

@@ -582,3 +582,13 @@ void Star::HelpMarker(const char* desc)
 		ImGui::EndTooltip();
 	}
 }
+
+Matrix Star::AssimpToMatrix(aiMatrix4x4& _Matrix)
+{
+	return Matrix(
+		_Matrix.a1, _Matrix.b1, _Matrix.c1, _Matrix.d1,
+		_Matrix.a2, _Matrix.b2, _Matrix.c2, _Matrix.d2,
+		_Matrix.a3, _Matrix.b3, _Matrix.c3, _Matrix.d3,
+		_Matrix.a4, _Matrix.b4, _Matrix.c4, _Matrix.d4
+	);
+}
