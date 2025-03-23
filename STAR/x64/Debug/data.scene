@@ -1,5 +1,5 @@
 # do not edit
-# Feb 22 2025 10:54:56
+# Mar 22 2025 16:32:09
 Star:
   Version:
     Major: 1
@@ -26,10 +26,10 @@ Star:
                   Active: true
                   Static: false
                 TransformComponent:
-                  Position: [0, 3.40476322, 0]
-                  Rotation: [-0, 0, 0, 1]
+                  Position: [0, 0, 0]
+                  Rotation: [0, 0, 0, 1]
                   Scale: [1, 1, 1]
-                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 3.40476322, 0, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
                 MeshComponent:
                   IsActive: true
                   ModelPath: data\model\cube.obj
@@ -38,22 +38,6 @@ Star:
                   VerticesSize: 24
                   IndicesSize: 36
                   FacesSize: 12
-                RigidDynamicComponent:
-                  Mass: 1
-                  LinearDamping: 0
-                  AngularDamping: 0.0500000007
-                  UseGravity: true
-                  IsKinematic: false
-                  Freeze:
-                    Position: [false, false, false]
-                    Rotation: [false, false, false]
-                Colliders:
-                  - BoxCollider:
-                      Active: true
-                      Center: [0, 0, 0]
-                      Size: [1, 1, 1]
-                      Material:
-                        {}
             - Entity:
                 GeneralComponent:
                   Name: Camera
@@ -61,10 +45,10 @@ Star:
                   Active: true
                   Static: false
                 TransformComponent:
-                  Position: [0, 0, -5]
-                  Rotation: [0, 0, 0, 1]
+                  Position: [1.37452888, 5.84373665, -4.42759132]
+                  Rotation: [-0, 0, -0, 1]
                   Scale: [1, 1, 1]
-                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -5, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.37452888, 5.84373665, -4.42759132, 1]
                 CameraComponent:
                   Active: true
                   Perspective:
@@ -75,7 +59,7 @@ Star:
                   Aspect: [0, 0]
             - Entity:
                 GeneralComponent:
-                  Name: untitled
+                  Name: Cube2
                   Tag: Empty
                   Active: true
                   Static: false
@@ -84,23 +68,4096 @@ Star:
                   Rotation: [0, 0, 0, 1]
                   Scale: [1, 1, 1]
                   Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                Children:
-                  - Entity:
-                      GeneralComponent:
-                        Name: Cube.001
-                        Tag: Empty
-                        Active: true
-                        Static: false
-                      TransformComponent:
-                        Position: [0, 0, 0]
-                        Rotation: [-0, 0, -0.342020184, 0.939692616]
-                        Scale: [5, 1, 1]
-                        Matrix: [3.83022213, -3.21393847, 0, 0, 0.642787695, 0.766044438, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-                      MeshComponent:
-                        IsActive: true
-                        ModelPath: assets\untitled.glb
-                        MaterialPath: assets\untitled\Cube.001.mat
-                        MeshIndex: 0
-                        VerticesSize: 24
-                        IndicesSize: 36
-                        FacesSize: 12
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube2.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube3
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube3.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube4
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube4.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube5
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube5.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube6
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube6.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube7
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 0, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube7.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube8
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 4, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 4, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube8.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube9
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 4, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 4, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube9.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube10
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 4, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 4, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube10.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube11
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 4, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 4, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube11.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube12
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 4, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 4, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube12.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube13
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 4, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 4, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube13.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube14
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 8, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 8, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube14.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube15
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 8, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 8, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube15.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube16
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 8, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 8, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube16.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube17
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 8, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 8, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube17.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube18
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 8, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 8, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube18.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube19
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 8, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 8, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube19.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube20
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 12, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 12, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube20.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube21
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 12, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 12, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube21.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube22
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 12, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 12, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube22.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube23
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 12, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 12, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube23.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube24
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 12, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 12, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube24.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube25
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 12, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 12, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube25.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube26
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 16, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 16, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube26.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube27
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 16, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 16, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube27.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube28
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 16, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 16, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube28.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube29
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 16, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 16, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube29.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube30
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 16, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 16, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube30.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube31
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 16, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 16, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube31.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube32
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 20, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 20, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube32.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube33
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 20, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 20, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube33.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube34
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 20, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 20, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube34.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube35
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 20, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 20, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube35.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube36
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 20, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 20, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube36.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube37
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [0, 20, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 20, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube37.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube38
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 0, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube38.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube39
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 0, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube39.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube40
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 0, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube40.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube41
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 0, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube41.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube42
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 0, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube42.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube43
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 0, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube43.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube44
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 4, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 4, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube44.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube45
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 4, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 4, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube45.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube46
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 4, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 4, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube46.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube47
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 4, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 4, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube47.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube48
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 4, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 4, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube48.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube49
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 4, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 4, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube49.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube50
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 8, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 8, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube50.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube51
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 8, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 8, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube51.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube52
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 8, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 8, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube52.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube53
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 8, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 8, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube53.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube54
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 8, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 8, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube54.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube55
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 8, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 8, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube55.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube56
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 12, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 12, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube56.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube57
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 12, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 12, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube57.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube58
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 12, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 12, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube58.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube59
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 12, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 12, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube59.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube60
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 12, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 12, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube60.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube61
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 12, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 12, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube61.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube62
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 16, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 16, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube62.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube63
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 16, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 16, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube63.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube64
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 16, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 16, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube64.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube65
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 16, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 16, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube65.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube66
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 16, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 16, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube66.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube67
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 16, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 16, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube67.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube68
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 20, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 20, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube68.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube69
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 20, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 20, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube69.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube70
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 20, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 20, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube70.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube71
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 20, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 20, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube71.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube72
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 20, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 20, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube72.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube73
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [4, 20, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 20, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube73.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube74
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 0, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube74.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube75
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 0, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 0, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube75.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube76
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 0, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 0, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube76.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube77
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 0, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 0, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube77.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube78
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 0, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 0, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube78.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube79
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 0, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 0, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube79.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube80
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 4, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 4, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube80.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube81
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 4, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 4, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube81.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube82
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 4, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 4, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube82.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube83
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 4, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 4, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube83.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube84
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 4, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 4, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube84.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube85
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 4, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 4, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube85.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube86
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 8, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 8, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube86.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube87
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 8, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 8, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube87.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube88
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 8, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 8, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube88.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube89
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 8, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 8, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube89.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube90
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 8, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 8, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube90.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube91
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 8, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 8, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube91.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube92
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 12, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 12, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube92.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube93
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 12, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 12, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube93.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube94
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 12, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 12, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube94.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube95
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 12, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 12, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube95.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube96
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 12, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 12, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube96.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube97
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 12, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 12, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube97.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube98
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 16, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 16, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube98.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube99
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 16, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 16, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube99.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube100
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 16, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 16, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube100.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube101
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 16, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 16, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube101.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube102
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 16, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 16, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube102.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube103
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 16, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 16, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube103.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube104
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 20, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 20, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube104.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube105
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 20, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 20, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube105.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube106
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 20, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 20, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube106.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube107
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 20, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 20, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube107.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube108
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 20, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 20, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube108.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube109
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [8, 20, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 8, 20, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube109.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube110
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 0, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube110.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube111
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 0, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 0, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube111.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube112
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 0, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 0, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube112.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube113
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 0, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 0, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube113.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube114
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 0, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 0, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube114.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube115
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 0, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 0, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube115.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube116
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 4, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 4, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube116.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube117
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 4, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 4, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube117.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube118
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 4, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 4, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube118.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube119
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 4, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 4, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube119.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube120
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 4, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 4, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube120.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube121
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 4, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 4, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube121.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube122
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 8, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 8, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube122.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube123
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 8, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 8, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube123.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube124
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 8, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 8, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube124.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube125
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 8, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 8, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube125.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube126
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 8, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 8, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube126.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube127
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 8, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 8, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube127.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube128
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 12, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 12, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube128.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube129
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 12, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 12, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube129.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube130
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 12, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 12, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube130.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube131
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 12, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 12, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube131.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube132
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 12, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 12, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube132.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube133
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 12, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 12, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube133.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube134
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 16, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 16, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube134.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube135
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 16, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 16, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube135.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube136
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 16, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 16, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube136.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube137
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 16, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 16, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube137.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube138
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 16, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 16, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube138.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube139
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 16, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 16, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube139.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube140
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 20, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 20, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube140.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube141
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 20, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 20, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube141.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube142
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 20, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 20, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube142.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube143
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 20, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 20, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube143.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube144
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 20, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 20, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube144.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube145
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [12, 20, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 20, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube145.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube146
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 0, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube146.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube147
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 0, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 0, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube147.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube148
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 0, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 0, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube148.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube149
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 0, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 0, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube149.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube150
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 0, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 0, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube150.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube151
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 0, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 0, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube151.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube152
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 4, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 4, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube152.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube153
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 4, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 4, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube153.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube154
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 4, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 4, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube154.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube155
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 4, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 4, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube155.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube156
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 4, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 4, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube156.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube157
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 4, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 4, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube157.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube158
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 8, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 8, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube158.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube159
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 8, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 8, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube159.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube160
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 8, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 8, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube160.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube161
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 8, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 8, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube161.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube162
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 8, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 8, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube162.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube163
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 8, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 8, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube163.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube164
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 12, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 12, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube164.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube165
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 12, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 12, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube165.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube166
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 12, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 12, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube166.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube167
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 12, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 12, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube167.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube168
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 12, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 12, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube168.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube169
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 12, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 12, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube169.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube170
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 16, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 16, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube170.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube171
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 16, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 16, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube171.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube172
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 16, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 16, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube172.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube173
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 16, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 16, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube173.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube174
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 16, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 16, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube174.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube175
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 16, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 16, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube175.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube176
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 20, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 20, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube176.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube177
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 20, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 20, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube177.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube178
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 20, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 20, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube178.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube179
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 20, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 20, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube179.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube180
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 20, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 20, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube180.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube181
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [16, 20, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 16, 20, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube181.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube182
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 0, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 0, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube182.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube183
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 0, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 0, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube183.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube184
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 0, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 0, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube184.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube185
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 0, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 0, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube185.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube186
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 0, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 0, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube186.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube187
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 0, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 0, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube187.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube188
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 4, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 4, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube188.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube189
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 4, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 4, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube189.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube190
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 4, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 4, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube190.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube191
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 4, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 4, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube191.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube192
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 4, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 4, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube192.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube193
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 4, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 4, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube193.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube194
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 8, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 8, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube194.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube195
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 8, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 8, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube195.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube196
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 8, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 8, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube196.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube197
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 8, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 8, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube197.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube198
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 8, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 8, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube198.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube199
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 8, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 8, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube199.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube200
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 12, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 12, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube200.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube201
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 12, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 12, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube201.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube202
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 12, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 12, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube202.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube203
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 12, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 12, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube203.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube204
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 12, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 12, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube204.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube205
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 12, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 12, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube205.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube206
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 16, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 16, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube206.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube207
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 16, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 16, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube207.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube208
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 16, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 16, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube208.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube209
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 16, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 16, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube209.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube210
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 16, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 16, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube210.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube211
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 16, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 16, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube211.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube212
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 20, 0]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 20, 0, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube212.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube213
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 20, 4]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 20, 4, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube213.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube214
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 20, 8]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 20, 8, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube214.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube215
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 20, 12]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 20, 12, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube215.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube216
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 20, 16]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 20, 16, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube216.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12
+            - Entity:
+                GeneralComponent:
+                  Name: Cube217
+                  Tag: Empty
+                  Active: true
+                  Static: false
+                TransformComponent:
+                  Position: [20, 20, 20]
+                  Rotation: [0, 0, 0, 1]
+                  Scale: [1, 1, 1]
+                  Matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 20, 20, 20, 1]
+                MeshComponent:
+                  IsActive: true
+                  ModelPath: data\model\cube.obj
+                  MaterialPath: data\model\cube\Cube217.mat
+                  MeshIndex: 0
+                  VerticesSize: 24
+                  IndicesSize: 36
+                  FacesSize: 12

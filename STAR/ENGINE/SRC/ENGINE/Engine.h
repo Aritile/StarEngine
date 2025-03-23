@@ -38,6 +38,7 @@ public:
 		                   IDXGISwapChain* _SwapChain,
 		                   bool _Game);
 	bool FindGoodCamera(Matrix& _ProjectionMatrix, Matrix& _ViewMatrix);
+	entt::entity FindGoodCamera();
 	void CloseSafeEngine();
 	Vector4 GetClearColor();
 	void TraverseEntity(entt::entity entity, Matrix _ViewMatrix, Matrix _ProjectionMatrix, bool _Game);

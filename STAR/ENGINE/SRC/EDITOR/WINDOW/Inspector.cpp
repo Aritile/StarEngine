@@ -1,8 +1,5 @@
 #include "Inspector.h"
 
-// entity
-#include "../../ENTITY/Entity.h"
-
 // components
 #include "../../ENTITY/COMPONENT/GeneralComponent.h"
 #include "../../ENTITY/COMPONENT/TransformComponent.h"
@@ -18,11 +15,16 @@
 #include "../../ENTITY/COMPONENT/TriangleColliderComponent.h"
 #include "../../ENTITY/COMPONENT/PhysicsMaterialComponent.h"
 #include "../../ENTITY/COMPONENT/RigidStaticComponent.h"
+#include "../../ENTITY/COMPONENT/DistanceCullerComponent.h"
+#include "../../ENTITY/COMPONENT/FrustumCullerComponent.h"
+
+// system
+#include "../../SYSTEM/ScriptingSystem.h"
+#include "../../SYSTEM/PhysicsSystem.h"
 
 // stuff
-#include "../../SYSTEM/ScriptingSystem.h"
 #include "../../EDITOR/WINDOW/Assets.h"
-#include "../../SYSTEM/PhysicsSystem.h"
+#include "../../ENTITY/Entity.h"
 
 InspectorWindow* InspectorWindow::GetSingleton()
 {
@@ -60,6 +62,7 @@ void InspectorWindow::Render()
 			RenderComponent<TriangleColliderComponent>(ecs->selected);
 			RenderComponent<PhysicsMaterialComponent>(ecs->selected);
 			RenderComponent<RigidStaticComponent>(ecs->selected);
+			RenderComponent<DistanceCullerComponent>(ecs->selected);
 			RenderAdd();
 		}
 	}
@@ -75,22 +78,29 @@ void InspectorWindow::RenderAdd()
 
 	if (ImGui::BeginPopup("addComp", ImGuiWindowFlags_NoMove))
 	{
-		ImGui::SeparatorText("Mesh");
+		if (ImGui::BeginMenu("Mesh"))
+		{
+			ImGui::SeparatorText("Mesh");
 
-		if (ImGui::Selectable("Mesh"))
-		{
-			if (!ecs->HasComponent<MeshComponent>(ecs->selected))
-				ecs->AddComponent<MeshComponent>(ecs->selected);
+			if (ImGui::MenuItem("Mesh"))
+			{
+				if (!ecs->HasComponent<MeshComponent>(ecs->selected))
+					ecs->AddComponent<MeshComponent>(ecs->selected);
+			}
+			if (ImGui::MenuItem("TextMesh"))
+			{
+				if (!ecs->HasComponent<TextMeshComponent>(ecs->selected))
+					ecs->AddComponent<TextMeshComponent>(ecs->selected);
+			}
+
+			ImGui::EndMenu();
 		}
-		if (ImGui::Selectable("TextMesh"))
-		{
-			if (!ecs->HasComponent<TextMeshComponent>(ecs->selected))
-				ecs->AddComponent<TextMeshComponent>(ecs->selected);
-		}
-		ImGui::Separator();
+
 		{
 			if (ImGui::BeginMenu("UI"))
 			{
+				ImGui::SeparatorText("UI");
+
 				if (ImGui::MenuItem("Rectangle"))
 					ecs->AddComponent<RectangleComponent>(ecs->selected);
 				if (ImGui::MenuItem("Image"))
@@ -103,68 +113,104 @@ void InspectorWindow::RenderAdd()
 				ImGui::EndMenu();
 			}
 		}
-		ImGui::Separator();
-		if (ImGui::Selectable("Camera"))
+		
+		if (ImGui::BeginMenu("Camera"))
 		{
-			if (!ecs->HasComponent<CameraComponent>(ecs->selected))
-				ecs->AddComponent<CameraComponent>(ecs->selected);
-		}
-		ImGui::SeparatorText("Physics");
-		if (ImGui::Selectable("RigidStatic"))
-		{
-			if (!ecs->HasComponent<RigidStaticComponent>(ecs->selected))
-			{
-				ecs->AddComponent<RigidStaticComponent>(ecs->selected);
-				ecs->GetComponent<RigidStaticComponent>(ecs->selected).CreateActor();
-			}
-		}
-		if (ImGui::Selectable("RigidDynamic"))
-		{
-			if (!ecs->HasComponent<RigidDynamicComponent>(ecs->selected))
-			{
-				ecs->AddComponent<RigidDynamicComponent>(ecs->selected);
-				ecs->GetComponent<RigidDynamicComponent>(ecs->selected).CreateActor();
-			}
-		}
+			ImGui::SeparatorText("Camera");
 
-		if (ImGui::Selectable("Material"))
-		{
-			if (!ecs->HasComponent<PhysicsMaterialComponent>(ecs->selected))
+			if (ImGui::MenuItem("Camera"))
 			{
-				ecs->AddComponent<PhysicsMaterialComponent>(ecs->selected);
-				ecs->GetComponent<PhysicsMaterialComponent>(ecs->selected).CreateMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
+				if (!ecs->HasComponent<CameraComponent>(ecs->selected))
+					ecs->AddComponent<CameraComponent>(ecs->selected);
 			}
-		}
 
-		if (ImGui::BeginMenu("Collider"))
+			ImGui::EndMenu();
+		}
+		
+		if (ImGui::BeginMenu("Physics"))
 		{
-			if (ImGui::MenuItem("Box"))
-				ecs->GetComponent<PhysicsComponent>(ecs->selected).AddBoxCollider();
-			if (ImGui::MenuItem("Sphere"))
-				ecs->GetComponent<PhysicsComponent>(ecs->selected).AddSphereCollider();
-			if (ImGui::MenuItem("Capsule"))
-				ecs->GetComponent<PhysicsComponent>(ecs->selected).AddCapsuleCollider();
-			if (ImGui::MenuItem("Convex"))
+			ImGui::SeparatorText("Physics");
+
+			if (ImGui::MenuItem("RigidStatic"))
 			{
-				if (!ecs->HasComponent<ConvexColliderComponent>(ecs->selected))
+				if (!ecs->HasComponent<RigidStaticComponent>(ecs->selected))
 				{
-					ecs->AddComponent<ConvexColliderComponent>(ecs->selected);
-					ecs->GetComponent<ConvexColliderComponent>(ecs->selected).Create();
+					ecs->AddComponent<RigidStaticComponent>(ecs->selected);
+					ecs->GetComponent<RigidStaticComponent>(ecs->selected).CreateActor();
 				}
 			}
-			if (ImGui::MenuItem("Triangle"))
+			if (ImGui::MenuItem("RigidDynamic"))
 			{
-				if (!ecs->HasComponent<TriangleColliderComponent>(ecs->selected))
+				if (!ecs->HasComponent<RigidDynamicComponent>(ecs->selected))
 				{
-					ecs->AddComponent<TriangleColliderComponent>(ecs->selected);
-					ecs->GetComponent<TriangleColliderComponent>(ecs->selected).Create();
+					ecs->AddComponent<RigidDynamicComponent>(ecs->selected);
+					ecs->GetComponent<RigidDynamicComponent>(ecs->selected).CreateActor();
+				}
+			}
+
+			if (ImGui::BeginMenu("Collider"))
+			{
+				ImGui::SeparatorText("Collider");
+
+				if (ImGui::MenuItem("Box"))
+					ecs->GetComponent<PhysicsComponent>(ecs->selected).AddBoxCollider();
+				if (ImGui::MenuItem("Sphere"))
+					ecs->GetComponent<PhysicsComponent>(ecs->selected).AddSphereCollider();
+				if (ImGui::MenuItem("Capsule"))
+					ecs->GetComponent<PhysicsComponent>(ecs->selected).AddCapsuleCollider();
+				if (ImGui::MenuItem("Convex"))
+				{
+					if (!ecs->HasComponent<ConvexColliderComponent>(ecs->selected))
+					{
+						ecs->AddComponent<ConvexColliderComponent>(ecs->selected);
+						ecs->GetComponent<ConvexColliderComponent>(ecs->selected).Create();
+					}
+				}
+				if (ImGui::MenuItem("Triangle"))
+				{
+					if (!ecs->HasComponent<TriangleColliderComponent>(ecs->selected))
+					{
+						ecs->AddComponent<TriangleColliderComponent>(ecs->selected);
+						ecs->GetComponent<TriangleColliderComponent>(ecs->selected).Create();
+					}
+				}
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Material"))
+		{
+			ImGui::SeparatorText("Material");
+
+			if (ImGui::MenuItem("Material"))
+			{
+				if (!ecs->HasComponent<PhysicsMaterialComponent>(ecs->selected))
+				{
+					ecs->AddComponent<PhysicsMaterialComponent>(ecs->selected);
+					ecs->GetComponent<PhysicsMaterialComponent>(ecs->selected).CreateMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
 				}
 			}
 
 			ImGui::EndMenu();
 		}
 
-		ImGui::Separator();
+		if (ImGui::BeginMenu("Optimization"))
+		{
+			ImGui::SeparatorText("Optimization");
+			if (ImGui::MenuItem("DistanceCuller"))
+			{
+				if (!ecs->HasComponent<DistanceCullerComponent>(ecs->selected))
+				{
+					ecs->AddComponent<DistanceCullerComponent>(ecs->selected);
+				}
+			}
+			if (ImGui::MenuItem("FrustumCuller")) {}
+
+			ImGui::EndMenu();
+		}
 
 		static std::vector<std::pair<std::string, std::string>> data;
 

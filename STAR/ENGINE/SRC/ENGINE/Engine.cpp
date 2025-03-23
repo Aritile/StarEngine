@@ -6,6 +6,7 @@
 #include "../ENTITY/COMPONENT/TransformComponent.h"
 #include "../ENTITY/COMPONENT/TextComponent.h"
 #include "../ENTITY/COMPONENT/RigidDynamicComponent.h"
+#include "../ENTITY/COMPONENT/DistanceCullerComponent.h"
 
 // system
 #include "../SYSTEM/PhysicsSystem.h"
@@ -29,8 +30,9 @@
 #include "../WINDOW/MainWindow.h"
 #include "../USERINPUT/UserInput.h"
 #include "../JOB/Job.h"
+#include "../DEMO/DemoScene.h"
 
-#define ENABLE_MODULES
+//#define ENABLE_MODULES
 
 static DX* dx = DX::GetSingleton();
 static Editor* editor = Editor::GetSingleton();
@@ -146,6 +148,8 @@ void Engine::EngineStart()
 
     settingsWindow->Load();
     module->EngineStartModules();
+
+    //DemoScene::CreateDemoGrid(6, 4, true, 8, false);
 
     ShowWindow(mainWindow->GetHandle(), SW_NORMAL);
     UpdateWindow(mainWindow->GetHandle());
@@ -425,7 +429,21 @@ void Engine::TraverseEntity(entt::entity entity, Matrix _ViewMatrix, Matrix _Pro
             if (meshComponent.IsActive())
             {
                 if (drawTiming) drawTiming->StartTimer();
-                meshComponent.DrawMesh(_ViewMatrix, _ProjectionMatrix);
+
+                bool validDistance = true;
+                if (ecs->HasComponent<DistanceCullerComponent>(child))
+                {
+                    auto& distanceCullerComponent = ecs->GetComponent<DistanceCullerComponent>(child);
+                    if (distanceCullerComponent.activeComponent)
+                    {
+                        entt::entity camEntity = FindGoodCamera();
+                        auto& camPos = ecs->GetComponent<TransformComponent>(camEntity);
+                        validDistance = distanceCullerComponent.IsValidDistance(camPos.GetPosition());
+                    }
+                }
+
+                if (validDistance)
+                    meshComponent.DrawMesh(_ViewMatrix, _ProjectionMatrix);
                 if (drawTiming)
                 {
                     drawTiming->StopTimer();
@@ -467,6 +485,20 @@ bool Engine::FindGoodCamera(Matrix& _ProjectionMatrix, Matrix& _ViewMatrix)
     }
     return false;
 }
+
+entt::entity Engine::FindGoodCamera()
+{
+    auto view = ecs->registry.view<CameraComponent>();
+    for (auto entity : view)
+    {
+        if (!ecs->GetComponent<GeneralComponent>(entity).IsActive()) continue;
+        if (!ecs->GetComponent<CameraComponent>(entity).IsActive()) continue;
+        if (!ecs->HasComponent<TransformComponent>(entity)) continue;
+        return entity;
+    }
+    return entt::null;
+}
+
 void Engine::CloseSafeEngine()
 {
     if (!job->IsDone())

@@ -35,6 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SRC\DEMO\DemoScene.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\DistanceCullerComponent.h" />
+    <ClInclude Include="SRC\ENTITY\COMPONENT\FrustumCullerComponent.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\RigidStaticComponent.h" />
     <ClInclude Include="SRC\ENTITY\COMPONENT\ConvexColliderComponent.h" />
     <ClInclude Include="SRC\STORAGE\SpriteStorage.h" />
@@ -131,6 +134,9 @@
     <ClInclude Include="SRC\ENTITY\COMPONENT\TriangleColliderComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\DEMO\DemoScene.cpp" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\DistanceCullerComponent.cpp" />
+    <ClCompile Include="SRC\ENTITY\COMPONENT\FrustumCullerComponent.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\RigidStaticComponent.cpp" />
     <ClCompile Include="SRC\ENTITY\COMPONENT\ConvexColliderComponent.cpp" />
     <ClCompile Include="SRC\STORAGE\SpriteStorage.cpp" />
@@ -386,7 +392,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;_CRT_SECURE_NO_WARNINGS;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\b\StarEngine\STAR\ENGINE\INCLUDE\physx;$(ProjectDir)\DirectXTex\DDSTextureLoader;$(ProjectDir)\DirectXTex\WICTextureLoader;$(ProjectDir)\DirectXTex\DirectXTex;$(ProjectDir)\ENGINE\DirectXTK\Src;$(ProjectDir)\DirectXTK\Inc;$(ProjectDir)\INCLUDE\lua;$(ProjectDir)\INCLUDE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\INCLUDE\physx;$(ProjectDir)\DirectXTex\DDSTextureLoader;$(ProjectDir)\DirectXTex\WICTextureLoader;$(ProjectDir)\DirectXTex\DirectXTex;$(ProjectDir)\ENGINE\DirectXTK\Src;$(ProjectDir)\DirectXTK\Inc;$(ProjectDir)\INCLUDE\lua;$(ProjectDir)\INCLUDE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
