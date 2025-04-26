@@ -44,7 +44,7 @@ YouTube https://www.youtube.com/@starengine
 ![](/images/4_scan.png)
 ![](/images/5_scan.png)
 ![](/images/6_scan.png)
-## Demo scene (Click to play video.)
+## Demo scene (click to play video)
 [![video](https://img.youtube.com/vi/qkgUMthkFkY/maxresdefault.jpg)](https://www.youtube.com/watch?v=qkgUMthkFkY)
 ## Credits
 Dear ImGui https://github.com/ocornut/imgui \
